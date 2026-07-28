@@ -72,7 +72,16 @@ Hot reload enabled - changes apply automatically without manual reload!
 - Content: DevTools on CPI page
 - Background: `chrome://extensions/` → "Service worker"
 
+## Credits & Acknowledgements
+
+Several feature ideas in this extension were inspired by the excellent
+[CPI-Helper-Chrome-Extension](https://github.com/dbeck121/CPI-Helper-Chrome-Extension)
+by [dbeck121](https://github.com/dbeck121) and contributors — thank you for pioneering
+so many useful SAP CPI browser-tooling concepts! FlowMate is an independent,
+from-scratch implementation (no code was copied), built with our own architecture,
+UI, and codebase.
+
 ## License
 
 This project is licensed under the **GNU General Public License v3.0** (GPLv3).
-Portions of this extension are based on or inspired by the [CPI-Helper-Chrome-Extension](https://github.com/dbeck121/CPI-Helper-Chrome-Extension).
+
