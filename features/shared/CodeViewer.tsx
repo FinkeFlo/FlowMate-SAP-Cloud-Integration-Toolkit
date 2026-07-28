@@ -1,14 +1,16 @@
 /**
  * CodeViewer — Reusable CodeMirror 6 wrapper for Preact.
  *
- * Read-only code viewer with syntax highlighting, line numbers,
- * search (Ctrl+F), and dark theme matching the glassmorphism UI.
+ * Read-only code viewer with syntax highlighting, line numbers, search
+ * (Ctrl+F), soft line-wrapping, and a light theme matching the `flowmate`
+ * daisyUI theme used throughout the extension.
  */
 
 import { useRef, useEffect, useState, useMemo } from 'preact/hooks';
 import { EditorView, lineNumbers, highlightActiveLine, keymap } from '@codemirror/view';
 import { EditorState, Compartment } from '@codemirror/state';
-import { oneDark } from '@codemirror/theme-one-dark';
+import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
+import { tags } from '@lezer/highlight';
 import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
 import { json } from '@codemirror/lang-json';
 import { xml } from '@codemirror/lang-xml';
@@ -24,6 +26,48 @@ export interface CodeViewerProps {
 }
 
 const detectLanguage = detectPayloadLanguage;
+
+// Light theme matching the `flowmate` daisyUI theme (base-200 background,
+// base-content text) instead of CodeMirror's bundled `oneDark` — the whole
+// extension UI is light-only (see assets/flowmate-theme.css), so a dark
+// code block looked out of place next to the rest of the panel.
+const lightEditorTheme = EditorView.theme({
+  '&': {
+    backgroundColor: '#f5f5f5',
+    color: '#24292f',
+  },
+  '.cm-content': {
+    caretColor: '#24292f',
+  },
+  '.cm-gutters': {
+    backgroundColor: '#f5f5f5',
+    color: '#8c959f',
+    border: 'none',
+  },
+  '.cm-activeLine': {
+    backgroundColor: 'rgba(0, 112, 242, 0.06)',
+  },
+  '.cm-activeLineGutter': {
+    backgroundColor: 'rgba(0, 112, 242, 0.06)',
+  },
+  '.cm-selectionMatch': {
+    backgroundColor: 'rgba(0, 112, 242, 0.15)',
+  },
+});
+
+const lightHighlightStyle = HighlightStyle.define([
+  { tag: tags.propertyName, color: '#0070f2' },
+  { tag: tags.string, color: '#15803d' },
+  { tag: tags.number, color: '#b45309' },
+  { tag: tags.bool, color: '#0a6ed1' },
+  { tag: tags.null, color: '#0a6ed1' },
+  { tag: tags.keyword, color: '#0a6ed1' },
+  { tag: tags.tagName, color: '#0070f2' },
+  { tag: tags.attributeName, color: '#b45309' },
+  { tag: tags.attributeValue, color: '#15803d' },
+  { tag: tags.comment, color: '#8c959f', fontStyle: 'italic' },
+  { tag: tags.punctuation, color: '#57606a' },
+]);
 
 function getLanguageExtension(lang: 'xml' | 'json' | 'text') {
   switch (lang) {
@@ -75,13 +119,18 @@ export function CodeViewer({
         highlightSelectionMatches(),
         keymap.of(searchKeymap),
         compartment.of(getLanguageExtension(lang)),
-        oneDark,
+        lightEditorTheme,
+        syntaxHighlighting(lightHighlightStyle),
+        // Wrap long lines instead of requiring horizontal scrolling — this is
+        // purely visual (soft-wrap), the underlying document text is
+        // unchanged, so copy/paste still yields the original content.
+        EditorView.lineWrapping,
         EditorView.editable.of(!readonly),
         EditorState.readOnly.of(readonly),
         EditorView.theme({
           '&': {
             maxHeight,
-            fontSize: '12px',
+            fontSize: '13px',
             fontFamily: "'SF Mono', 'Fira Code', 'Consolas', monospace",
           },
           '.cm-scroller': {
@@ -152,7 +201,7 @@ export function CodeViewer({
         style={{
           borderRadius: '6px',
           overflow: 'hidden',
-          border: '1px solid rgba(255, 255, 255, 0.06)',
+          border: '1px solid var(--color-base-300, #e0e0e0)',
         }}
       />
     </div>
