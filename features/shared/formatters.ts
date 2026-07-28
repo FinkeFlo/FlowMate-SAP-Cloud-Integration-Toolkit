@@ -83,3 +83,40 @@ export function prettyPrint(content: string, language?: PayloadLanguage): string
   if (lang === 'xml') return prettyPrintXml(content);
   return null;
 }
+
+/**
+ * Size guards for `CodeViewer` — SAP CPI message bodies/payloads can be
+ * large (multi-MB attachments, batch payloads, etc.). Rendering those
+ * directly into CodeMirror with language parsing + syntax highlighting can
+ * noticeably freeze the UI, and pretty-printing (JSON.parse/stringify or
+ * the XML indenter) is even more expensive. Character count is used as a
+ * cheap proxy for byte size (good enough for a UI guard, not billing-grade).
+ */
+export const MAX_RENDER_CHARS = 2_000_000; // ~2 MB — above this, don't mount the editor at all
+export const MAX_FORMAT_CHARS = 500_000; // ~500 KB — above this, skip the (expensive) pretty-print attempt
+
+export function formatByteSize(chars: number): string {
+  const bytes = chars; // approximation: 1 char ≈ 1 byte for the payload text we handle (mostly ASCII/UTF-8 JSON/XML)
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+const EXTENSION_BY_LANGUAGE: Record<PayloadLanguage, string> = {
+  json: 'json',
+  xml: 'xml',
+  text: 'txt',
+};
+
+/** Triggers a browser download of `content` as a file, named by detected/declared language. */
+export function downloadPayload(content: string, language?: PayloadLanguage, baseName = 'flowmate-payload'): void {
+  const lang = language ?? detectPayloadLanguage(content);
+  const ext = EXTENSION_BY_LANGUAGE[lang];
+  const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${baseName}.${ext}`;
+  a.click();
+  URL.revokeObjectURL(url);
+}

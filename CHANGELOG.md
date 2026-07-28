@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- `CodeViewer` size guards + download: payloads over ~2 MB skip CodeMirror rendering entirely (avoids freezing the UI on huge message bodies) and show a "Download" action instead; the pretty-print formatter is skipped above ~500 KB for the same reason. A "Download" button is now always available in `CodeViewer` (Body tab, Persist tab) to save the currently displayed payload as a `.json`/`.xml`/`.txt` file.
 - Optional JSON/XML "Format" toggle in `CodeViewer` (`features/shared/CodeViewer.tsx`, `features/shared/formatters.ts`): reformats a compact/minified payload into an indented, readable view on demand, off by default so the raw payload is shown unchanged. Used by both the inline-trace Body tab and the Message Detail Persist tab (now rendered via `CodeViewer` for syntax highlighting too).
 - `DockPanel` component (`features/shared/DockPanel.tsx`): a bottom-docked, user-resizable panel replacing centered modals for tabbed, data-heavy detail views.
 - `DESIGN.md` documenting the flowmate daisyUI theme (colors, typography, shapes) for humans and AI agents, following the DESIGN.md format.

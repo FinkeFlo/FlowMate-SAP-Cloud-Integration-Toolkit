@@ -266,6 +266,17 @@
   "codeViewerRaw": {
     "message": "Raw"
   },
+  "codeViewerDownload": {
+    "message": "Download"
+  },
+  "codeViewerTooLarge": {
+    "message": "Payload too large to display ($SIZE$). Download it instead.",
+    "placeholders": {
+      "size": {
+        "content": "$1"
+      }
+    }
+  },
   "traceFailedToLoad": {
     "message": "Failed to load: $ERROR$",
     "placeholders": {

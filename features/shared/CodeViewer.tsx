@@ -14,9 +14,16 @@ import { tags } from '@lezer/highlight';
 import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
 import { json } from '@codemirror/lang-json';
 import { xml } from '@codemirror/lang-xml';
-import { WandSparkles } from 'lucide-preact';
-import { detectPayloadLanguage, prettyPrint } from '@/features/shared/formatters';
-import { t } from '@/features/shared/i18n';
+import { WandSparkles, Download, TriangleAlert } from 'lucide-preact';
+import {
+  detectPayloadLanguage,
+  prettyPrint,
+  downloadPayload,
+  formatByteSize,
+  MAX_RENDER_CHARS,
+  MAX_FORMAT_CHARS,
+} from '@/features/shared/formatters';
+import { t, tSub } from '@/features/shared/i18n';
 
 export interface CodeViewerProps {
   content: string;
@@ -92,9 +99,17 @@ export function CodeViewer({
   const [isFormatted, setIsFormatted] = useState(false);
 
   const lang = language ?? detectLanguage(content);
-  const formatted = useMemo(() => prettyPrint(content, lang), [content, lang]);
+  const isOversized = content.length > MAX_RENDER_CHARS;
+  const formatted = useMemo(() => {
+    if (isOversized || content.length > MAX_FORMAT_CHARS) return null;
+    return prettyPrint(content, lang);
+  }, [content, lang, isOversized]);
   const canFormat = formatted !== null && formatted !== content;
   const displayContent = isFormatted && formatted !== null ? formatted : content;
+
+  function handleDownload() {
+    downloadPayload(displayContent, lang);
+  }
 
   // Reset to the raw view whenever a new payload comes in (e.g. navigating
   // between trace steps) instead of carrying over the previous toggle state.
@@ -105,7 +120,10 @@ export function CodeViewer({
 
   // Mount/unmount the EditorView once
   useEffect(() => {
-    if (!containerRef.current) return;
+    // Skip mounting CodeMirror entirely for huge payloads — language parsing
+    // + syntax highlighting on multi-MB content can noticeably freeze the
+    // UI. The oversized branch below renders a download-only fallback instead.
+    if (!containerRef.current || isOversized) return;
 
     const compartment = new Compartment();
     compartmentRef.current = compartment;
@@ -161,6 +179,7 @@ export function CodeViewer({
 
   // Update content and language via transaction (avoids full EditorView rebuild)
   useEffect(() => {
+    if (isOversized) return;
     const view = viewRef.current;
     const compartment = compartmentRef.current;
     if (!view || !compartment) return;
@@ -179,31 +198,59 @@ export function CodeViewer({
         effects: compartment.reconfigure(getLanguageExtension(lang)),
       });
     }
-  }, [displayContent, lang]);
+  }, [displayContent, lang, isOversized]);
 
   return (
     <div>
-      {canFormat && (
-        <div class="mb-1.5 flex justify-end">
+      {isOversized ? (
+        <div class="rounded-box border border-base-300 bg-base-200/60 p-4">
+          <div class="flex items-center gap-2 text-sm text-warning">
+            <TriangleAlert size={16} />
+            {tSub('codeViewerTooLarge', formatByteSize(content.length))}
+          </div>
           <button
             type="button"
-            class={`btn btn-xs gap-1.5 ${isFormatted ? 'btn-primary' : 'btn-ghost'}`}
-            title={isFormatted ? t('codeViewerRaw') : t('codeViewerFormat')}
-            onClick={() => setIsFormatted((v) => !v)}
+            class="btn btn-sm btn-primary mt-3 gap-1.5"
+            onClick={handleDownload}
           >
-            <WandSparkles size={13} />
-            {isFormatted ? t('codeViewerRaw') : t('codeViewerFormat')}
+            <Download size={14} />
+            {t('codeViewerDownload')}
           </button>
         </div>
+      ) : (
+        <>
+          <div class="mb-1.5 flex justify-end gap-1.5">
+            {canFormat && (
+              <button
+                type="button"
+                class={`btn btn-xs gap-1.5 ${isFormatted ? 'btn-primary' : 'btn-ghost'}`}
+                title={isFormatted ? t('codeViewerRaw') : t('codeViewerFormat')}
+                onClick={() => setIsFormatted((v) => !v)}
+              >
+                <WandSparkles size={13} />
+                {isFormatted ? t('codeViewerRaw') : t('codeViewerFormat')}
+              </button>
+            )}
+            <button
+              type="button"
+              class="btn btn-ghost btn-xs gap-1.5"
+              title={t('codeViewerDownload')}
+              onClick={handleDownload}
+            >
+              <Download size={13} />
+              {t('codeViewerDownload')}
+            </button>
+          </div>
+          <div
+            ref={containerRef}
+            style={{
+              borderRadius: '6px',
+              overflow: 'hidden',
+              border: '1px solid var(--color-base-300, #e0e0e0)',
+            }}
+          />
+        </>
       )}
-      <div
-        ref={containerRef}
-        style={{
-          borderRadius: '6px',
-          overflow: 'hidden',
-          border: '1px solid var(--color-base-300, #e0e0e0)',
-        }}
-      />
     </div>
   );
 }

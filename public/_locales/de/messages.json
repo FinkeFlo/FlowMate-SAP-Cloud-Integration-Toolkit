@@ -266,6 +266,17 @@
   "codeViewerRaw": {
     "message": "Original"
   },
+  "codeViewerDownload": {
+    "message": "Herunterladen"
+  },
+  "codeViewerTooLarge": {
+    "message": "Payload zu groß zur Anzeige ($SIZE$). Bitte herunterladen.",
+    "placeholders": {
+      "size": {
+        "content": "$1"
+      }
+    }
+  },
   "traceFailedToLoad": {
     "message": "Laden fehlgeschlagen: $ERROR$",
     "placeholders": {
