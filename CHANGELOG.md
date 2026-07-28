@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Fixed
+- The floating toolbar's drag-to-move behavior was attached to its entire container instead of just the header handle, so pointerdown/move events bubbling up from nested buttons (message log filters, refresh, auto-refresh, etc.) could hijack the toolbar's drag state and swallow the click. Dragging is now scoped to the header handle only — nested panel buttons work reliably regardless of small mouse movement during a click.
 - Message log status filter dots (success/error/processing) and per-message row status dots relied on color (green/red/orange/gray) alone, which is hard to distinguish for red/green color-blind users. Both now show a distinct icon (check/cross/clock/ban) inside the dot so the meaning no longer depends on hue perception.
 
 ### Changed

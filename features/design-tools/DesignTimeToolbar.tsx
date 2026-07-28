@@ -30,7 +30,7 @@ interface DesignTimeToolbarProps {
 
 export function DesignTimeToolbar({ children }: DesignTimeToolbarProps) {
   const [minimized, setMinimized] = useState(loadMinimized);
-  const { containerRef, initialPosition, dragHandlers } = useDrag();
+  const { containerRef, handleRef, initialPosition, dragHandlers } = useDrag();
 
   const toggleMinimized = () => {
     const next = !minimized;
@@ -45,15 +45,20 @@ export function DesignTimeToolbar({ children }: DesignTimeToolbarProps) {
   return (
     <div
       ref={containerRef}
-      class="fixed z-[9999] select-none cursor-grab rounded-box border border-base-300 bg-base-100/95 p-1.5 shadow-lg backdrop-blur-sm"
+      class="fixed z-[9999] select-none rounded-box border border-base-300 bg-base-100/95 p-1.5 shadow-lg backdrop-blur-sm"
       style={positionStyle}
-      {...dragHandlers}
     >
-      {/* Header row: FlowMate branding stays visible whether minimized or expanded */}
+      {/* Header row: FlowMate branding stays visible whether minimized or expanded.
+          Dragging is scoped to this handle only — attaching it to the whole
+          container would let pointerdown/move bubbling from any nested button
+          (message log filters, refresh, etc.) hijack the drag instead of
+          triggering its own click. */}
       <button
-        class="btn btn-ghost btn-sm w-full justify-start gap-2 px-2"
+        ref={handleRef}
+        class="btn btn-ghost btn-sm w-full cursor-grab justify-start gap-2 px-2 touch-none"
         title={minimized ? t('showToolbar') : t('hideToolbar')}
         onClick={toggleMinimized}
+        {...dragHandlers}
       >
         <FlowMateLogo />
         <span class="text-sm font-semibold leading-none">{t('extName')}</span>
