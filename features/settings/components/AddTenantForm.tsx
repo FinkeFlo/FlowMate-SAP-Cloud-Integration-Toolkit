@@ -41,32 +41,32 @@ export function AddTenantForm({ customerId, onSave, onCancel }: AddTenantFormPro
   }
 
   return (
-    <div class="form-inline">
-      <div class="form-row">
-        <div class="form-group-inline">
-          <label>{t('tenantName') || 'Tenant Name'}:</label>
+    <div class="card card-border mb-4 border-info/40 bg-info/10 p-4">
+      <div class="flex flex-wrap items-end gap-4">
+        <div class="flex min-w-[150px] flex-col gap-1">
+          <label class="text-xs font-semibold text-base-content/70">{t('tenantName') || 'Tenant Name'}:</label>
           <input
             ref={nameRef}
             type="text"
-            class={`form-input-sm ${nameError ? 'form-input--error' : ''}`}
+            class={`input input-bordered input-sm w-full ${nameError ? 'input-error' : ''}`}
             placeholder="e.g. DEV, TEST, PROD"
             value={name}
             onInput={e => setName((e.target as HTMLInputElement).value)}
           />
-          {nameError && <span class="field-error">{nameError}</span>}
+          {nameError && <span class="text-xs text-error">{nameError}</span>}
         </div>
-        <div class="form-group-inline flex-grow">
-          <label>URL:</label>
+        <div class="flex min-w-[150px] flex-1 flex-col gap-1">
+          <label class="text-xs font-semibold text-base-content/70">URL:</label>
           <input
             type="url"
-            class={`form-input-sm ${urlError ? 'form-input--error' : ''}`}
+            class={`input input-bordered input-sm w-full ${urlError ? 'input-error' : ''}`}
             placeholder="https://dev-tenant.integrationsuite..."
             value={url}
             onInput={e => setUrl((e.target as HTMLInputElement).value)}
           />
-          {urlError && <span class="field-error">{urlError}</span>}
+          {urlError && <span class="text-xs text-error">{urlError}</span>}
         </div>
-        <div class="form-actions-inline">
+        <div class="flex gap-2">
           <button
             type="button"
             class="btn btn-primary btn-sm"

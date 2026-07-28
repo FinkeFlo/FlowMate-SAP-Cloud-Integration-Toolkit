@@ -6,7 +6,6 @@ import { t } from '@/features/shared/i18n';
 import { ToastContainer } from '@/features/shared/ToastContainer';
 import { CustomerCard } from './CustomerCard';
 import { AddCustomerForm } from './AddCustomerForm';
-import './SettingsApp.css';
 
 export function SettingsApp() {
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -29,19 +28,23 @@ export function SettingsApp() {
   }
 
   if (!settings) {
-    return <div class="settings-loading">{t('loading') || 'Loading...'}</div>;
+    return (
+      <div class="flex min-h-[200px] items-center justify-center text-base-content/60">
+        {t('loading') || 'Loading...'}
+      </div>
+    );
   }
 
   return (
-    <div class="container">
-      <header>
-        <h1>{t('settingsTitle') || 'FlowMate Settings'}</h1>
-        <p>{t('settingsDescription') || 'Manage your Customers and CPI Tenants'}</p>
+    <div class="mx-auto max-w-5xl">
+      <header class="card mb-8 bg-base-100 p-8 shadow">
+        <h1 class="text-2xl font-bold text-primary">{t('settingsTitle') || 'FlowMate Settings'}</h1>
+        <p class="text-base-content/60">{t('settingsDescription') || 'Manage your Customers and CPI Tenants'}</p>
       </header>
 
-      <div class="customers-section">
-        <div class="section-header">
-          <h2>{t('customersAndTenants') || 'Customers & Tenants'}</h2>
+      <div class="card bg-base-100 p-8 shadow">
+        <div class="mb-8 flex items-center justify-between border-b-2 border-base-200 pb-4">
+          <h2 class="text-xl font-semibold">{t('customersAndTenants') || 'Customers & Tenants'}</h2>
           {!showAddForm && (
             <button
               type="button"
@@ -60,9 +63,9 @@ export function SettingsApp() {
           />
         )}
 
-        <div class="customers-list">
+        <div class="flex flex-col gap-6">
           {settings.customers.length === 0 ? (
-            <p class="empty-state">
+            <p class="py-8 text-center italic text-base-content/50">
               {t('noCustomers') || 'No customers created yet. Click "Add Customer".'}
             </p>
           ) : (

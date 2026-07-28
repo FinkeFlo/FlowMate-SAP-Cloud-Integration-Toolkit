@@ -54,51 +54,51 @@ export function TenantItem({ customerId, tenant, onRefresh }: TenantItemProps) {
   }
 
   return (
-    <div class={`tenant-item ${tenant.enabled ? 'enabled' : 'disabled'}`}>
-      <div class="tenant-info">
+    <div class={`flex items-center justify-between rounded-field border border-base-300 bg-base-100 px-4 py-3 transition-colors hover:border-primary ${tenant.enabled ? '' : 'opacity-50'}`}>
+      <div class="flex flex-1 flex-col gap-2">
         {editing ? (
-          <div class="tenant-edit-form" style={{ display: 'block' }}>
-            <div class="edit-form-group">
+          <div class="w-full pl-7">
+            <div class="flex flex-col gap-2">
               <input
                 ref={nameRef}
                 type="text"
-                class={`form-input-xs ${nameError ? 'form-input--error' : ''}`}
+                class={`input input-bordered input-sm w-full ${nameError ? 'input-error' : ''}`}
                 value={editName}
                 onInput={e => setEditName((e.target as HTMLInputElement).value)}
                 placeholder={t('tenantName') || 'Tenant Name'}
               />
-              {nameError && <span class="field-error">{nameError}</span>}
+              {nameError && <span class="text-xs text-error">{nameError}</span>}
               <input
                 type="url"
-                class={`form-input-xs ${urlError ? 'form-input--error' : ''}`}
+                class={`input input-bordered input-sm w-full ${urlError ? 'input-error' : ''}`}
                 value={editUrl}
                 onInput={e => setEditUrl((e.target as HTMLInputElement).value)}
                 placeholder="URL"
               />
-              {urlError && <span class="field-error">{urlError}</span>}
+              {urlError && <span class="text-xs text-error">{urlError}</span>}
             </div>
           </div>
         ) : (
-          <label class="checkbox-label">
+          <label class="flex cursor-pointer items-center gap-2 font-semibold">
             <input
               type="checkbox"
-              class="tenant-checkbox"
+              class="checkbox checkbox-sm"
               checked={tenant.enabled}
               onChange={e => handleToggle((e.target as HTMLInputElement).checked)}
             />
-            <div class="tenant-details">
+            <div class="flex flex-col gap-0.5">
               <strong>{tenant.name}</strong>
-              <span class="tenant-url">{tenant.url}</span>
+              <span class="ml-0 text-sm text-base-content/60">{tenant.url}</span>
             </div>
           </label>
         )}
       </div>
-      <div class="tenant-actions">
+      <div class="flex items-center gap-1">
         {editing ? (
           <>
             <button
               type="button"
-              class="btn-icon"
+              class="btn btn-ghost btn-sm btn-square"
               onClick={handleSaveEdit}
               title={t('save') || 'Save'}
             >
@@ -106,7 +106,7 @@ export function TenantItem({ customerId, tenant, onRefresh }: TenantItemProps) {
             </button>
             <button
               type="button"
-              class="btn-icon"
+              class="btn btn-ghost btn-sm btn-square"
               onClick={handleCancelEdit}
               title={t('cancel') || 'Cancel'}
             >
@@ -117,7 +117,7 @@ export function TenantItem({ customerId, tenant, onRefresh }: TenantItemProps) {
           <>
             <button
               type="button"
-              class="btn-icon"
+              class="btn btn-ghost btn-sm btn-square"
               onClick={() => setEditing(true)}
               title={t('editTenant') || 'Edit tenant'}
             >
@@ -125,7 +125,7 @@ export function TenantItem({ customerId, tenant, onRefresh }: TenantItemProps) {
             </button>
             <button
               type="button"
-              class="btn-icon"
+              class="btn btn-ghost btn-sm btn-square"
               onClick={() => setConfirmDelete(true)}
               title={t('deleteTenant') || 'Delete tenant'}
             >

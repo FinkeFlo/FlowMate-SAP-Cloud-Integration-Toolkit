@@ -18,7 +18,7 @@ export function ConfirmDialog({ message, onConfirm, onCancel }: ConfirmDialogPro
 
   const handleOverlayClick = useCallback(
     (e: MouseEvent) => {
-      if ((e.target as HTMLElement).classList.contains('confirm-overlay')) {
+      if ((e.target as HTMLElement).classList.contains('modal')) {
         onCancel();
       }
     },
@@ -26,14 +26,14 @@ export function ConfirmDialog({ message, onConfirm, onCancel }: ConfirmDialogPro
   );
 
   return (
-    <div class="confirm-overlay" onClick={handleOverlayClick}>
-      <div class="confirm-dialog">
-        <p class="confirm-message">{message}</p>
-        <div class="confirm-actions">
+    <div class="modal modal-open" onClick={handleOverlayClick}>
+      <div class="modal-box">
+        <p class="mb-6">{message}</p>
+        <div class="modal-action">
           <button type="button" class="btn btn-secondary" onClick={onCancel}>
             {t('cancel') || 'Cancel'}
           </button>
-          <button type="button" class="btn btn-danger" onClick={onConfirm}>
+          <button type="button" class="btn btn-error" onClick={onConfirm}>
             {t('delete') || 'Delete'}
           </button>
         </div>

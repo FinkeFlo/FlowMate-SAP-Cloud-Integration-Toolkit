@@ -53,26 +53,26 @@ export function CustomerCard({ customer, onRefresh }: CustomerCardProps) {
   }
 
   return (
-    <div class="customer-card">
-      <div class="customer-header">
-        <div class="customer-title">
+    <div class="card card-border mb-6 border-base-300 bg-base-200 p-6">
+      <div class="mb-4 flex items-center justify-between">
+        <div class="flex-1">
           {editing ? (
             <>
               <input
                 ref={inputRef}
                 type="text"
-                class={`form-input-inline ${nameError ? 'form-input--error' : ''}`}
+                class={`input input-bordered input-lg max-w-sm font-semibold text-primary ${nameError ? 'input-error' : ''}`}
                 value={editName}
                 onInput={e => setEditName((e.target as HTMLInputElement).value)}
                 onKeyDown={e => e.key === 'Enter' && handleSaveEdit()}
               />
-              {nameError && <span class="field-error">{nameError}</span>}
+              {nameError && <span class="mt-1 block text-xs text-error">{nameError}</span>}
             </>
           ) : (
-            <h3>{customer.name}</h3>
+            <h3 class="text-xl font-semibold text-primary">{customer.name}</h3>
           )}
         </div>
-        <div class="customer-actions">
+        <div class="flex items-center gap-2">
           {editing ? (
             <>
               <button type="button" class="btn btn-primary btn-sm" onClick={handleSaveEdit}>
@@ -93,7 +93,7 @@ export function CustomerCard({ customer, onRefresh }: CustomerCardProps) {
               </button>
               <button
                 type="button"
-                class="btn btn-danger btn-sm"
+                class="btn btn-error btn-sm"
                 onClick={() => setConfirmDelete(true)}
               >
                 <Trash2 size={16} /> {t('delete') || 'Delete'}
@@ -111,9 +111,9 @@ export function CustomerCard({ customer, onRefresh }: CustomerCardProps) {
         />
       )}
 
-      <div class="tenants-list">
+      <div class="my-2 flex flex-col gap-2">
         {customer.tenants.length === 0 ? (
-          <p class="empty-tenants">{t('noTenants') || 'No tenants created'}</p>
+          <p class="py-4 text-center italic text-base-content/50">{t('noTenants') || 'No tenants created'}</p>
         ) : (
           customer.tenants.map(tenant => (
             <TenantItem
@@ -129,7 +129,7 @@ export function CustomerCard({ customer, onRefresh }: CustomerCardProps) {
       {!showAddTenant && (
         <button
           type="button"
-          class="btn btn-secondary btn-sm"
+          class="btn btn-secondary btn-sm w-fit"
           onClick={() => setShowAddTenant(true)}
         >
           <Plus size={16} /> {t('addTenant') || 'Add Tenant'}
