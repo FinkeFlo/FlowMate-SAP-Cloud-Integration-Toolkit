@@ -6,13 +6,18 @@ import type { TenantLink } from '../tenant-link-definitions';
 import { getQuickLinksPreference, saveQuickLinksPreference } from '../quick-links-storage';
 import { buildTenantUrl } from '../tenant-url-builder';
 import { t } from '@/features/shared/i18n';
-import './SortableQuickLinks.css';
 
 interface SortableQuickLinksProps {
   host: string;
 }
 
-export function SortableQuickLinks({ host }: SortableQuickLinksProps) {
+// Maps each link's semantic color to a daisyUI button color variant.
+const COLOR_TO_BTN_CLASS: Record<NonNullable<TenantLink['color']>, string> = {
+  green: 'btn-success',
+  red: 'btn-error',
+  gray: 'btn-neutral',
+  blue: 'btn-primary',
+};export function SortableQuickLinks({ host }: SortableQuickLinksProps) {
   const [quickIds, setQuickIds] = useState<string[]>([]);
   const [restIds, setRestIds] = useState<string[]>([]);
   const [editMode, setEditMode] = useState(false);
@@ -65,8 +70,8 @@ export function SortableQuickLinks({ host }: SortableQuickLinksProps) {
       group: 'links',
       animation: 150,
       dataIdAttr: 'data-link-id',
-      ghostClass: 'tl-drag-ghost',
-      chosenClass: 'tl-drag-chosen',
+      ghostClass: 'opacity-40',
+      chosenClass: 'shadow-lg',
       onEnd: handleDragEnd,
     };
 
@@ -84,14 +89,18 @@ export function SortableQuickLinks({ host }: SortableQuickLinksProps) {
   const quickLinks = quickIds.map(id => linkMap.get(id)).filter(Boolean) as TenantLink[];
   const restLinks = restIds.map(id => linkMap.get(id)).filter(Boolean) as TenantLink[];
 
+  const editingZoneClass = 'rounded-box border-2 border-dashed border-primary/30 p-1';
+
   return (
     <>
-      <div class="tl-section">
-        <div class="tl-quick-header">
-          <h3 class="tl-section-title">{t('quickLinksTitle')}</h3>
+      <div class="mb-3">
+        <div class="mb-2 flex items-center justify-between">
+          <h3 class="m-0 text-xs font-semibold uppercase tracking-wide text-base-content/50">
+            {t('quickLinksTitle')}
+          </h3>
           <button
             type="button"
-            class={`tl-edit-btn${editMode ? ' tl-edit-btn--active' : ''}`}
+            class={`btn btn-xs ${editMode ? 'btn-primary' : 'btn-ghost'}`}
             onClick={() => {
               setEditMode(prev => {
                 if (!prev) setRestExpanded(true); // expand "More" when entering edit mode
@@ -107,18 +116,15 @@ export function SortableQuickLinks({ host }: SortableQuickLinksProps) {
 
         <div
           ref={quickRef}
-          class={`tl-main-buttons${editMode ? ' tl-zone--editing' : ''}`}
+          class={`grid grid-cols-2 gap-2 ${editMode ? editingZoneClass : ''}`}
         >
           {quickLinks.map(link => (
-            <div
-              key={link.id}
-              data-link-id={link.id}
-              class={`tl-main-btn tl-main-btn--${link.color || 'gray'}${editMode ? ' tl-item--editing' : ''}`}
-            >
+            <div key={link.id} data-link-id={link.id} class={editMode ? 'cursor-grab' : ''}>
               <a
                 href={buildTenantUrl(host, link.path)}
                 target="_blank"
                 rel="noopener noreferrer"
+                class={`btn btn-soft w-full rounded-box font-semibold shadow-sm ${COLOR_TO_BTN_CLASS[link.color || 'gray']} ${editMode ? 'pointer-events-none' : ''}`}
               >
                 {link.label}
               </a>
@@ -130,7 +136,7 @@ export function SortableQuickLinks({ host }: SortableQuickLinksProps) {
       <div>
         <button
           type="button"
-          class="tl-more-header"
+          class="btn btn-ghost btn-sm mt-3 w-full justify-between bg-base-200"
           onClick={() => { if (!editMode) setRestExpanded(prev => !prev); }}
         >
           <span>{t('quickLinksMore')}</span>
@@ -140,18 +146,15 @@ export function SortableQuickLinks({ host }: SortableQuickLinksProps) {
         {restExpanded && (
           <div
             ref={restRef}
-            class={`tl-more-zone${editMode ? ' tl-zone--editing' : ''}`}
+            class={`mt-1.5 flex flex-wrap gap-1.5 ${editMode ? editingZoneClass : ''}`}
           >
             {restLinks.map(link => (
-              <div
-                key={link.id}
-                data-link-id={link.id}
-                class={`tl-link-item${editMode ? ' tl-item--editing' : ''}`}
-              >
+              <div key={link.id} data-link-id={link.id} class={editMode ? 'cursor-grab' : ''}>
                 <a
                   href={buildTenantUrl(host, link.path)}
                   target="_blank"
                   rel="noopener noreferrer"
+                  class={`btn btn-ghost btn-xs rounded-field bg-base-200/70 font-normal ${editMode ? 'pointer-events-none' : ''}`}
                 >
                   {link.label}
                 </a>
