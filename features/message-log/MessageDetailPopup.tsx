@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { LoaderCircle, X, Copy } from 'lucide-preact';
 import { t, tSub } from '@/features/shared/i18n';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
 import { MPL_STATUS_COLORS } from '@/features/shared/constants';
+import { DockPanel } from '@/features/shared/DockPanel';
 import {
   fetchMessageDetail,
   fetchMessageStoreEntries,
@@ -268,12 +269,6 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
     return () => { cancelled = true; };
   }, [guid, baseUrl]);
 
-  const handleOverlayClick = useCallback((e: MouseEvent) => {
-    if ((e.target as HTMLElement).classList.contains('modal')) {
-      onClose();
-    }
-  }, [onClose]);
-
   function copyGuid() {
     if (detail) {
       navigator.clipboard.writeText(detail.MessageGuid);
@@ -283,8 +278,8 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
 
   if (!detail && !error) {
     return (
-      <div class="modal modal-open" onClick={handleOverlayClick}>
-        <div class="modal-box flex max-h-[80vh] w-11/12 max-w-5xl flex-col overflow-hidden p-0" onClick={(e) => e.stopPropagation()}>
+      <DockPanel
+        header={
           <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
             <span class="flex items-center gap-2 text-sm font-semibold text-base-content">
               <span class="animate-spin"><LoaderCircle size={16} /></span>
@@ -292,57 +287,59 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
             </span>
             <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}><X size={16} /></button>
           </div>
-          <div class="flex items-center justify-center gap-2 px-6 py-10 text-sm text-base-content/60">
-            <span class="animate-spin"><LoaderCircle size={16} /></span>
-            {t('msgDetailLoading')}
-          </div>
+        }
+      >
+        <div class="flex items-center justify-center gap-2 px-6 py-10 text-sm text-base-content/60">
+          <span class="animate-spin"><LoaderCircle size={16} /></span>
+          {t('msgDetailLoading')}
         </div>
-      </div>
+      </DockPanel>
     );
   }
 
   if (error) {
     return (
-      <div class="modal modal-open" onClick={handleOverlayClick}>
-        <div class="modal-box flex max-h-[80vh] w-11/12 max-w-5xl flex-col overflow-hidden p-0" onClick={(e) => e.stopPropagation()}>
+      <DockPanel
+        header={
           <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
             <span class="text-sm font-semibold text-base-content">{t('msgDetailError')}</span>
             <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}><X size={16} /></button>
           </div>
-          <div class="p-6">
-            <div class="alert alert-error text-sm">{tSub('msgDetailFailedToLoad', error)}</div>
-          </div>
+        }
+      >
+        <div class="p-6">
+          <div class="alert alert-error text-sm">{tSub('msgDetailFailedToLoad', error)}</div>
         </div>
-      </div>
+      </DockPanel>
     );
   }
 
   const statusColor = MPL_STATUS_COLORS[detail!.Status] ?? '#6b7280';
 
   return (
-    <div class="modal modal-open" onClick={handleOverlayClick}>
-      <div class="modal-box flex max-h-[80vh] w-11/12 max-w-5xl flex-col overflow-hidden p-0" onClick={(e) => e.stopPropagation()}>
-        <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
-          <div class="flex min-w-0 items-center gap-2">
-            <span
-              class="h-2.5 w-2.5 shrink-0 rounded-full"
-              style={{ background: statusColor, boxShadow: `0 0 6px ${statusColor}80` }}
-            />
-            <span class="text-sm font-semibold text-base-content">{t('msgDetailMessageDetail')}</span>
+    <DockPanel
+      header={
+        <>
+          <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
+            <div class="flex min-w-0 items-center gap-2">
+              <span
+                class="h-2.5 w-2.5 shrink-0 rounded-full"
+                style={{ background: statusColor, boxShadow: `0 0 6px ${statusColor}80` }}
+              />
+              <span class="text-sm font-semibold text-base-content">{t('msgDetailMessageDetail')}</span>
+            </div>
+            <div class="flex min-w-0 items-center gap-2">
+              <span class="truncate font-mono text-[11px] text-base-content/50">{detail!.MessageGuid}</span>
+              <button class="btn btn-ghost btn-sm btn-square" title="Copy GUID" onClick={copyGuid}>
+                <Copy size={16} />
+              </button>
+              <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}>
+                <X size={16} />
+              </button>
+            </div>
           </div>
-          <div class="flex min-w-0 items-center gap-2">
-            <span class="truncate font-mono text-[11px] text-base-content/50">{detail!.MessageGuid}</span>
-            <button class="btn btn-ghost btn-sm btn-square" title="Copy GUID" onClick={copyGuid}>
-              <Copy size={16} />
-            </button>
-            <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}>
-              <X size={16} />
-            </button>
-          </div>
-        </div>
 
-        <div class="overflow-y-auto">
-          <div class="tabs tabs-border px-4 pt-2">
+          <div class="tabs tabs-border border-b border-base-300 px-4 pt-2">
             <button
               class={`tab ${activeTab === 'info' ? 'tab-active text-primary' : ''}`}
               onClick={() => setActiveTab('info')}
@@ -356,13 +353,13 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
               {t('msgDetailPersist')}
             </button>
           </div>
-
-          <div class="p-4">
-            {activeTab === 'info' && <InfoTable detail={detail!} />}
-            {activeTab === 'persist' && <PersistTab guid={guid} baseUrl={baseUrl} />}
-          </div>
-        </div>
+        </>
+      }
+    >
+      <div class="p-4">
+        {activeTab === 'info' && <InfoTable detail={detail!} />}
+        {activeTab === 'persist' && <PersistTab guid={guid} baseUrl={baseUrl} />}
       </div>
-    </div>
+    </DockPanel>
   );
 }
