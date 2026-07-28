@@ -123,8 +123,15 @@ cards/containers, `--radius-field: 0.375rem` for inputs/small controls,
 - **Cards:** `card card-border`, using `base-100`/`base-300` for background and
   border.
 - **Modals/Dialogs:** daisyUI `modal modal-open` / `modal-box` / `modal-action`
-  structure (see `ConfirmDialog.tsx`, `DateRangeDialog.tsx`,
-  `TraceStepPopup.tsx`, `MessageDetailPopup.tsx`).
+  structure for short, single-purpose confirmations (see `ConfirmDialog.tsx`,
+  `DateRangeDialog.tsx`).
+- **Docked detail panels:** For tabbed, data-heavy detail views whose content
+  height varies a lot between tabs (trace steps, message details), use
+  `DockPanel` (`features/shared/DockPanel.tsx`) instead of a centered modal.
+  It docks to the bottom of the viewport with a fixed/user-resizable height,
+  so switching tabs never re-centers or visually "jumps" the panel. Header +
+  tabs go in the `header` prop (pinned, never scrolls); tab content goes in
+  `children` (scrollable). See `TraceStepPopup.tsx`, `MessageDetailPopup.tsx`.
 
 ## Notes for AI agents / contributors
 
