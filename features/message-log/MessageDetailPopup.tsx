@@ -12,7 +12,6 @@ import {
 } from './MplApiClient';
 import { parseODataDate } from './mpl-types';
 import type { MessageProcessingLogDetail, MessageStoreEntry, MessageStoreProperty } from './mpl-types';
-import './MessageDetailPopup.css';
 
 const LOG_TAG = 'MessageDetail';
 
@@ -33,10 +32,6 @@ function formatDuration(startStr: string, endStr: string): string {
   const secs = Math.floor((diffMs % 60_000) / 1000);
   return `${mins}m ${secs}s`;
 }
-
-// --------------------------------------------------------------------------
-// Sub-components
-// --------------------------------------------------------------------------
 
 function InfoTable({ detail }: { detail: MessageProcessingLogDetail }) {
   type Row = { label: string; value: string; section?: boolean };
@@ -69,30 +64,40 @@ function InfoTable({ detail }: { detail: MessageProcessingLogDetail }) {
   }
 
   return (
-    <table class="info-table">
-      {rows.map((row, i) => {
-        if (row.section) {
-          return <tr key={i} class="section-row"><td colSpan={2}>{row.label}</td></tr>;
-        }
-        const statusColor = row.label === 'Status' ? MPL_STATUS_COLORS[row.value] : undefined;
-        return (
-          <tr key={i}>
-            <td class="info-label">{row.label}</td>
-            <td class="info-value">
-              {statusColor ? (
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{
-                    width: '8px', height: '8px', borderRadius: '50%',
-                    background: statusColor, boxShadow: `0 0 4px ${statusColor}80`,
-                  }} />
-                  {row.value}
-                </span>
-              ) : row.value}
-            </td>
-          </tr>
-        );
-      })}
-    </table>
+    <div class="overflow-x-auto">
+      <table class="table table-sm w-full">
+        <tbody>
+          {rows.map((row, i) => {
+            if (row.section) {
+              return (
+                <tr key={i}>
+                  <td colSpan={2} class="bg-base-200/60 px-0 py-3 text-[11px] font-bold uppercase tracking-wide text-base-content/50">
+                    {row.label}
+                  </td>
+                </tr>
+              );
+            }
+            const statusColor = row.label === 'Status' ? MPL_STATUS_COLORS[row.value] : undefined;
+            return (
+              <tr key={i} class="border-base-300/40">
+                <td class="w-44 whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{row.label}</td>
+                <td class="break-all py-2 font-mono text-xs text-base-content">
+                  {statusColor ? (
+                    <span class="inline-flex items-center gap-2">
+                      <span
+                        class="h-2 w-2 rounded-full"
+                        style={{ background: statusColor, boxShadow: `0 0 4px ${statusColor}80` }}
+                      />
+                      {row.value}
+                    </span>
+                  ) : row.value}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -127,33 +132,40 @@ function EntryContent({ entryId, baseUrl }: EntryContentProps) {
   }, [entryId, baseUrl]);
 
   if (error) {
-    return <div style={{ padding: '16px', textAlign: 'center', color: '#ef4444' }}>{tSub('msgDetailFailedToLoad', error)}</div>;
+    return <div class="alert alert-error text-sm">{tSub('msgDetailFailedToLoad', error)}</div>;
   }
 
   if (payload === null) {
     return (
-      <div style={{ padding: '16px', textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
-        <span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('msgDetailLoading')}
+      <div class="flex items-center justify-center gap-2 py-6 text-sm text-base-content/60">
+        <span class="animate-spin"><LoaderCircle size={16} /></span>
+        {t('msgDetailLoading')}
       </div>
     );
   }
 
   return (
-    <div style={{ padding: '4px 0' }}>
-      <div class="entry-section-label">{t('msgDetailPayload')}</div>
-      <pre class="payload-pre">{payload || '(empty)'}</pre>
+    <div class="space-y-4 py-1">
+      <div>
+        <div class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-base-content/50">{t('msgDetailPayload')}</div>
+        <pre class="m-0 max-h-[400px] overflow-auto rounded-box border border-base-300 bg-base-200/60 p-3 font-mono text-xs whitespace-pre-wrap break-all text-base-content">{payload || '(empty)'}</pre>
+      </div>
       {properties && properties.length > 0 && (
-        <>
-          <div class="entry-section-label" style={{ marginTop: '12px' }}>{t('msgDetailProperties')}</div>
-          <table class="info-table">
-            {properties.map((prop, i) => (
-              <tr key={i}>
-                <td class="info-label">{prop.Name}</td>
-                <td class="info-value">{prop.Value}</td>
-              </tr>
-            ))}
-          </table>
-        </>
+        <div>
+          <div class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-base-content/50">{t('msgDetailProperties')}</div>
+          <div class="overflow-x-auto">
+            <table class="table table-sm w-full">
+              <tbody>
+                {properties.map((prop, i) => (
+                  <tr key={i} class="border-base-300/40">
+                    <td class="w-44 whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{prop.Name}</td>
+                    <td class="break-all py-2 font-mono text-xs text-base-content">{prop.Value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
     </div>
   );
@@ -185,48 +197,43 @@ function PersistTab({ guid, baseUrl }: PersistTabProps) {
   }, [guid, baseUrl]);
 
   if (error) {
-    return <div style={{ padding: '24px', textAlign: 'center', color: '#ef4444' }}>{tSub('msgDetailFailedToLoad', error)}</div>;
+    return <div class="alert alert-error text-sm">{tSub('msgDetailFailedToLoad', error)}</div>;
   }
 
   if (entries === null) {
     return (
-      <div style={{ padding: '24px', textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
-        <span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('msgDetailLoading')}
+      <div class="flex items-center justify-center gap-2 py-8 text-sm text-base-content/60">
+        <span class="animate-spin"><LoaderCircle size={16} /></span>
+        {t('msgDetailLoading')}
       </div>
     );
   }
 
   if (entries.length === 0) {
-    return <div style={{ padding: '32px', textAlign: 'center', color: 'rgba(255,255,255,0.3)' }}>{t('msgDetailNoPersist')}</div>;
+    return <div class="py-8 text-center text-sm text-base-content/50">{t('msgDetailNoPersist')}</div>;
   }
 
   return (
     <div>
-      <div class="persist-sub-tab-bar">
+      <div class="tabs tabs-border mb-3 overflow-x-auto">
         {entries.map((entry, i) => (
           <button
             key={entry.Id}
-            class={`persist-sub-tab ${i === activeEntry ? 'persist-sub-tab--active' : ''}`}
+            class={`tab font-mono text-xs ${i === activeEntry ? 'tab-active text-primary' : ''}`}
             onClick={() => setActiveEntry(i)}
           >
             {entry.MessageStoreId}
           </button>
         ))}
       </div>
-      <div style={{ padding: '0 4px' }}>
-        <EntryContent
-          key={entries[activeEntry].Id}
-          entryId={entries[activeEntry].Id}
-          baseUrl={baseUrl}
-        />
-      </div>
+      <EntryContent
+        key={entries[activeEntry].Id}
+        entryId={entries[activeEntry].Id}
+        baseUrl={baseUrl}
+      />
     </div>
   );
 }
-
-// --------------------------------------------------------------------------
-// Main component
-// --------------------------------------------------------------------------
 
 interface MessageDetailPopupProps {
   guid: string;
@@ -239,7 +246,6 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'info' | 'persist'>('info');
 
-  // Escape key handler
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -248,7 +254,6 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
     return () => document.removeEventListener('keydown', handler);
   }, [onClose]);
 
-  // Fetch detail
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -264,7 +269,7 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
   }, [guid, baseUrl]);
 
   const handleOverlayClick = useCallback((e: MouseEvent) => {
-    if ((e.target as HTMLElement).classList.contains('detail-overlay')) {
+    if ((e.target as HTMLElement).classList.contains('modal')) {
       onClose();
     }
   }, [onClose]);
@@ -276,34 +281,36 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
     }
   }
 
-  // Loading state
   if (!detail && !error) {
     return (
-      <div class="detail-overlay" onClick={handleOverlayClick}>
-        <div class="detail-modal" onClick={(e) => e.stopPropagation()}>
-          <div class="detail-header">
-            <span class="detail-title"><span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('msgDetailLoading')}</span>
-            <button class="detail-icon-btn" onClick={onClose}><X size={16} /></button>
+      <div class="modal modal-open" onClick={handleOverlayClick}>
+        <div class="modal-box flex max-h-[80vh] w-11/12 max-w-5xl flex-col overflow-hidden p-0" onClick={(e) => e.stopPropagation()}>
+          <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
+            <span class="flex items-center gap-2 text-sm font-semibold text-base-content">
+              <span class="animate-spin"><LoaderCircle size={16} /></span>
+              {t('msgDetailLoading')}
+            </span>
+            <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}><X size={16} /></button>
           </div>
-          <div class="detail-body" style={{ padding: '40px', textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
-            <span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('msgDetailLoading')}
+          <div class="flex items-center justify-center gap-2 px-6 py-10 text-sm text-base-content/60">
+            <span class="animate-spin"><LoaderCircle size={16} /></span>
+            {t('msgDetailLoading')}
           </div>
         </div>
       </div>
     );
   }
 
-  // Error state
   if (error) {
     return (
-      <div class="detail-overlay" onClick={handleOverlayClick}>
-        <div class="detail-modal" onClick={(e) => e.stopPropagation()}>
-          <div class="detail-header">
-            <span class="detail-title">{t('msgDetailError')}</span>
-            <button class="detail-icon-btn" onClick={onClose}><X size={16} /></button>
+      <div class="modal modal-open" onClick={handleOverlayClick}>
+        <div class="modal-box flex max-h-[80vh] w-11/12 max-w-5xl flex-col overflow-hidden p-0" onClick={(e) => e.stopPropagation()}>
+          <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
+            <span class="text-sm font-semibold text-base-content">{t('msgDetailError')}</span>
+            <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}><X size={16} /></button>
           </div>
-          <div class="detail-body" style={{ padding: '32px', textAlign: 'center', color: '#ef4444' }}>
-            {tSub('msgDetailFailedToLoad', error)}
+          <div class="p-6">
+            <div class="alert alert-error text-sm">{tSub('msgDetailFailedToLoad', error)}</div>
           </div>
         </div>
       </div>
@@ -313,46 +320,44 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
   const statusColor = MPL_STATUS_COLORS[detail!.Status] ?? '#6b7280';
 
   return (
-    <div class="detail-overlay" onClick={handleOverlayClick}>
-      <div class="detail-modal" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
-        <div class="detail-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{
-              width: '10px', height: '10px', borderRadius: '50%',
-              background: statusColor, boxShadow: `0 0 6px ${statusColor}80`, flexShrink: 0,
-            }} />
-            <span class="detail-title">{t('msgDetailMessageDetail')}</span>
+    <div class="modal modal-open" onClick={handleOverlayClick}>
+      <div class="modal-box flex max-h-[80vh] w-11/12 max-w-5xl flex-col overflow-hidden p-0" onClick={(e) => e.stopPropagation()}>
+        <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
+          <div class="flex min-w-0 items-center gap-2">
+            <span
+              class="h-2.5 w-2.5 shrink-0 rounded-full"
+              style={{ background: statusColor, boxShadow: `0 0 6px ${statusColor}80` }}
+            />
+            <span class="text-sm font-semibold text-base-content">{t('msgDetailMessageDetail')}</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span class="detail-guid">{detail!.MessageGuid}</span>
-            <button class="detail-icon-btn" title="Copy GUID" onClick={copyGuid}>
+          <div class="flex min-w-0 items-center gap-2">
+            <span class="truncate font-mono text-[11px] text-base-content/50">{detail!.MessageGuid}</span>
+            <button class="btn btn-ghost btn-sm btn-square" title="Copy GUID" onClick={copyGuid}>
               <Copy size={16} />
             </button>
-            <button class="detail-icon-btn" onClick={onClose}>
+            <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}>
               <X size={16} />
             </button>
           </div>
         </div>
 
-        {/* Body */}
-        <div class="detail-body">
-          <div class="detail-tab-bar">
+        <div class="overflow-y-auto">
+          <div class="tabs tabs-border px-4 pt-2">
             <button
-              class={`detail-tab ${activeTab === 'info' ? 'detail-tab--active' : ''}`}
+              class={`tab ${activeTab === 'info' ? 'tab-active text-primary' : ''}`}
               onClick={() => setActiveTab('info')}
             >
               {t('msgDetailInfo')}
             </button>
             <button
-              class={`detail-tab ${activeTab === 'persist' ? 'detail-tab--active' : ''}`}
+              class={`tab ${activeTab === 'persist' ? 'tab-active text-primary' : ''}`}
               onClick={() => setActiveTab('persist')}
             >
               {t('msgDetailPersist')}
             </button>
           </div>
 
-          <div class="detail-tab-content">
+          <div class="p-4">
             {activeTab === 'info' && <InfoTable detail={detail!} />}
             {activeTab === 'persist' && <PersistTab guid={guid} baseUrl={baseUrl} />}
           </div>

@@ -9,7 +9,6 @@ import { extractIFlowId } from '@/features/trace-mode/trace-api';
 import { fetchMessages, fetchRuns } from './MplApiClient';
 import { parseODataDate } from './mpl-types';
 import type { MessageProcessingLog, MplStatus } from './mpl-types';
-import './MessageLogPanel.css';
 
 const LOG_TAG = 'MessageLog';
 const AUTO_REFRESH_INTERVAL_MS = 30_000;
@@ -28,10 +27,16 @@ const STATUS_TO_FILTER: Record<string, FilterCategory> = {
   ABANDONED: 'processing',
 };
 
-const FILTER_COLORS: Record<FilterCategory, string> = {
-  success: '#10b981',
-  error: '#ef4444',
-  processing: '#f59e0b',
+const FILTER_DOT_CLASS: Record<FilterCategory, string> = {
+  success: 'bg-success',
+  error: 'bg-error',
+  processing: 'bg-warning',
+};
+
+const FILTER_BORDER_CLASS: Record<FilterCategory, string> = {
+  success: 'border-success/30',
+  error: 'border-error/30',
+  processing: 'border-warning/30',
 };
 
 const FILTER_LABELS: Record<FilterCategory, string> = {
@@ -51,10 +56,6 @@ function formatTime(date: Date): string {
 function formatDateKey(date: Date): string {
   return date.toISOString().slice(0, 10);
 }
-
-// --------------------------------------------------------------------------
-// Sub-components
-// --------------------------------------------------------------------------
 
 interface MessageRowProps {
   msg: MessageProcessingLog;
@@ -86,25 +87,21 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
   }
 
   return (
-    <div class="mpl-row" style={{ borderLeft: `3px solid ${color}` }}>
-      <div class="mpl-row-pad" />
+    <div class="group flex cursor-default items-center gap-2 border-b border-base-300/40 px-3 py-2 hover:bg-base-200/60" style={{ borderLeft: `3px solid ${color}` }}>
+      <div class="w-1.5 shrink-0" />
       <span
         title={msg.Status}
-        style={{
-          width: '10px',
-          height: '10px',
-          borderRadius: '50%',
-          background: color,
-          flexShrink: 0,
-          boxShadow: `0 0 6px ${color}80`,
-        }}
+        class="h-2.5 w-2.5 shrink-0 rounded-full"
+        style={{ background: color, boxShadow: `0 0 6px ${color}80` }}
       />
-      <span class="mpl-row-time">{formatTime(endDate)}</span>
-      <span class="mpl-row-level" title={msg.LogLevel}>{msg.LogLevel.charAt(0)}</span>
-      <div style={{ flex: 1 }} />
-      <div class="mpl-actions">
+      <span class="font-mono text-xs text-base-content/80">{formatTime(endDate)}</span>
+      <span class="rounded bg-base-200 px-1.5 py-0.5 font-mono text-[10px] font-bold text-base-content/60">
+        {msg.LogLevel.charAt(0)}
+      </span>
+      <div class="flex-1" />
+      <div class="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
         <button
-          class="mpl-action-btn"
+          class="btn btn-ghost btn-xs btn-square"
           title="Message Details"
           onClick={(e) => { e.stopPropagation(); onShowDetail(msg.MessageGuid); }}
         >
@@ -112,7 +109,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
         </button>
         {msg.AlternateWebLink && (
           <button
-            class="mpl-action-btn"
+            class="btn btn-ghost btn-xs btn-square"
             title="Open in Monitoring"
             onClick={(e) => { e.stopPropagation(); window.open(msg.AlternateWebLink, '_blank'); }}
           >
@@ -122,14 +119,14 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
         {msg.LogLevel === 'TRACE' && (
           <>
             <button
-              class={`mpl-action-btn ${activeInlineTrace === msg.MessageGuid ? 'mpl-action-btn--trace-active' : ''}`}
+              class={`btn btn-xs btn-square ${activeInlineTrace === msg.MessageGuid ? 'btn-success' : 'btn-ghost'}`}
               title="Show Inline Trace"
               onClick={(e) => { e.stopPropagation(); onStartInlineTrace?.(msg.MessageGuid); }}
             >
               <Layers size={16} />
             </button>
             <button
-              class="mpl-action-btn"
+              class="btn btn-ghost btn-xs btn-square"
               title="Open Trace"
               onClick={(e) => { e.stopPropagation(); openTrace(); }}
             >
@@ -143,31 +140,16 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
 }
 
 function FilterDot({ category, active, onClick }: { category: FilterCategory; active: boolean; onClick: () => void }) {
-  const color = FILTER_COLORS[category];
   return (
     <button
-      class={`mpl-filter-dot ${active ? '' : 'mpl-filter-dot--inactive'}`}
+      class={`btn btn-circle btn-xs h-6 min-h-0 w-6 p-0 ${active ? FILTER_BORDER_CLASS[category] : 'border-base-300 opacity-40'}`}
       title={FILTER_LABELS[category]}
-      style={active ? { borderColor: `${color}60` } : undefined}
       onClick={(e) => { e.stopPropagation(); onClick(); }}
     >
-      <span
-        style={{
-          width: '10px',
-          height: '10px',
-          borderRadius: '50%',
-          background: color,
-          boxShadow: `0 0 6px ${color}80`,
-          display: 'block',
-        }}
-      />
+      <span class={`block h-2.5 w-2.5 rounded-full ${FILTER_DOT_CLASS[category]}`} />
     </button>
   );
 }
-
-// --------------------------------------------------------------------------
-// Main component
-// --------------------------------------------------------------------------
 
 interface MessageLogPanelProps {
   onShowDetail: (guid: string, baseUrl: string) => void;
@@ -185,10 +167,6 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
   const [messageLimit, setMessageLimit] = useState(10);
   const [lastRefresh, setLastRefresh] = useState('');
 
-  const autoRefreshRef = useRef(autoRefresh);
-  autoRefreshRef.current = autoRefresh;
-  const panelOpenRef = useRef(panelOpen);
-  panelOpenRef.current = panelOpen;
   const messageLimitRef = useRef(messageLimit);
   messageLimitRef.current = messageLimit;
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -209,13 +187,11 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
         devLog.info(LOG_TAG, `Refreshed: ${data.length} messages`, { iflowId });
       }
     } catch (error) {
-      // Network errors during polling are expected (page navigation, timeout) — don't escalate
       const msg = error instanceof Error ? error.message : String(error);
       devLog.warn(LOG_TAG, 'Failed to fetch messages', { error: msg });
     }
   }, []);
 
-  // Initial fetch
   useEffect(() => {
     mountedRef.current = true;
     const timer = setTimeout(() => refresh(), INITIAL_FETCH_DELAY_MS);
@@ -225,7 +201,6 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
     };
   }, [refresh]);
 
-  // Auto-refresh
   useEffect(() => {
     if (autoRefresh && panelOpen) {
       timerRef.current = setInterval(() => refresh(), AUTO_REFRESH_INTERVAL_MS);
@@ -267,7 +242,6 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
     onShowDetail(guid, getCpiBaseUrl());
   }
 
-  // Filtered + grouped
   const filtered = messages.filter(m => {
     const cat = STATUS_TO_FILTER[m.Status];
     return cat ? activeFilters.has(cat) : true;
@@ -280,23 +254,18 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
     groups.get(key)!.push(msg);
   }
 
-  const filterCategories = FILTER_CATEGORIES;
-
   return (
-    <div style={{ position: 'relative' }}>
-      {/* Main button */}
-      <button class="mpl-button" onClick={(e) => { e.stopPropagation(); togglePanel(); }}>
+    <div class="relative w-full">
+      <button class="btn btn-primary btn-sm w-full justify-start gap-2" onClick={(e) => { e.stopPropagation(); togglePanel(); }}>
         <Activity size={16} />
         <span>{t('msgLogMessages')}</span>
       </button>
 
-      {/* Panel */}
       {panelOpen && (
-        <div class="mpl-panel" onPointerDown={(e) => e.stopPropagation()}>
-          {/* Header */}
-          <div class="mpl-header">
+        <div class="absolute top-[calc(100%+6px)] right-0 z-[10000] w-[370px] overflow-hidden rounded-box border border-base-300 bg-base-100 shadow-xl" onPointerDown={(e) => e.stopPropagation()}>
+          <div class="flex items-center gap-2 border-b border-base-300 px-3 py-2">
             <button
-              class="mpl-header-btn"
+              class="btn btn-ghost btn-xs btn-square"
               title="Refresh"
               onClick={(e) => { e.stopPropagation(); refresh(); }}
             >
@@ -304,14 +273,14 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
             </button>
 
             <button
-              class={`mpl-header-btn ${autoRefresh ? 'mpl-header-btn--auto-active' : ''}`}
+              class={`btn btn-xs ${autoRefresh ? 'btn-primary' : 'btn-ghost'}`}
               title="Auto-refresh (30s)"
               onClick={(e) => { e.stopPropagation(); setAutoRefresh(v => !v); }}
             >
               Auto
             </button>
 
-            {filterCategories.map(cat => (
+            {FILTER_CATEGORIES.map(cat => (
               <FilterDot
                 key={cat}
                 category={cat}
@@ -321,7 +290,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
             ))}
 
             <select
-              class="mpl-limit-select"
+              class="select select-bordered select-xs w-14 min-w-0"
               title="Message limit"
               value={messageLimit}
               onChange={handleLimitChange}
@@ -332,29 +301,28 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
               ))}
             </select>
 
-            <div style={{ flex: 1 }} />
-            <span class="mpl-last-refresh">{lastRefresh}</span>
+            <div class="flex-1" />
+            <span class="font-mono text-[11px] text-base-content/50">{lastRefresh}</span>
           </div>
 
-          {/* List */}
-          <div class="mpl-list">
+          <div class="max-h-[300px] overflow-y-auto py-1">
             {messages.length === 0 ? (
-              <div class="mpl-empty">
-                <div class="mpl-empty-icon"><Activity size={24} /></div>
+              <div class="flex flex-col items-center gap-2 px-4 py-8 text-center text-xs text-base-content/50">
+                <Activity size={24} class="opacity-50" />
                 <span>{t('msgLogNoMessages')}</span>
               </div>
             ) : filtered.length === 0 ? (
-              <div class="mpl-empty">
-                <div class="mpl-empty-icon"><Activity size={24} /></div>
+              <div class="flex flex-col items-center gap-2 px-4 py-8 text-center text-xs text-base-content/50">
+                <Activity size={24} class="opacity-50" />
                 <span>{t('msgLogNoMatching')}</span>
               </div>
             ) : (
               Array.from(groups.entries()).map(([dateKey, msgs]) => (
                 <div key={dateKey}>
-                  <div class="mpl-date-sep">
-                    <div class="mpl-date-sep-line" />
-                    <span class="mpl-date-sep-label">{dateKey}</span>
-                    <div class="mpl-date-sep-line" />
+                  <div class="flex items-center gap-2 px-3 py-2">
+                    <div class="h-px flex-1 bg-base-300" />
+                    <span class="text-[10px] font-semibold tracking-wide text-base-content/40">{dateKey}</span>
+                    <div class="h-px flex-1 bg-base-300" />
                   </div>
                   {msgs.map(msg => (
                     <MessageRow

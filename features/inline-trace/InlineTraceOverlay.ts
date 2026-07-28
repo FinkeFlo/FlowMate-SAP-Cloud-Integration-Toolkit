@@ -12,29 +12,33 @@ import { parseODataDate } from '@/features/message-log/mpl-types';
 import { fetchRuns } from '@/features/message-log/MplApiClient';
 import { fetchRunSteps } from './InlineTraceApiClient';
 import type { InlineTraceElement, PerformanceTier, RunStep } from './inline-trace-types';
-import './inline-trace-overlay.css';
 
 const LOG_TAG = 'InlineTraceOverlay';
+const TRACE_CLICKABLE_CLASS = 'cursor-pointer';
 
-const TRACE_STEP_CLASS = 'flowmate-trace-step';
-const TRACE_ACTIVE_CLASS = 'flowmate-trace-step--active';
-const TRACE_ERROR_CLASS = 'flowmate-trace-step--error';
-const TRACE_CLICKABLE_CLASS = 'flowmate-trace-clickable';
-const PERF_CLASS_PREFIX = 'flowmate-trace-perf--';
+const COLOR_SUCCESS = 'var(--color-success)';
+const COLOR_ERROR = 'var(--color-error)';
+const COLOR_PRIMARY = 'var(--color-primary)';
+const COLOR_INFO = 'var(--color-info)';
+const COLOR_WARNING = 'var(--color-warning)';
+const COLOR_ACCENT = 'var(--color-accent)';
 
 type StepClickHandler = (element: InlineTraceElement, allElements: InlineTraceElement[]) => void;
+
+type SvgMapping = {
+  svgElement: Element;
+  target: Element;
+  originalStyle: string | null;
+  color: string;
+};
 
 export class InlineTraceOverlay {
   private elements: InlineTraceElement[] = [];
   private clickHandlers: Map<Element, (e: Event) => void> = new Map();
-  private svgMappingCache: Map<string, { svgElement: Element; target: Element }> = new Map();
+  private svgMappingCache: Map<string, SvgMapping> = new Map();
   private observer: MutationObserver | null = null;
   private activeStepId: string | null = null;
 
-  /**
-   * Show inline trace overlay for a given message GUID.
-   * Returns true if the overlay was successfully applied.
-   */
   async show(
     messageGuid: string,
     onStepClick: StepClickHandler,
@@ -42,14 +46,12 @@ export class InlineTraceOverlay {
     const baseUrl = getCpiBaseUrl();
 
     try {
-      // 1. Get runs for this message
       const runs = await fetchRuns(baseUrl, messageGuid);
       if (runs.length === 0) {
         showToast('No trace runs found', 'warning');
         return false;
       }
 
-      // Pick the correct run: if multiple runs and first isn't completed/escalated, use second
       let selectedRun = runs[0];
       if (runs.length > 1) {
         const state = selectedRun.OverallState;
@@ -60,54 +62,40 @@ export class InlineTraceOverlay {
       const runId = selectedRun.Id;
       devLog.info(LOG_TAG, 'Loading inline trace', { messageGuid, runId });
 
-      // 2. Get all run steps
       const rawSteps = await fetchRunSteps(baseUrl, runId);
       if (rawSteps.length === 0) {
         showToast('No trace steps found', 'warning');
         return false;
       }
 
-      // 3. Convert to InlineTraceElements
       this.elements = rawSteps.map(step => this.convertStep(step));
-
-      // 4. Calculate performance tiers
       const perfMap = this.classifyPerformance(this.elements);
 
-      // 5. Apply to SVG and cache mappings
       this.svgMappingCache.clear();
       let appliedCount = 0;
       for (const el of this.elements) {
         const mapping = this.mapStepToSvgElement(el);
         if (!mapping) continue;
 
-        this.svgMappingCache.set(el.stepId, mapping);
-        const { svgElement, target } = mapping;
+        const color = this.resolveStepColor(el, perfMap.get(el.stepId));
+        const cached: SvgMapping = {
+          ...mapping,
+          originalStyle: mapping.target.getAttribute('style'),
+          color,
+        };
+
+        this.svgMappingCache.set(el.stepId, cached);
+        this.applyStepColor(cached.target, color);
+        cached.svgElement.classList.add(TRACE_CLICKABLE_CLASS);
         appliedCount++;
 
-        // Apply base class
-        if (el.error) {
-          target.classList.add(TRACE_ERROR_CLASS);
-        } else {
-          target.classList.add(TRACE_STEP_CLASS);
-        }
-
-        // Apply performance tier class
-        const tier = perfMap.get(el.stepId);
-        if (tier) {
-          target.classList.add(`${PERF_CLASS_PREFIX}${tier}`);
-        }
-
-        // Make clickable
-        svgElement.classList.add(TRACE_CLICKABLE_CLASS);
-
-        // Click handler
         const handler = (e: Event) => {
           e.stopPropagation();
           this.setActiveStep(el.stepId);
           onStepClick(el, this.elements);
         };
-        svgElement.addEventListener('click', handler);
-        this.clickHandlers.set(svgElement, handler);
+        cached.svgElement.addEventListener('click', handler);
+        this.clickHandlers.set(cached.svgElement, handler);
       }
 
       devLog.info(LOG_TAG, `Applied overlay to ${appliedCount}/${this.elements.length} steps`);
@@ -117,12 +105,10 @@ export class InlineTraceOverlay {
         return false;
       }
 
-      // 6. Install MutationObserver to detect diagram re-renders
       this.installMutationObserver();
 
       showToast(`Inline trace: ${appliedCount} steps highlighted`, 'success');
       return true;
-
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to show inline trace', { error: String(error) });
       showToast(`Failed to load inline trace: ${error}`, 'error');
@@ -130,34 +116,21 @@ export class InlineTraceOverlay {
     }
   }
 
-  /**
-   * Remove all overlay elements and clean up.
-   */
   hide(): void {
-    // Remove CSS classes from SVG elements
-    const allClasses = [
-      TRACE_STEP_CLASS,
-      TRACE_ACTIVE_CLASS,
-      TRACE_ERROR_CLASS,
-      TRACE_CLICKABLE_CLASS,
-      `${PERF_CLASS_PREFIX}max`,
-      `${PERF_CLASS_PREFIX}min`,
-      `${PERF_CLASS_PREFIX}avg`,
-      `${PERF_CLASS_PREFIX}above-avg`,
-      `${PERF_CLASS_PREFIX}below-avg`,
-    ];
-
-    for (const cls of allClasses) {
-      document.querySelectorAll(`.${cls}`).forEach(el => el.classList.remove(cls));
+    for (const mapping of this.svgMappingCache.values()) {
+      if (mapping.originalStyle === null) {
+        mapping.target.removeAttribute('style');
+      } else {
+        mapping.target.setAttribute('style', mapping.originalStyle);
+      }
+      mapping.svgElement.classList.remove(TRACE_CLICKABLE_CLASS);
     }
 
-    // Remove click handlers
     for (const [element, handler] of this.clickHandlers) {
       element.removeEventListener('click', handler);
     }
     this.clickHandlers.clear();
 
-    // Disconnect observer
     if (this.observer) {
       this.observer.disconnect();
       this.observer = null;
@@ -169,27 +142,19 @@ export class InlineTraceOverlay {
     devLog.debug(LOG_TAG, 'Overlay hidden');
   }
 
-  /**
-   * Highlight a specific step as active (for popup navigation).
-   */
   setActiveStep(stepId: string): void {
-    // Remove previous active
-    document.querySelectorAll(`.${TRACE_ACTIVE_CLASS}`).forEach(el => {
-      el.classList.remove(TRACE_ACTIVE_CLASS);
-    });
+    if (this.activeStepId && this.activeStepId !== stepId) {
+      const previous = this.svgMappingCache.get(this.activeStepId);
+      if (previous) this.applyStepColor(previous.target, previous.color);
+    }
 
     this.activeStepId = stepId;
 
-    // Find and highlight the new active step (use cache from show())
     const mapping = this.svgMappingCache.get(stepId);
     if (mapping) {
-      mapping.target.classList.add(TRACE_ACTIVE_CLASS);
+      this.applyStepColor(mapping.target, COLOR_PRIMARY);
     }
   }
-
-  // --------------------------------------------------------------------------
-  // Private helpers
-  // --------------------------------------------------------------------------
 
   private convertStep(step: RunStep): InlineTraceElement {
     const startMs = this.parseODataTimestamp(step.StepStart);
@@ -212,16 +177,35 @@ export class InlineTraceOverlay {
     return parseODataDate(dateStr).getTime();
   }
 
-  /**
-   * Map a trace step to its SVG element in the BPMN diagram.
-   * Returns the clickable SVG element and the target element for CSS classes.
-   */
+  private resolveStepColor(element: InlineTraceElement, tier?: PerformanceTier): string {
+    if (element.error) return COLOR_ERROR;
+    if (!tier) return COLOR_SUCCESS;
+
+    switch (tier) {
+      case 'max':
+        return COLOR_ERROR;
+      case 'min':
+        return COLOR_INFO;
+      case 'avg':
+        return COLOR_SUCCESS;
+      case 'above-avg':
+        return COLOR_WARNING;
+      case 'below-avg':
+        return COLOR_ACCENT;
+    }
+  }
+
+  private applyStepColor(target: Element, color: string): void {
+    if (!(target instanceof SVGElement)) return;
+    target.style.setProperty('fill', color, 'important');
+    target.style.setProperty('stroke', color, 'important');
+  }
+
   private mapStepToSvgElement(
     step: InlineTraceElement,
   ): { svgElement: Element; target: Element } | null {
     const { stepId, modelStepId } = step;
 
-    // Try different BPMN element patterns
     if (/StartEvent/.test(modelStepId)) {
       return this.findBpmnShape(modelStepId, true);
     }
@@ -238,13 +222,9 @@ export class InlineTraceOverlay {
       return this.findBpmnShape(modelStepId, false);
     }
 
-    // ServiceTask, CallActivity, and others
     return this.findBpmnShape(stepId, false);
   }
 
-  /**
-   * Find a BPMNShape element and return the clickable parent + colorable target.
-   */
   private findBpmnShape(
     id: string,
     isEvent: boolean,
@@ -256,13 +236,11 @@ export class InlineTraceOverlay {
     }
 
     if (isEvent) {
-      // Events: children[0].children[0] is the circle
       const target = shape.children[0]?.children[0];
       if (!target) return null;
       return { svgElement: shape, target };
     }
 
-    // Tasks/Gateways: first <g> child → first child is the rect/polygon
     const firstG = shape.querySelector('g');
     if (!firstG) return null;
     const target = firstG.children[0];
@@ -270,9 +248,6 @@ export class InlineTraceOverlay {
     return { svgElement: shape, target };
   }
 
-  /**
-   * Find a BPMNEdge text element (for MessageFlow).
-   */
   private findBpmnEdgeText(
     modelStepId: string,
   ): { svgElement: Element; target: Element } | null {
@@ -285,13 +260,9 @@ export class InlineTraceOverlay {
     return { svgElement: edge, target: textEl };
   }
 
-  /**
-   * Classify performance of each element relative to all elements.
-   */
   private classifyPerformance(elements: InlineTraceElement[]): Map<string, PerformanceTier> {
     const result = new Map<string, PerformanceTier>();
 
-    // Filter elements with meaningful durations
     const withDuration = elements.filter(e => e.durationMs > 0);
     if (withDuration.length < 2) return result;
 
@@ -319,11 +290,7 @@ export class InlineTraceOverlay {
     return result;
   }
 
-  /**
-   * Watch for SAP UI5 re-rendering the BPMN diagram. When it happens, clean up.
-   */
   private installMutationObserver(): void {
-    // Find the SVG container
     const svgContainer = document.querySelector('.sapUiBody svg') ??
                           document.querySelector('svg[class*="BPMN"]') ??
                           document.querySelector('.bpmnCanvas svg') ??
@@ -335,7 +302,6 @@ export class InlineTraceOverlay {
     }
 
     this.observer = new MutationObserver((mutations) => {
-      // Check if the SVG was removed/replaced
       for (const mutation of mutations) {
         for (const removed of Array.from(mutation.removedNodes)) {
           if (removed === svgContainer || (removed as Element).contains?.(svgContainer)) {

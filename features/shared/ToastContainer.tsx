@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'preact/hooks';
-import './ToastContainer.css';
 
 type ToastType = 'success' | 'error' | 'warning' | 'info';
 
@@ -10,11 +9,11 @@ interface ToastItem {
   leaving: boolean;
 }
 
-const TYPE_CONFIG: Record<ToastType, { bg: string; border: string; icon: string }> = {
-  success: { bg: '#f1fdf4', border: '#107e3e', icon: '\u2714' },
-  error:   { bg: '#fef2f2', border: '#bb0000', icon: '\u2716' },
-  warning: { bg: '#fef9ee', border: '#e9730c', icon: '\u26A0' },
-  info:    { bg: '#eff6ff', border: '#0a6ed1', icon: '\u2139' },
+const TYPE_CONFIG: Record<ToastType, { alertClass: string; icon: string }> = {
+  success: { alertClass: 'alert-success', icon: '\u2714' },
+  error: { alertClass: 'alert-error', icon: '\u2716' },
+  warning: { alertClass: 'alert-warning', icon: '\u26A0' },
+  info: { alertClass: 'alert-info', icon: '\u2139' },
 };
 
 const AUTO_DISMISS_MS = 4000;
@@ -46,19 +45,16 @@ export function ToastContainer() {
   if (toasts.length === 0) return null;
 
   return (
-    <div class="flowmate-toast-container">
+    <div class="toast toast-end toast-bottom z-[10000000] flex flex-col-reverse gap-2">
       {toasts.map(toast => {
         const config = TYPE_CONFIG[toast.type];
         return (
           <div
             key={toast.id}
-            class={`flowmate-toast ${toast.leaving ? 'flowmate-toast--leaving' : ''}`}
-            style={{
-              background: config.bg,
-              borderLeft: `4px solid ${config.border}`,
-            }}
+            class={`alert ${config.alertClass} max-w-[400px] shadow-lg transition-all duration-200 ${toast.leaving ? 'translate-x-5 opacity-0' : 'translate-x-0 opacity-100'}`}
           >
-            {config.icon}  {toast.message}
+            <span class="text-base leading-none">{config.icon}</span>
+            <span class="break-words text-sm">{toast.message}</span>
           </div>
         );
       })}

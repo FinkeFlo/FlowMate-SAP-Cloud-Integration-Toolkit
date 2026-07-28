@@ -5,7 +5,6 @@ import { showToast } from '@/features/shared/toast';
 import { MSG_OPEN_TENANT_TABS, sendTypedMessage } from '@/features/shared/messages';
 import { ProgressBar } from './ProgressBar';
 import { DateRangeDialog, type ExportOptions } from './DateRangeDialog';
-import './ExportButton.css';
 
 async function ensureMultipleTenantSessions(tenantUrls: string[]): Promise<void> {
   await sendTypedMessage({
@@ -22,7 +21,6 @@ export function ExportButton() {
   const abortRef = useRef<AbortController | null>(null);
   const mountedRef = useRef(true);
 
-  // Cleanup on unmount: abort any running export
   useEffect(() => {
     mountedRef.current = true;
     return () => {
@@ -128,7 +126,6 @@ export function ExportButton() {
     let totalSuccess = 0;
     const failedTenants: string[] = [];
 
-    // Open all tenant tabs for session establishment
     if (mountedRef.current) setProgressText(t('cancelExport') || 'Cancel');
     const tenantUrls = customer.tenants.map(tenant => `${tenant.url}/shell/home`);
     await ensureMultipleTenantSessions(tenantUrls);
@@ -189,12 +186,12 @@ export function ExportButton() {
 
   return (
     <>
-      <div class="export-btn-container">
+      <div class="fixed top-[60px] right-5 z-[999999] flex flex-col items-end gap-1.5">
         {exporting ? (
           <>
             <button
               type="button"
-              class="export-btn export-btn--cancel"
+              class="btn btn-error gap-2 shadow-lg"
               onClick={cancelExport}
             >
               <X size={16} />
@@ -205,7 +202,7 @@ export function ExportButton() {
         ) : (
           <button
             type="button"
-            class="export-btn export-btn--idle"
+            class="btn btn-primary gap-2 shadow-lg"
             onClick={() => setShowDialog(true)}
           >
             <Download size={16} />

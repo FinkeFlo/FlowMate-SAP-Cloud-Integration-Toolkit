@@ -6,7 +6,6 @@ import { showToast } from '@/features/shared/toast';
 import { t, tSub } from '@/features/shared/i18n';
 import { setMplLogLevel, fetchLogLevels, type MplLogLevel } from '@/features/shared/log-level-api';
 import { fetchTopLoggers, type UsageEntry } from './usage-api';
-import './LogThrottlePanel.css';
 
 const LOG_TAG = 'LogThrottle';
 
@@ -196,43 +195,44 @@ export function LogThrottlePanel() {
   }
 
   return (
-    <div class="log-throttle-panel" onPointerDown={(e) => e.stopPropagation()}>
-      <header class="log-throttle-header">
-        <span class="log-throttle-title">{t('logThrottleTopLoggers')}</span>
+    <div class="flex min-w-[360px] max-w-[420px] max-h-[480px] flex-col gap-2 text-[13px] text-base-content" onPointerDown={(e) => e.stopPropagation()}>
+      <header class="flex items-center gap-2 border-b border-base-300 pb-2">
+        <span class="font-semibold tracking-wide">{t('logThrottleTopLoggers')}</span>
         {levelsLoading && (
-          <span class="log-throttle-levels-loading" title="Checking current log levels">
-            <span class="flowmate-spin"><LoaderCircle size={12} /></span>
+          <span class="ml-auto animate-spin text-base-content/50" title="Checking current log levels">
+            <LoaderCircle size={12} />
           </span>
         )}
         <button
-          class="log-throttle-refresh"
+          class="btn btn-ghost btn-xs btn-square"
           onClick={load}
           disabled={loading}
           title="Refresh"
         >
           {loading ? (
-            <span class="flowmate-spin"><LoaderCircle size={14} /></span>
+            <span class="animate-spin"><LoaderCircle size={14} /></span>
           ) : (
             <RefreshCw size={14} />
           )}
         </button>
       </header>
 
-      <div class="log-throttle-threshold">
-        <label>{t('logThrottleHighlightAbove')}</label>
+      <div class="flex items-center gap-2 pb-1 text-xs text-base-content/80">
+        <label class="whitespace-nowrap">{t('logThrottleHighlightAbove')}</label>
         <input
           type="number"
           min={0}
           step={100}
+          class="input input-bordered input-xs h-8 w-24 font-mono"
           value={threshold}
           onInput={handleThresholdChange}
         />
-        <span class="log-throttle-threshold-unit">{t('logThrottlePerDay')}</span>
+        <span class="text-base-content/60">{t('logThrottlePerDay')}</span>
       </div>
 
       {rows && rows.some(r => r.count >= threshold && !isAlreadyThrottled(r.symbolicName)) && (
         <button
-          class="log-throttle-select-all"
+          class="btn btn-link btn-xs h-auto min-h-0 self-start px-0 no-underline hover:no-underline"
           onClick={selectAllHot}
           disabled={bulkRunning}
           type="button"
@@ -242,23 +242,23 @@ export function LogThrottlePanel() {
       )}
 
       {selectedSet.size > 0 && (
-        <div class="log-throttle-bulk-bar">
-          <span class="log-throttle-bulk-count">{tSub('logThrottleSelected', String(selectedSet.size))}</span>
+        <div class="flex items-center gap-2 rounded-field bg-primary/10 px-3 py-2">
+          <span class="flex-1 text-xs font-semibold text-primary">{tSub('logThrottleSelected', String(selectedSet.size))}</span>
           <button
-            class="log-throttle-bulk-action"
+            class="btn btn-primary btn-xs gap-1"
             onClick={handleBulkSilence}
             disabled={bulkRunning}
             type="button"
           >
             {bulkRunning ? (
-              <span class="flowmate-spin"><LoaderCircle size={14} /></span>
+              <span class="animate-spin"><LoaderCircle size={14} /></span>
             ) : (
               <Zap size={14} />
             )}
             <span>{t('logThrottleSilenceSelected')}</span>
           </button>
           <button
-            class="log-throttle-bulk-clear"
+            class="btn btn-ghost btn-xs"
             onClick={() => setSelectedSet(new Set())}
             disabled={bulkRunning}
             type="button"
@@ -269,60 +269,68 @@ export function LogThrottlePanel() {
       )}
 
       {error && (
-        <div class="log-throttle-error">
+        <div class="alert alert-error py-2 text-xs">
           <TriangleAlert size={14} />
           <span>{error}</span>
         </div>
       )}
 
       {!error && rows && rows.length === 0 && (
-        <div class="log-throttle-empty">{t('logThrottleNoActivity')}</div>
+        <div class="py-4 text-center italic text-base-content/60">{t('logThrottleNoActivity')}</div>
       )}
 
       {!error && rows && rows.length > 0 && (
-        <ul class="log-throttle-list">
-          {rows.map(row => (
-            <li
-              class={`log-throttle-row ${row.count >= threshold ? 'log-throttle-row--hot' : ''}`}
-              key={row.symbolicName}
-            >
-              {isAlreadyThrottled(row.symbolicName) ? (
-                <span class="log-throttle-checkbox-spacer" />
-              ) : (
-                <input
-                  type="checkbox"
-                  class="log-throttle-checkbox"
-                  checked={selectedSet.has(row.symbolicName)}
-                  onChange={() => toggleSelected(row.symbolicName)}
-                  disabled={bulkRunning || throttlingNow === row.symbolicName}
-                  aria-label={`Select ${row.symbolicName}`}
-                />
-              )}
-              <span class="log-throttle-name" title={row.symbolicName}>{row.symbolicName}</span>
-              <span class="log-throttle-count">{formatCount(row.count)}</span>
-              {isAlreadyThrottled(row.symbolicName) ? (
-                <span class="log-throttle-throttled" title="Log level set to ERROR">
-                  <Check size={14} /> ERROR
+        <ul class="overflow-y-auto rounded-box border border-base-300/70 bg-base-100/60">
+          {rows.map(row => {
+            const throttled = isAlreadyThrottled(row.symbolicName);
+            const isHot = row.count >= threshold;
+            const isBusy = bulkRunning || throttlingNow === row.symbolicName;
+
+            return (
+              <li
+                class={`group flex items-center gap-2 border-b border-base-300/40 px-2 py-1.5 last:border-b-0 hover:bg-base-200/70 ${isHot ? 'bg-error/10 shadow-[inset_3px_0_0_0_var(--color-error)]' : ''}`}
+                key={row.symbolicName}
+              >
+                {throttled ? (
+                  <span class="w-4 shrink-0" />
+                ) : (
+                  <input
+                    type="checkbox"
+                    class="checkbox checkbox-xs shrink-0"
+                    checked={selectedSet.has(row.symbolicName)}
+                    onChange={() => toggleSelected(row.symbolicName)}
+                    disabled={isBusy}
+                    aria-label={`Select ${row.symbolicName}`}
+                  />
+                )}
+                <span class="flex-1 truncate font-mono text-xs" title={row.symbolicName}>{row.symbolicName}</span>
+                <span class={`shrink-0 font-mono text-xs font-semibold tabular-nums ${isHot ? 'text-error' : 'text-base-content/80'}`}>
+                  {formatCount(row.count)}
                 </span>
-              ) : (
-                <button
-                  class="log-throttle-action"
-                  onClick={() => handleThrottle(row.symbolicName)}
-                  disabled={throttlingNow === row.symbolicName}
-                  title="Set log level to ERROR"
-                >
-                  {throttlingNow === row.symbolicName ? (
-                    <span class="flowmate-spin"><LoaderCircle size={14} /></span>
-                  ) : (
-                    <>
-                      <Zap size={14} />
-                      <span>{t('logThrottleSilence')}</span>
-                    </>
-                  )}
-                </button>
-              )}
-            </li>
-          ))}
+                {throttled ? (
+                  <span class="badge badge-success badge-outline badge-sm gap-1" title="Log level set to ERROR">
+                    <Check size={12} /> ERROR
+                  </span>
+                ) : (
+                  <button
+                    class="btn btn-primary btn-soft btn-xs gap-1"
+                    onClick={() => handleThrottle(row.symbolicName)}
+                    disabled={throttlingNow === row.symbolicName}
+                    title="Set log level to ERROR"
+                  >
+                    {throttlingNow === row.symbolicName ? (
+                      <span class="animate-spin"><LoaderCircle size={14} /></span>
+                    ) : (
+                      <>
+                        <Zap size={14} />
+                        <span>{t('logThrottleSilence')}</span>
+                      </>
+                    )}
+                  </button>
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </div>

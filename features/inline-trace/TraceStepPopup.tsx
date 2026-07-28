@@ -19,7 +19,6 @@ import {
   fetchRunStepDetail,
 } from './InlineTraceApiClient';
 import type { InlineTraceElement, TraceProperty, PerformanceTier } from './inline-trace-types';
-import './TraceStepPopup.css';
 
 const LOG_TAG = 'TraceStepPopup';
 
@@ -54,47 +53,57 @@ function formatDuration(ms: number): string {
   return `${mins}m ${secs}s`;
 }
 
-/** Uses the same thresholds as InlineTraceOverlay.classifyPerformance (10% band). */
 function getDurationTier(ms: number, avgMs: number): PerformanceTier | null {
   if (ms <= 0 || avgMs <= 0) return null;
   if (Math.abs(ms - avgMs) < avgMs * 0.1) return 'avg';
   return ms > avgMs ? 'above-avg' : 'below-avg';
 }
 
-const TIER_CSS: Record<PerformanceTier, string> = {
-  'max': 'trace-duration-badge--slow',
-  'above-avg': 'trace-duration-badge--slow',
-  'avg': 'trace-duration-badge--normal',
-  'below-avg': 'trace-duration-badge--fast',
-  'min': 'trace-duration-badge--fast',
+const TIER_BADGE_CLASS: Record<PerformanceTier, string> = {
+  max: 'badge-error',
+  'above-avg': 'badge-warning',
+  avg: 'badge-success',
+  'below-avg': 'badge-info',
+  min: 'badge-info',
 };
-
-// --------------------------------------------------------------------------
-// Shared property table component (used by Properties, Headers, Log tabs)
-// --------------------------------------------------------------------------
 
 function TracePropertyTable({ data }: { data: TraceProperty[] }) {
   return (
-    <table class="trace-prop-table">
-      <tbody>
-        {data.map((p, i) => (
-          <tr key={i}>
-            <td class="trace-prop-label">{p.Name}</td>
-            <td class="trace-prop-value">{p.Value}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div class="overflow-x-auto">
+      <table class="table table-sm w-full">
+        <tbody>
+          {data.map((p, i) => (
+            <tr key={i} class="border-base-300/40">
+              <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{p.Name}</td>
+              <td class="break-all py-2 font-mono text-xs text-base-content">{p.Value}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
-
-// --------------------------------------------------------------------------
-// Lazy-loaded tab contents
-// --------------------------------------------------------------------------
 
 interface TraceTabProps {
   traceId: number | null;
   baseUrl: string;
+}
+
+function LoadingState({ label }: { label: string }) {
+  return (
+    <div class="flex items-center justify-center gap-2 py-6 text-sm text-base-content/60">
+      <span class="animate-spin"><LoaderCircle size={16} /></span>
+      {label}
+    </div>
+  );
+}
+
+function ErrorState({ error }: { error: string }) {
+  return <div class="alert alert-error text-sm">{tSub('traceFailedToLoad', error)}</div>;
+}
+
+function EmptyState({ label }: { label: string }) {
+  return <div class="py-6 text-center text-sm text-base-content/50">{label}</div>;
 }
 
 function PropertiesTab({ traceId, baseUrl }: TraceTabProps) {
@@ -116,9 +125,9 @@ function PropertiesTab({ traceId, baseUrl }: TraceTabProps) {
     return () => { cancelled = true; };
   }, [baseUrl, traceId]);
 
-  if (error) return <div class="trace-tab-error">{tSub('traceFailedToLoad', error)}</div>;
-  if (data === null) return <div class="trace-loading"><span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('traceLoadingProperties')}</div>;
-  if (data.length === 0) return <div class="trace-loading">{t('traceNoExchangeProperties')}</div>;
+  if (error) return <ErrorState error={error} />;
+  if (data === null) return <LoadingState label={t('traceLoadingProperties')} />;
+  if (data.length === 0) return <EmptyState label={t('traceNoExchangeProperties')} />;
 
   return <TracePropertyTable data={data} />;
 }
@@ -142,9 +151,9 @@ function HeadersTab({ traceId, baseUrl }: TraceTabProps) {
     return () => { cancelled = true; };
   }, [baseUrl, traceId]);
 
-  if (error) return <div class="trace-tab-error">{tSub('traceFailedToLoad', error)}</div>;
-  if (data === null) return <div class="trace-loading"><span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('traceLoadingHeaders')}</div>;
-  if (data.length === 0) return <div class="trace-loading">{t('traceNoMessageHeaders')}</div>;
+  if (error) return <ErrorState error={error} />;
+  if (data === null) return <LoadingState label={t('traceLoadingHeaders')} />;
+  if (data.length === 0) return <EmptyState label={t('traceNoMessageHeaders')} />;
 
   return <TracePropertyTable data={data} />;
 }
@@ -168,9 +177,9 @@ function BodyTab({ traceId, baseUrl }: TraceTabProps) {
     return () => { cancelled = true; };
   }, [baseUrl, traceId]);
 
-  if (error) return <div class="trace-tab-error">{tSub('traceFailedToLoad', error)}</div>;
-  if (body === null) return <div class="trace-loading"><span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('traceLoadingBody')}</div>;
-  if (body === '') return <div class="trace-loading">{t('traceNoBodyContent')}</div>;
+  if (error) return <ErrorState error={error} />;
+  if (body === null) return <LoadingState label={t('traceLoadingBody')} />;
+  if (body === '') return <EmptyState label={t('traceNoBodyContent')} />;
 
   return <CodeViewer content={body} maxHeight="500px" />;
 }
@@ -193,66 +202,66 @@ function LogTab({ baseUrl, element }: { baseUrl: string; element: InlineTraceEle
     return () => { cancelled = true; };
   }, [baseUrl, element.runId, element.childCount]);
 
-  if (error) return <div class="trace-tab-error">{tSub('traceFailedToLoad', error)}</div>;
-  if (data === null) return <div class="trace-loading"><span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('traceLoadingLog')}</div>;
-  if (data.length === 0) return <div class="trace-loading">{t('traceNoLogProperties')}</div>;
+  if (error) return <ErrorState error={error} />;
+  if (data === null) return <LoadingState label={t('traceLoadingLog')} />;
+  if (data.length === 0) return <EmptyState label={t('traceNoLogProperties')} />;
 
   return <TracePropertyTable data={data} />;
 }
 
 function InfoTab({ element, avgDurationMs }: { element: InlineTraceElement; avgDurationMs: number }) {
   const tier = getDurationTier(element.durationMs, avgDurationMs);
-  const badgeClass = tier ? TIER_CSS[tier] : 'trace-duration-badge--normal';
+  const badgeClass = tier ? TIER_BADGE_CLASS[tier] : 'badge-success';
 
   return (
-    <table class="trace-prop-table">
-      <tbody>
-        <tr class="trace-section-row"><td colSpan={2}>{t('traceTiming')}</td></tr>
-        <tr>
-          <td class="trace-prop-label">{t('traceStart')}</td>
-          <td class="trace-prop-value">{formatDateTime(element.stepStart)}</td>
-        </tr>
-        <tr>
-          <td class="trace-prop-label">{t('traceStop')}</td>
-          <td class="trace-prop-value">{formatDateTime(element.stepStop)}</td>
-        </tr>
-        <tr>
-          <td class="trace-prop-label">{t('traceDuration')}</td>
-          <td class="trace-prop-value">
-            <span class={`trace-duration-badge ${badgeClass}`}>
-              {formatDuration(element.durationMs)}
-            </span>
-          </td>
-        </tr>
-        <tr class="trace-section-row"><td colSpan={2}>{t('traceIdentifiers')}</td></tr>
-        <tr>
-          <td class="trace-prop-label">{t('traceStepId')}</td>
-          <td class="trace-prop-value">{element.stepId}</td>
-        </tr>
-        <tr>
-          <td class="trace-prop-label">{t('traceModelStepId')}</td>
-          <td class="trace-prop-value">{element.modelStepId}</td>
-        </tr>
-        <tr>
-          <td class="trace-prop-label">{t('traceRunId')}</td>
-          <td class="trace-prop-value">{element.runId}</td>
-        </tr>
-        <tr>
-          <td class="trace-prop-label">{t('traceBranchId')}</td>
-          <td class="trace-prop-value">{element.branchId}</td>
-        </tr>
-        <tr>
-          <td class="trace-prop-label">{t('traceChildCount')}</td>
-          <td class="trace-prop-value">{element.childCount}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="overflow-x-auto">
+      <table class="table table-sm w-full">
+        <tbody>
+          <tr>
+            <td colSpan={2} class="bg-base-200/60 px-0 py-3 text-[11px] font-bold uppercase tracking-wide text-base-content/50">{t('traceTiming')}</td>
+          </tr>
+          <tr class="border-base-300/40">
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceStart')}</td>
+            <td class="break-all py-2 font-mono text-xs text-base-content">{formatDateTime(element.stepStart)}</td>
+          </tr>
+          <tr class="border-base-300/40">
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceStop')}</td>
+            <td class="break-all py-2 font-mono text-xs text-base-content">{formatDateTime(element.stepStop)}</td>
+          </tr>
+          <tr class="border-base-300/40">
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceDuration')}</td>
+            <td class="break-all py-2 font-mono text-xs text-base-content">
+              <span class={`badge badge-sm ${badgeClass}`}>{formatDuration(element.durationMs)}</span>
+            </td>
+          </tr>
+          <tr>
+            <td colSpan={2} class="bg-base-200/60 px-0 py-3 text-[11px] font-bold uppercase tracking-wide text-base-content/50">{t('traceIdentifiers')}</td>
+          </tr>
+          <tr class="border-base-300/40">
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceStepId')}</td>
+            <td class="break-all py-2 font-mono text-xs text-base-content">{element.stepId}</td>
+          </tr>
+          <tr class="border-base-300/40">
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceModelStepId')}</td>
+            <td class="break-all py-2 font-mono text-xs text-base-content">{element.modelStepId}</td>
+          </tr>
+          <tr class="border-base-300/40">
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceRunId')}</td>
+            <td class="break-all py-2 font-mono text-xs text-base-content">{element.runId}</td>
+          </tr>
+          <tr class="border-base-300/40">
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceBranchId')}</td>
+            <td class="break-all py-2 font-mono text-xs text-base-content">{element.branchId}</td>
+          </tr>
+          <tr class="border-base-300/40">
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceChildCount')}</td>
+            <td class="break-all py-2 font-mono text-xs text-base-content">{element.childCount}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   );
 }
-
-// --------------------------------------------------------------------------
-// Main component
-// --------------------------------------------------------------------------
 
 export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onClose }: TraceStepPopupProps) {
   const [activeTab, setActiveTab] = useState<TabId>('properties');
@@ -265,13 +274,11 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
   const hasPrev = currentIndex > 0;
   const hasNext = currentIndex < allElements.length - 1;
 
-  // Compute average duration once for the whole trace session
   const avgDurationMs = useMemo(() => {
     const durations = allElements.filter(e => e.durationMs > 0).map(e => e.durationMs);
     return durations.length > 0 ? durations.reduce((a, b) => a + b, 0) / durations.length : 0;
   }, [allElements]);
 
-  // Fetch TraceId once per step (shared by Properties, Headers, Body tabs)
   useEffect(() => {
     let cancelled = false;
     setTraceId(null);
@@ -288,7 +295,6 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
     return () => { cancelled = true; };
   }, [baseUrl, element.runId, element.childCount]);
 
-  // Keyboard navigation (skip when focus is inside CodeMirror or an input)
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
@@ -302,7 +308,7 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
   }, [onClose, onNavigate, hasPrev, hasNext, currentIndex, allElements]);
 
   const handleOverlayClick = useCallback((e: MouseEvent) => {
-    if ((e.target as HTMLElement).classList.contains('trace-popup-overlay')) {
+    if ((e.target as HTMLElement).classList.contains('modal')) {
       onClose();
     }
   }, [onClose]);
@@ -317,30 +323,27 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
   ];
 
   return (
-    <div class="trace-popup-overlay" onClick={handleOverlayClick}>
-      <div class="trace-popup-modal" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
-        <div class="trace-popup-header">
-          <div class="trace-popup-header-left">
-            <span
-              class={`trace-status-dot ${element.error ? 'trace-status-dot--error' : 'trace-status-dot--ok'}`}
-            />
-            <span class="trace-popup-title">{t('traceStep')}</span>
-            <span class="trace-popup-step-id">{element.modelStepId}</span>
+    <div class="modal modal-open" onClick={handleOverlayClick}>
+      <div class="modal-box flex max-h-[80vh] w-11/12 max-w-5xl flex-col overflow-hidden p-0" onClick={(e) => e.stopPropagation()}>
+        <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
+          <div class="flex min-w-0 items-center gap-2">
+            <span class={`h-2.5 w-2.5 shrink-0 rounded-full ${element.error ? 'bg-error' : 'bg-success'}`} />
+            <span class="text-sm font-semibold text-base-content">{t('traceStep')}</span>
+            <span class="truncate font-mono text-[11px] text-base-content/50">{element.modelStepId}</span>
           </div>
-          <div class="trace-popup-header-right">
-            <div class="trace-popup-nav">
+          <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1">
               <button
-                class="trace-popup-nav-btn"
+                class="btn btn-ghost btn-sm btn-square"
                 title="Previous step (←)"
                 disabled={!hasPrev}
                 onClick={() => hasPrev && onNavigate(allElements[currentIndex - 1])}
               >
                 <ChevronLeft size={16} />
               </button>
-              <span class="trace-popup-counter">{currentIndex + 1}/{allElements.length}</span>
+              <span class="px-1 font-mono text-[11px] text-base-content/50">{currentIndex + 1}/{allElements.length}</span>
               <button
-                class="trace-popup-nav-btn"
+                class="btn btn-ghost btn-sm btn-square"
                 title="Next step"
                 disabled={!hasNext}
                 onClick={() => hasNext && onNavigate(allElements[currentIndex + 1])}
@@ -348,19 +351,18 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
                 <ChevronRight size={16} />
               </button>
             </div>
-            <button class="trace-popup-nav-btn" onClick={onClose}>
+            <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}>
               <X size={16} />
             </button>
           </div>
         </div>
 
-        {/* Body */}
-        <div class="trace-popup-body">
-          <div class="trace-tab-bar">
-            {tabs.filter(t => t.show).map(tab => (
+        <div class="overflow-y-auto">
+          <div class="tabs tabs-border px-4 pt-2">
+            {tabs.filter(tab => tab.show).map(tab => (
               <button
                 key={tab.id}
-                class={`trace-tab ${activeTab === tab.id ? 'trace-tab--active' : ''}`}
+                class={`tab ${activeTab === tab.id ? 'tab-active text-primary' : ''}`}
                 onClick={() => setActiveTab(tab.id)}
               >
                 {tab.label}
@@ -368,7 +370,7 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
             ))}
           </div>
 
-          <div class="trace-tab-content">
+          <div class="p-4">
             <div style={{ display: activeTab === 'properties' ? 'block' : 'none' }}>
               <PropertiesTab key={element.stepId} traceId={traceId} baseUrl={baseUrl} />
             </div>
@@ -386,7 +388,7 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
             </div>
             {element.error && (
               <div style={{ display: activeTab === 'error' ? 'block' : 'none' }}>
-                <div class="trace-error-banner">{element.error}</div>
+                <div class="alert alert-error text-sm whitespace-pre-wrap break-all">{element.error}</div>
               </div>
             )}
           </div>

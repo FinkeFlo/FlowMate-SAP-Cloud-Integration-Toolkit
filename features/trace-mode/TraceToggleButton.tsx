@@ -3,7 +3,6 @@ import { LoaderCircle, ToggleRight } from 'lucide-preact';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
 import { extractIFlowId, fetchTraceState, setTraceLevel } from './trace-api';
-import './TraceToggleButton.css';
 
 const LOG_TAG = 'TraceToggle';
 const INITIAL_FETCH_DELAY_MS = 1500;
@@ -74,17 +73,15 @@ export function TraceToggleButton() {
     }
   }
 
-  const stateClass = traceActive ? 'trace-toggle-btn--on' : 'trace-toggle-btn--off';
-
   return (
     <button
-      class={`trace-toggle-btn ${stateClass}`}
+      class={`btn btn-sm w-full justify-start gap-2 ${traceActive ? 'btn-success' : 'btn-primary'}`}
       onClick={handleToggle}
       disabled={toggling}
     >
       {toggling ? (
         <>
-          <span class="flowmate-spin"><LoaderCircle size={16} /></span>
+          <span class="animate-spin"><LoaderCircle size={16} /></span>
           <span>Loading...</span>
         </>
       ) : (
