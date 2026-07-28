@@ -48,6 +48,7 @@ The extension is built on top of the [WXT framework](https://wxt.dev/).
 
 3. **UI Framework**
    The UI is built using **Preact** (TSX), **Tailwind CSS v4**, and **daisyUI v5**. This is the single, mandatory styling stack across the entire extension (content-script overlay, Options page, Popup) — do not introduce other CSS frameworks or hand-rolled component CSS files.
+   - See [`DESIGN.md`](./DESIGN.md) for the documented design tokens (colors, typography, shapes) and rationale — read this first before styling new UI. Validate changes with `npx @google/design.md lint DESIGN.md` (catches broken token refs and WCAG contrast issues) and keep it in sync with `assets/flowmate-theme.css`, which remains the actual CSS source of truth.
    - Use daisyUI component classes (`btn`, `card`, `modal`, `input input-bordered`, `checkbox`, `alert`, `badge`, etc.) first, and Tailwind utility classes for layout/spacing on top.
    - There is exactly **one** theme, `flowmate` (light), defined in `assets/flowmate-theme.css`. There is intentionally **no dark theme** — SAP Cloud Integration itself has no dark mode, so we don't need one either.
    - Every entrypoint (`entrypoints/content.ts`, `entrypoints/options/main.ts`, `entrypoints/popup/main.ts`) must import `@/assets/flowmate-theme.css` and every root HTML element must set `data-theme="flowmate"`.
