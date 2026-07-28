@@ -311,7 +311,7 @@ export class ArtifactStatus {
   private findElementWithText(root: HTMLElement, text: string): HTMLElement | null {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
     let node;
-    while (node = walker.nextNode()) {
+    while ((node = walker.nextNode())) {
       if (node.textContent?.trim() === text) {
         return node.parentElement;
       }
@@ -337,7 +337,7 @@ export class ArtifactStatus {
     const texts: string[] = [];
     const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, null);
     let node;
-    while (node = walker.nextNode()) {
+    while ((node = walker.nextNode())) {
       const text = node.textContent?.trim();
       if (text) texts.push(text);
     }

@@ -48,7 +48,7 @@ export function validateCpiUrl(url: string): { valid: boolean; error?: string } 
     }
 
     return { valid: true };
-  } catch (e) {
+  } catch {
     return { valid: false, error: t('validationUrlInvalid') };
   }
 }

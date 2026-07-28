@@ -8,7 +8,7 @@
  */
 export function getCpiBaseUrl(): string {
   const host = window.location.host;
-  const cpiTypeRegexp = /^[^\/]*\.integrationsuite(-trial)?.*/;
+  const cpiTypeRegexp = /^[^/]*\.integrationsuite(-trial)?.*/;
   if (!cpiTypeRegexp.test(host)) {
     return '/itspaces';
   }

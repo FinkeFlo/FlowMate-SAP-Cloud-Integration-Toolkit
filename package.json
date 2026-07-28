@@ -14,6 +14,8 @@
     "zip": "wxt zip",
     "zip:firefox": "wxt zip -b firefox",
     "compile": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:design": "design.md lint DESIGN.md",
     "playwright:session": "node scripts/playwright-session.mjs",
     "playwright:session:smoke": "FLOWMATE_PLAYWRIGHT_HEADLESS=true FLOWMATE_PLAYWRIGHT_KEEP_OPEN=false FLOWMATE_PLAYWRIGHT_WAIT_MS=3000 node scripts/playwright-session.mjs",
     "postinstall": "wxt prepare",
@@ -21,14 +23,19 @@
     "release:dry": "release-it --dry-run"
   },
   "devDependencies": {
+    "@google/design.md": "^0.4.0",
     "@release-it/conventional-changelog": "^11.0.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/sortablejs": "^1.15.9",
     "daisyui": "^5.7.4",
+    "eslint": "^9.39.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^15.15.0",
     "playwright": "^1.55.0",
     "release-it": "^20.0.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
+    "typescript-eslint": "^8.65.0",
     "wxt": "^0.20.6"
   },
   "dependencies": {

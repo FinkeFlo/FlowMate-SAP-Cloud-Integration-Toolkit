@@ -30,7 +30,7 @@ function getSelectedArtifactNames(): string[] {
   for (const row of Array.from(rows)) {
     const walker = document.createTreeWalker(row, NodeFilter.SHOW_TEXT, null);
     let node;
-    while (node = walker.nextNode()) {
+    while ((node = walker.nextNode())) {
       const text = node.textContent?.trim();
       if (text) names.push(text);
     }

@@ -54,6 +54,7 @@ export function LogThrottlePanel() {
     mountedRef.current = true;
     load();
     return () => { mountedRef.current = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount only
   }, []);
 
   useEffect(() => {

@@ -102,8 +102,8 @@ export function useDrag() {
   // Cleanup on unmount not needed — listeners are on the ref element via JSX props
   // But we need a cleanup for the case where the component unmounts during a drag
   useEffect(() => {
+    const s = stateRef.current;
     return () => {
-      const s = stateRef.current;
       s.isDragging = false;
       s.activePointerId = null;
     };

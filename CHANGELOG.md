@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - `DESIGN.md` documenting the flowmate daisyUI theme (colors, typography, shapes) for humans and AI agents, following the DESIGN.md format.
+- CI workflow (`.github/workflows/ci.yml`): typecheck, ESLint, `DESIGN.md` lint, and chrome/firefox build checks on every PR and push to `main`, gated behind a single aggregating `CI` job for stable branch-protection status checks.
+- Tag-driven release workflow (`.github/workflows/release.yml`): pushing a `v*` tag bumps `package.json`/`CHANGELOG.md`, builds chrome/firefox zips, and publishes a GitHub Release with artifacts and changelog notes.
+- `.github/dependabot.yml` for weekly npm and GitHub Actions dependency updates.
+- ESLint 9 flat config (`eslint.config.mjs`) with TypeScript, Preact hooks, and WXT auto-import globals support; added `lint` and `lint:design` npm scripts.
 
 ### Fixed
 - Darkened `success` (#16a34a → #15803d) and `warning` (#d97706 → #b45309) theme colors to meet WCAG AA contrast (4.5:1) for white button/badge text — found via `design.md lint`.

@@ -2,7 +2,7 @@
  * CSV Exporter for SAP CPI Message Usage Data
  */
 
-import type { DayData, MessageDetail } from '@/features/shared/api-client';
+import type { DayData } from '@/features/shared/api-client';
 import { showToast } from '@/features/shared/toast';
 
 interface AggregatedData {
