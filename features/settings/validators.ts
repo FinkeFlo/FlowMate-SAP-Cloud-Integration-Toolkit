@@ -24,18 +24,19 @@ export function validateCpiUrl(url: string): { valid: boolean; error?: string } 
 
     // Check hostname pattern
     const hostname = urlObj.hostname;
-    
-    // Must contain required parts
-    if (!hostname.includes('integrationsuite')) {
+
+    // Must match exact required suffix/segments (anchored checks, not
+    // substring checks — avoids bypasses like "evil-hana.ondemand.com.attacker.com").
+    if (!hostname.endsWith('.hana.ondemand.com')) {
+      return { valid: false, error: tSub('validationUrlMustContain', 'hana.ondemand.com') };
+    }
+
+    if (!/(^|\.)integrationsuite\./.test(hostname)) {
       return { valid: false, error: tSub('validationUrlMustContain', 'integrationsuite') };
     }
 
-    if (!hostname.includes('cfapps')) {
+    if (!/(^|\.)cfapps\./.test(hostname)) {
       return { valid: false, error: tSub('validationUrlMustContain', 'cfapps') };
-    }
-
-    if (!hostname.includes('hana.ondemand.com')) {
-      return { valid: false, error: tSub('validationUrlMustContain', 'hana.ondemand.com') };
     }
 
     // Check pattern with regex

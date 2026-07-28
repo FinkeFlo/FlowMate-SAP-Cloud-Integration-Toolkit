@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tag-driven release workflow (`.github/workflows/release.yml`): pushing a `v*` tag bumps `package.json`/`CHANGELOG.md`, builds chrome/firefox zips, and publishes a GitHub Release with artifacts and changelog notes.
 - `.github/dependabot.yml` for weekly npm and GitHub Actions dependency updates.
 - ESLint 9 flat config (`eslint.config.mjs`) with TypeScript, Preact hooks, and WXT auto-import globals support; added `lint` and `lint:design` npm scripts.
+- CodeQL security analysis workflow (`.github/workflows/codeql.yml`).
+
+### Fixed
+- Replaced substring-based `hana.ondemand.com` hostname checks with anchored `endsWith`/hostname-parsed checks in `validators.ts` and `useActiveTenant.ts` — fixes CodeQL "Incomplete URL substring sanitization" alerts (bypassable via crafted hostnames like `evil-hana.ondemand.com.attacker.com`).
 
 ### Fixed
 - Darkened `success` (#16a34a → #15803d) and `warning` (#d97706 → #b45309) theme colors to meet WCAG AA contrast (4.5:1) for white button/badge text — found via `design.md lint`.
