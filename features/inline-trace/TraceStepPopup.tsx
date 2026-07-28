@@ -7,6 +7,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'preact/hooks';
 import { X, ChevronLeft, ChevronRight, LoaderCircle } from 'lucide-preact';
+import { t, tSub } from '@/features/shared/i18n';
 import { devLog } from '@/features/shared/dev-logger';
 import { CodeViewer } from '@/features/shared/CodeViewer';
 import { parseODataDate } from '@/features/message-log/mpl-types';
@@ -115,9 +116,9 @@ function PropertiesTab({ traceId, baseUrl }: TraceTabProps) {
     return () => { cancelled = true; };
   }, [baseUrl, traceId]);
 
-  if (error) return <div class="trace-tab-error">Failed to load: {error}</div>;
-  if (data === null) return <div class="trace-loading"><span class="flowmate-spin"><LoaderCircle size={16} /></span> Loading properties...</div>;
-  if (data.length === 0) return <div class="trace-loading">No exchange properties</div>;
+  if (error) return <div class="trace-tab-error">{tSub('traceFailedToLoad', error)}</div>;
+  if (data === null) return <div class="trace-loading"><span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('traceLoadingProperties')}</div>;
+  if (data.length === 0) return <div class="trace-loading">{t('traceNoExchangeProperties')}</div>;
 
   return <TracePropertyTable data={data} />;
 }
@@ -141,9 +142,9 @@ function HeadersTab({ traceId, baseUrl }: TraceTabProps) {
     return () => { cancelled = true; };
   }, [baseUrl, traceId]);
 
-  if (error) return <div class="trace-tab-error">Failed to load: {error}</div>;
-  if (data === null) return <div class="trace-loading"><span class="flowmate-spin"><LoaderCircle size={16} /></span> Loading headers...</div>;
-  if (data.length === 0) return <div class="trace-loading">No message headers</div>;
+  if (error) return <div class="trace-tab-error">{tSub('traceFailedToLoad', error)}</div>;
+  if (data === null) return <div class="trace-loading"><span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('traceLoadingHeaders')}</div>;
+  if (data.length === 0) return <div class="trace-loading">{t('traceNoMessageHeaders')}</div>;
 
   return <TracePropertyTable data={data} />;
 }
@@ -167,9 +168,9 @@ function BodyTab({ traceId, baseUrl }: TraceTabProps) {
     return () => { cancelled = true; };
   }, [baseUrl, traceId]);
 
-  if (error) return <div class="trace-tab-error">Failed to load: {error}</div>;
-  if (body === null) return <div class="trace-loading"><span class="flowmate-spin"><LoaderCircle size={16} /></span> Loading body...</div>;
-  if (body === '') return <div class="trace-loading">No body content</div>;
+  if (error) return <div class="trace-tab-error">{tSub('traceFailedToLoad', error)}</div>;
+  if (body === null) return <div class="trace-loading"><span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('traceLoadingBody')}</div>;
+  if (body === '') return <div class="trace-loading">{t('traceNoBodyContent')}</div>;
 
   return <CodeViewer content={body} maxHeight="500px" />;
 }
@@ -192,9 +193,9 @@ function LogTab({ baseUrl, element }: { baseUrl: string; element: InlineTraceEle
     return () => { cancelled = true; };
   }, [baseUrl, element.runId, element.childCount]);
 
-  if (error) return <div class="trace-tab-error">Failed to load: {error}</div>;
-  if (data === null) return <div class="trace-loading"><span class="flowmate-spin"><LoaderCircle size={16} /></span> Loading log...</div>;
-  if (data.length === 0) return <div class="trace-loading">No log properties</div>;
+  if (error) return <div class="trace-tab-error">{tSub('traceFailedToLoad', error)}</div>;
+  if (data === null) return <div class="trace-loading"><span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('traceLoadingLog')}</div>;
+  if (data.length === 0) return <div class="trace-loading">{t('traceNoLogProperties')}</div>;
 
   return <TracePropertyTable data={data} />;
 }
@@ -206,42 +207,42 @@ function InfoTab({ element, avgDurationMs }: { element: InlineTraceElement; avgD
   return (
     <table class="trace-prop-table">
       <tbody>
-        <tr class="trace-section-row"><td colSpan={2}>Timing</td></tr>
+        <tr class="trace-section-row"><td colSpan={2}>{t('traceTiming')}</td></tr>
         <tr>
-          <td class="trace-prop-label">Start</td>
+          <td class="trace-prop-label">{t('traceStart')}</td>
           <td class="trace-prop-value">{formatDateTime(element.stepStart)}</td>
         </tr>
         <tr>
-          <td class="trace-prop-label">Stop</td>
+          <td class="trace-prop-label">{t('traceStop')}</td>
           <td class="trace-prop-value">{formatDateTime(element.stepStop)}</td>
         </tr>
         <tr>
-          <td class="trace-prop-label">Duration</td>
+          <td class="trace-prop-label">{t('traceDuration')}</td>
           <td class="trace-prop-value">
             <span class={`trace-duration-badge ${badgeClass}`}>
               {formatDuration(element.durationMs)}
             </span>
           </td>
         </tr>
-        <tr class="trace-section-row"><td colSpan={2}>Identifiers</td></tr>
+        <tr class="trace-section-row"><td colSpan={2}>{t('traceIdentifiers')}</td></tr>
         <tr>
-          <td class="trace-prop-label">StepId</td>
+          <td class="trace-prop-label">{t('traceStepId')}</td>
           <td class="trace-prop-value">{element.stepId}</td>
         </tr>
         <tr>
-          <td class="trace-prop-label">ModelStepId</td>
+          <td class="trace-prop-label">{t('traceModelStepId')}</td>
           <td class="trace-prop-value">{element.modelStepId}</td>
         </tr>
         <tr>
-          <td class="trace-prop-label">RunId</td>
+          <td class="trace-prop-label">{t('traceRunId')}</td>
           <td class="trace-prop-value">{element.runId}</td>
         </tr>
         <tr>
-          <td class="trace-prop-label">BranchId</td>
+          <td class="trace-prop-label">{t('traceBranchId')}</td>
           <td class="trace-prop-value">{element.branchId}</td>
         </tr>
         <tr>
-          <td class="trace-prop-label">ChildCount</td>
+          <td class="trace-prop-label">{t('traceChildCount')}</td>
           <td class="trace-prop-value">{element.childCount}</td>
         </tr>
       </tbody>
@@ -307,12 +308,12 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
   }, [onClose]);
 
   const tabs: Array<{ id: TabId; label: string; show: boolean }> = [
-    { id: 'properties', label: 'Properties', show: true },
-    { id: 'headers', label: 'Headers', show: true },
-    { id: 'body', label: 'Body', show: true },
-    { id: 'log', label: 'Log', show: true },
-    { id: 'info', label: 'Info', show: true },
-    { id: 'error', label: 'Error', show: !!element.error },
+    { id: 'properties', label: t('traceProperties'), show: true },
+    { id: 'headers', label: t('traceHeaders'), show: true },
+    { id: 'body', label: t('traceBody'), show: true },
+    { id: 'log', label: t('traceLog'), show: true },
+    { id: 'info', label: t('traceInfo'), show: true },
+    { id: 'error', label: t('traceError'), show: !!element.error },
   ];
 
   return (
@@ -324,7 +325,7 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
             <span
               class={`trace-status-dot ${element.error ? 'trace-status-dot--error' : 'trace-status-dot--ok'}`}
             />
-            <span class="trace-popup-title">Trace Step</span>
+            <span class="trace-popup-title">{t('traceStep')}</span>
             <span class="trace-popup-step-id">{element.modelStepId}</span>
           </div>
           <div class="trace-popup-header-right">

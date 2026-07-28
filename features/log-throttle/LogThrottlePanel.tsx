@@ -3,6 +3,7 @@ import { browser } from 'wxt/browser';
 import { LoaderCircle, RefreshCw, TriangleAlert, Zap, Check } from 'lucide-preact';
 import { devLog } from '@/features/shared/dev-logger';
 import { showToast } from '@/features/shared/toast';
+import { t, tSub } from '@/features/shared/i18n';
 import { setMplLogLevel, fetchLogLevels, type MplLogLevel } from '@/features/shared/log-level-api';
 import { fetchTopLoggers, type UsageEntry } from './usage-api';
 import './LogThrottlePanel.css';
@@ -197,7 +198,7 @@ export function LogThrottlePanel() {
   return (
     <div class="log-throttle-panel" onPointerDown={(e) => e.stopPropagation()}>
       <header class="log-throttle-header">
-        <span class="log-throttle-title">Top loggers (today)</span>
+        <span class="log-throttle-title">{t('logThrottleTopLoggers')}</span>
         {levelsLoading && (
           <span class="log-throttle-levels-loading" title="Checking current log levels">
             <span class="flowmate-spin"><LoaderCircle size={12} /></span>
@@ -218,7 +219,7 @@ export function LogThrottlePanel() {
       </header>
 
       <div class="log-throttle-threshold">
-        <label>Highlight above:</label>
+        <label>{t('logThrottleHighlightAbove')}</label>
         <input
           type="number"
           min={0}
@@ -226,7 +227,7 @@ export function LogThrottlePanel() {
           value={threshold}
           onInput={handleThresholdChange}
         />
-        <span class="log-throttle-threshold-unit">/ day</span>
+        <span class="log-throttle-threshold-unit">{t('logThrottlePerDay')}</span>
       </div>
 
       {rows && rows.some(r => r.count >= threshold && !isAlreadyThrottled(r.symbolicName)) && (
@@ -236,13 +237,13 @@ export function LogThrottlePanel() {
           disabled={bulkRunning}
           type="button"
         >
-          Select all above threshold
+          {t('logThrottleSelectAllAbove')}
         </button>
       )}
 
       {selectedSet.size > 0 && (
         <div class="log-throttle-bulk-bar">
-          <span class="log-throttle-bulk-count">{selectedSet.size} selected</span>
+          <span class="log-throttle-bulk-count">{tSub('logThrottleSelected', String(selectedSet.size))}</span>
           <button
             class="log-throttle-bulk-action"
             onClick={handleBulkSilence}
@@ -254,7 +255,7 @@ export function LogThrottlePanel() {
             ) : (
               <Zap size={14} />
             )}
-            <span>Silence selected</span>
+            <span>{t('logThrottleSilenceSelected')}</span>
           </button>
           <button
             class="log-throttle-bulk-clear"
@@ -262,7 +263,7 @@ export function LogThrottlePanel() {
             disabled={bulkRunning}
             type="button"
           >
-            Clear
+            {t('logThrottleClear')}
           </button>
         </div>
       )}
@@ -275,7 +276,7 @@ export function LogThrottlePanel() {
       )}
 
       {!error && rows && rows.length === 0 && (
-        <div class="log-throttle-empty">No activity today.</div>
+        <div class="log-throttle-empty">{t('logThrottleNoActivity')}</div>
       )}
 
       {!error && rows && rows.length > 0 && (
@@ -315,7 +316,7 @@ export function LogThrottlePanel() {
                   ) : (
                     <>
                       <Zap size={14} />
-                      <span>Silence</span>
+                      <span>{t('logThrottleSilence')}</span>
                     </>
                   )}
                 </button>

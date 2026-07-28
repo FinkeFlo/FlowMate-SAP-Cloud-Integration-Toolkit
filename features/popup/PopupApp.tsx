@@ -1,6 +1,7 @@
 import { browser } from 'wxt/browser';
 import { Settings } from 'lucide-preact';
 import { TenantLinksPanel } from '@/features/tenant-links';
+import { t } from '@/features/shared/i18n';
 import './PopupApp.css';
 
 export function PopupApp() {
@@ -11,7 +12,7 @@ export function PopupApp() {
   return (
     <div class="popup-container">
       <div class="popup-header-bar">
-        <h2 class="popup-header">FlowMate</h2>
+        <h2 class="popup-header">{t('extName')}</h2>
         <button type="button" class="popup-settings-btn" onClick={handleOpenSettings} title="Open Settings">
           <Settings size={16} />
         </button>

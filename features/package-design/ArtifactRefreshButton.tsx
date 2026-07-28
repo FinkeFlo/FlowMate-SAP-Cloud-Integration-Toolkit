@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { LoaderCircle, RefreshCw } from 'lucide-preact';
+import { t } from '@/features/shared/i18n';
 import type { ArtifactStatus } from './ArtifactStatus';
 import './ArtifactButtons.css';
 
@@ -24,12 +25,12 @@ export function ArtifactRefreshButton({ artifactStatus }: ArtifactRefreshButtonP
       {loading ? (
         <>
           <span class="flowmate-spin"><LoaderCircle size={16} /></span>
-          <span>Loading...</span>
+          <span>{t('artifactRefreshLoading')}</span>
         </>
       ) : (
         <>
           <RefreshCw size={16} />
-          <span>Refresh Status</span>
+          <span>{t('artifactRefreshStatus')}</span>
         </>
       )}
     </button>

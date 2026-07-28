@@ -5,7 +5,6 @@
   "extDescription": {
     "message": "Dein SAP CPI Produktivitäts-Toolkit"
   },
-  
   "settingsTitle": {
     "message": "Einstellungen"
   },
@@ -15,7 +14,6 @@
   "manageYourTenants": {
     "message": "Verwalten Sie Ihre SAP Cloud Integration Tenants"
   },
-  
   "customersAndTenants": {
     "message": "Kunden & Tenants"
   },
@@ -25,7 +23,6 @@
   "addTenant": {
     "message": "Tenant hinzufügen"
   },
-  
   "customerName": {
     "message": "Kundenname"
   },
@@ -35,7 +32,6 @@
   "addNewCustomer": {
     "message": "Neuen Kunden hinzufügen"
   },
-  
   "tenantName": {
     "message": "Tenant Name"
   },
@@ -48,7 +44,6 @@
   "tenantUrlPlaceholder": {
     "message": "https://dev-tenant.integrationsuite..."
   },
-  
   "save": {
     "message": "Speichern"
   },
@@ -61,21 +56,18 @@
   "delete": {
     "message": "Löschen"
   },
-  
   "noCustomersYet": {
     "message": "Noch keine Kunden angelegt. Klicken Sie auf \"Kunde hinzufügen\"."
   },
   "noTenantsYet": {
     "message": "Keine Tenants angelegt"
   },
-  
   "deleteCustomerConfirm": {
     "message": "Kunde wirklich löschen?"
   },
   "deleteTenantConfirm": {
     "message": "Tenant wirklich löschen?"
   },
-  
   "exportData": {
     "message": "Daten exportieren"
   },
@@ -100,7 +92,6 @@
   "last3Months": {
     "message": "Letzte 3 Monate"
   },
-  
   "validationNameRequired": {
     "message": "$TYPE$-Name darf nicht leer sein",
     "placeholders": {
@@ -149,7 +140,6 @@
   "validationUrlFormat": {
     "message": "URL entspricht nicht dem erwarteten Format:\nhttps://*.integrationsuite.cfapps.*.hana.ondemand.com"
   },
-  
   "errorAdding": {
     "message": "Fehler beim Hinzufügen: $ERROR$",
     "placeholders": {
@@ -171,7 +161,6 @@
   "errorBothFieldsRequired": {
     "message": "Bitte füllen Sie beide Felder aus"
   },
-
   "exportCancelled": {
     "message": "Export abgebrochen"
   },
@@ -195,5 +184,185 @@
   },
   "selectCustomer": {
     "message": "Kunde auswählen"
+  },
+  "traceLoadingProperties": {
+    "message": "Lade Eigenschaften..."
+  },
+  "traceNoExchangeProperties": {
+    "message": "Keine Exchange-Eigenschaften"
+  },
+  "traceLoadingHeaders": {
+    "message": "Lade Header..."
+  },
+  "traceNoMessageHeaders": {
+    "message": "Keine Message-Header"
+  },
+  "traceLoadingBody": {
+    "message": "Lade Body..."
+  },
+  "traceNoBodyContent": {
+    "message": "Kein Body-Inhalt"
+  },
+  "traceLoadingLog": {
+    "message": "Lade Log..."
+  },
+  "traceNoLogProperties": {
+    "message": "Keine Log-Eigenschaften"
+  },
+  "traceTiming": {
+    "message": "Zeiten"
+  },
+  "traceStart": {
+    "message": "Start"
+  },
+  "traceStop": {
+    "message": "Ende"
+  },
+  "traceDuration": {
+    "message": "Dauer"
+  },
+  "traceIdentifiers": {
+    "message": "Identifikatoren"
+  },
+  "traceStepId": {
+    "message": "StepId"
+  },
+  "traceModelStepId": {
+    "message": "ModelStepId"
+  },
+  "traceRunId": {
+    "message": "RunId"
+  },
+  "traceBranchId": {
+    "message": "BranchId"
+  },
+  "traceChildCount": {
+    "message": "ChildCount"
+  },
+  "traceStep": {
+    "message": "Trace Schritt"
+  },
+  "traceProperties": {
+    "message": "Eigenschaften"
+  },
+  "traceHeaders": {
+    "message": "Header"
+  },
+  "traceBody": {
+    "message": "Body"
+  },
+  "traceLog": {
+    "message": "Log"
+  },
+  "traceInfo": {
+    "message": "Info"
+  },
+  "traceError": {
+    "message": "Fehler"
+  },
+  "traceFailedToLoad": {
+    "message": "Laden fehlgeschlagen: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "logThrottleTopLoggers": {
+    "message": "Top Logger (Heute)"
+  },
+  "logThrottleHighlightAbove": {
+    "message": "Hervorheben ab:"
+  },
+  "logThrottlePerDay": {
+    "message": "/ Tag"
+  },
+  "logThrottleSilenceSelected": {
+    "message": "Auswahl stummschalten"
+  },
+  "logThrottleNoActivity": {
+    "message": "Heute keine Aktivität."
+  },
+  "logThrottleSilence": {
+    "message": "Stummschalten"
+  },
+  "logThrottleSelectAllAbove": {
+    "message": "Alle über Schwellenwert auswählen"
+  },
+  "logThrottleSelected": {
+    "message": "$COUNT$ ausgewählt",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "logThrottleClear": {
+    "message": "Leeren"
+  },
+  "msgDetailPayload": {
+    "message": "Payload"
+  },
+  "msgDetailProperties": {
+    "message": "Eigenschaften"
+  },
+  "msgDetailNoPersist": {
+    "message": "Keine Persist-Schritte gefunden"
+  },
+  "msgDetailLoading": {
+    "message": "Wird geladen..."
+  },
+  "msgDetailError": {
+    "message": "Fehler"
+  },
+  "msgDetailMessageDetail": {
+    "message": "Nachrichtendetails"
+  },
+  "msgDetailFailedToLoad": {
+    "message": "Laden fehlgeschlagen: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "msgDetailInfo": {
+    "message": "Info"
+  },
+  "msgDetailPersist": {
+    "message": "Persist"
+  },
+  "msgLogMessages": {
+    "message": "Nachrichten"
+  },
+  "msgLogNoMessages": {
+    "message": "Keine Nachrichten gefunden"
+  },
+  "msgLogNoMatching": {
+    "message": "Keine übereinstimmenden Nachrichten"
+  },
+  "artifactRefreshLoading": {
+    "message": "Wird geladen..."
+  },
+  "artifactRefreshStatus": {
+    "message": "Status aktualisieren"
+  },
+  "artifactUndeploying": {
+    "message": "Wird undeployed..."
+  },
+  "artifactUndeploy": {
+    "message": "Undeploy"
+  },
+  "quickLinksTitle": {
+    "message": "Schnellzugriff"
+  },
+  "quickLinksMore": {
+    "message": "Weitere Links"
+  },
+  "showToolbar": {
+    "message": "Symbolleiste anzeigen"
+  },
+  "hideToolbar": {
+    "message": "Symbolleiste ausblenden"
   }
 }

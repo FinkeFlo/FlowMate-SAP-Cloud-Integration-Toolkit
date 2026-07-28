@@ -5,6 +5,7 @@ import { ALL_LINKS } from '../tenant-link-definitions';
 import type { TenantLink } from '../tenant-link-definitions';
 import { getQuickLinksPreference, saveQuickLinksPreference } from '../quick-links-storage';
 import { buildTenantUrl } from '../tenant-url-builder';
+import { t } from '@/features/shared/i18n';
 import './SortableQuickLinks.css';
 
 interface SortableQuickLinksProps {
@@ -87,7 +88,7 @@ export function SortableQuickLinks({ host }: SortableQuickLinksProps) {
     <>
       <div class="tl-section">
         <div class="tl-quick-header">
-          <h3 class="tl-section-title">Quick Links</h3>
+          <h3 class="tl-section-title">{t('quickLinksTitle')}</h3>
           <button
             type="button"
             class={`tl-edit-btn${editMode ? ' tl-edit-btn--active' : ''}`}
@@ -132,7 +133,7 @@ export function SortableQuickLinks({ host }: SortableQuickLinksProps) {
           class="tl-more-header"
           onClick={() => { if (!editMode) setRestExpanded(prev => !prev); }}
         >
-          <span>More Links</span>
+          <span>{t('quickLinksMore')}</span>
           {restExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
         </button>
 

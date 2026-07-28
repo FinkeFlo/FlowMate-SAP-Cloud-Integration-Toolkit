@@ -3,6 +3,7 @@ import { LoaderCircle, CloudOff } from 'lucide-preact';
 import type { ArtifactStatus, DeployedArtifactInfo } from './ArtifactStatus';
 import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { fetchCpi } from '@/features/shared/fetch-client';
+import { t } from '@/features/shared/i18n';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
 import {
@@ -120,12 +121,12 @@ export function ArtifactUndeployButton({ artifactStatus }: ArtifactUndeployButto
       {running ? (
         <>
           <span class="flowmate-spin"><LoaderCircle size={16} /></span>
-          <span>Undeploying...</span>
+          <span>{t('artifactUndeploying')}</span>
         </>
       ) : (
         <>
           <CloudOff size={16} />
-          <span>Undeploy</span>
+          <span>{t('artifactUndeploy')}</span>
         </>
       )}
     </button>

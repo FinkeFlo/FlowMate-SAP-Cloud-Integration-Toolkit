@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { ChevronDown, ChevronUp } from 'lucide-preact';
 import { useDrag } from './useDrag';
+import { t } from '@/features/shared/i18n';
 import './DesignTimeToolbar.css';
 
 const MINIMIZED_STORAGE_KEY = 'flowmate-design-toolbar-minimized';
@@ -42,20 +43,20 @@ export function DesignTimeToolbar({ children }: DesignTimeToolbarProps) {
       {minimized ? (
         <button
           class="flex w-full items-center gap-2 rounded-md border-0 bg-transparent px-2 py-1 text-base-content transition-colors hover:bg-base-content/5 cursor-pointer"
-          title="Show toolbar"
+          title={t('showToolbar')}
           onClick={toggleMinimized}
         >
           <svg width="16" height="16" viewBox="0 0 128 128" aria-hidden="true">
             <rect width="128" height="128" rx="22" fill="#0070F2" />
             <path d="M 32 24 H 100 V 40 H 48 V 56 H 88 V 72 H 48 V 104 H 32 Z" fill="white" />
           </svg>
-          <span class="text-sm font-semibold leading-none">FlowMate</span>
+          <span class="text-sm font-semibold leading-none">{t('extName')}</span>
           <ChevronDown size={14} class="ml-auto opacity-60" />
         </button>
       ) : (
         <button
           class="flex w-full items-center justify-center rounded-md border-0 bg-transparent px-0 py-1 text-base-content-soft transition-colors hover:bg-base-content/5 hover:text-base-content cursor-pointer"
-          title="Hide toolbar"
+          title={t('hideToolbar')}
           onClick={toggleMinimized}
         >
           <ChevronUp size={16} />

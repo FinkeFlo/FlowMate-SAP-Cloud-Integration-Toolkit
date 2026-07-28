@@ -5,7 +5,6 @@
   "extDescription": {
     "message": "Your SAP CPI Productivity Toolkit"
   },
-  
   "settingsTitle": {
     "message": "Settings"
   },
@@ -15,7 +14,6 @@
   "manageYourTenants": {
     "message": "Manage your SAP Cloud Integration Tenants"
   },
-  
   "customersAndTenants": {
     "message": "Customers & Tenants"
   },
@@ -25,7 +23,6 @@
   "addTenant": {
     "message": "Add Tenant"
   },
-  
   "customerName": {
     "message": "Customer Name"
   },
@@ -35,7 +32,6 @@
   "addNewCustomer": {
     "message": "Add New Customer"
   },
-  
   "tenantName": {
     "message": "Tenant Name"
   },
@@ -48,7 +44,6 @@
   "tenantUrlPlaceholder": {
     "message": "https://dev-tenant.integrationsuite..."
   },
-  
   "save": {
     "message": "Save"
   },
@@ -61,21 +56,18 @@
   "delete": {
     "message": "Delete"
   },
-  
   "noCustomersYet": {
     "message": "No customers created yet. Click \"Add Customer\"."
   },
   "noTenantsYet": {
     "message": "No tenants created"
   },
-  
   "deleteCustomerConfirm": {
     "message": "Really delete customer?"
   },
   "deleteTenantConfirm": {
     "message": "Really delete tenant?"
   },
-  
   "exportData": {
     "message": "Export Data"
   },
@@ -100,7 +92,6 @@
   "last3Months": {
     "message": "Last 3 Months"
   },
-  
   "validationNameRequired": {
     "message": "$TYPE$ name cannot be empty",
     "placeholders": {
@@ -149,7 +140,6 @@
   "validationUrlFormat": {
     "message": "URL does not match expected format:\nhttps://*.integrationsuite.cfapps.*.hana.ondemand.com"
   },
-  
   "errorAdding": {
     "message": "Error adding: $ERROR$",
     "placeholders": {
@@ -171,7 +161,6 @@
   "errorBothFieldsRequired": {
     "message": "Please fill in both fields"
   },
-
   "exportCancelled": {
     "message": "Export cancelled"
   },
@@ -195,5 +184,185 @@
   },
   "selectCustomer": {
     "message": "Select Customer"
+  },
+  "traceLoadingProperties": {
+    "message": "Loading properties..."
+  },
+  "traceNoExchangeProperties": {
+    "message": "No exchange properties"
+  },
+  "traceLoadingHeaders": {
+    "message": "Loading headers..."
+  },
+  "traceNoMessageHeaders": {
+    "message": "No message headers"
+  },
+  "traceLoadingBody": {
+    "message": "Loading body..."
+  },
+  "traceNoBodyContent": {
+    "message": "No body content"
+  },
+  "traceLoadingLog": {
+    "message": "Loading log..."
+  },
+  "traceNoLogProperties": {
+    "message": "No log properties"
+  },
+  "traceTiming": {
+    "message": "Timing"
+  },
+  "traceStart": {
+    "message": "Start"
+  },
+  "traceStop": {
+    "message": "Stop"
+  },
+  "traceDuration": {
+    "message": "Duration"
+  },
+  "traceIdentifiers": {
+    "message": "Identifiers"
+  },
+  "traceStepId": {
+    "message": "StepId"
+  },
+  "traceModelStepId": {
+    "message": "ModelStepId"
+  },
+  "traceRunId": {
+    "message": "RunId"
+  },
+  "traceBranchId": {
+    "message": "BranchId"
+  },
+  "traceChildCount": {
+    "message": "ChildCount"
+  },
+  "traceStep": {
+    "message": "Trace Step"
+  },
+  "traceProperties": {
+    "message": "Properties"
+  },
+  "traceHeaders": {
+    "message": "Headers"
+  },
+  "traceBody": {
+    "message": "Body"
+  },
+  "traceLog": {
+    "message": "Log"
+  },
+  "traceInfo": {
+    "message": "Info"
+  },
+  "traceError": {
+    "message": "Error"
+  },
+  "traceFailedToLoad": {
+    "message": "Failed to load: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "logThrottleTopLoggers": {
+    "message": "Top loggers (today)"
+  },
+  "logThrottleHighlightAbove": {
+    "message": "Highlight above:"
+  },
+  "logThrottlePerDay": {
+    "message": "/ day"
+  },
+  "logThrottleSilenceSelected": {
+    "message": "Silence selected"
+  },
+  "logThrottleNoActivity": {
+    "message": "No activity today."
+  },
+  "logThrottleSilence": {
+    "message": "Silence"
+  },
+  "logThrottleSelectAllAbove": {
+    "message": "Select all above threshold"
+  },
+  "logThrottleSelected": {
+    "message": "$COUNT$ selected",
+    "placeholders": {
+      "count": {
+        "content": "$1"
+      }
+    }
+  },
+  "logThrottleClear": {
+    "message": "Clear"
+  },
+  "msgDetailPayload": {
+    "message": "Payload"
+  },
+  "msgDetailProperties": {
+    "message": "Properties"
+  },
+  "msgDetailNoPersist": {
+    "message": "No persist steps found"
+  },
+  "msgDetailLoading": {
+    "message": "Loading..."
+  },
+  "msgDetailError": {
+    "message": "Error"
+  },
+  "msgDetailMessageDetail": {
+    "message": "Message Detail"
+  },
+  "msgDetailFailedToLoad": {
+    "message": "Failed to load: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
+  },
+  "msgDetailInfo": {
+    "message": "Info"
+  },
+  "msgDetailPersist": {
+    "message": "Persist"
+  },
+  "msgLogMessages": {
+    "message": "Messages"
+  },
+  "msgLogNoMessages": {
+    "message": "No messages found"
+  },
+  "msgLogNoMatching": {
+    "message": "No matching messages"
+  },
+  "artifactRefreshLoading": {
+    "message": "Loading..."
+  },
+  "artifactRefreshStatus": {
+    "message": "Refresh Status"
+  },
+  "artifactUndeploying": {
+    "message": "Undeploying..."
+  },
+  "artifactUndeploy": {
+    "message": "Undeploy"
+  },
+  "quickLinksTitle": {
+    "message": "Quick Links"
+  },
+  "quickLinksMore": {
+    "message": "More Links"
+  },
+  "showToolbar": {
+    "message": "Show toolbar"
+  },
+  "hideToolbar": {
+    "message": "Hide toolbar"
   }
 }

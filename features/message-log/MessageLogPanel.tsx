@@ -3,6 +3,7 @@ import { Info, ExternalLink, Activity, RefreshCw, Layers } from 'lucide-preact';
 import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
+import { t } from '@/features/shared/i18n';
 import { MPL_STATUS_COLORS } from '@/features/shared/constants';
 import { extractIFlowId } from '@/features/trace-mode/trace-api';
 import { fetchMessages, fetchRuns } from './MplApiClient';
@@ -286,7 +287,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
       {/* Main button */}
       <button class="mpl-button" onClick={(e) => { e.stopPropagation(); togglePanel(); }}>
         <Activity size={16} />
-        <span>Messages</span>
+        <span>{t('msgLogMessages')}</span>
       </button>
 
       {/* Panel */}
@@ -340,12 +341,12 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
             {messages.length === 0 ? (
               <div class="mpl-empty">
                 <div class="mpl-empty-icon"><Activity size={24} /></div>
-                <span>No messages found</span>
+                <span>{t('msgLogNoMessages')}</span>
               </div>
             ) : filtered.length === 0 ? (
               <div class="mpl-empty">
                 <div class="mpl-empty-icon"><Activity size={24} /></div>
-                <span>No matching messages</span>
+                <span>{t('msgLogNoMatching')}</span>
               </div>
             ) : (
               Array.from(groups.entries()).map(([dateKey, msgs]) => (

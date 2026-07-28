@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'preact/hooks';
 import { LoaderCircle, X, Copy } from 'lucide-preact';
+import { t, tSub } from '@/features/shared/i18n';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
 import { MPL_STATUS_COLORS } from '@/features/shared/constants';
@@ -126,24 +127,24 @@ function EntryContent({ entryId, baseUrl }: EntryContentProps) {
   }, [entryId, baseUrl]);
 
   if (error) {
-    return <div style={{ padding: '16px', textAlign: 'center', color: '#ef4444' }}>Failed to load: {error}</div>;
+    return <div style={{ padding: '16px', textAlign: 'center', color: '#ef4444' }}>{tSub('msgDetailFailedToLoad', error)}</div>;
   }
 
   if (payload === null) {
     return (
       <div style={{ padding: '16px', textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
-        <span class="flowmate-spin"><LoaderCircle size={16} /></span> Loading...
+        <span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('msgDetailLoading')}
       </div>
     );
   }
 
   return (
     <div style={{ padding: '4px 0' }}>
-      <div class="entry-section-label">Payload</div>
+      <div class="entry-section-label">{t('msgDetailPayload')}</div>
       <pre class="payload-pre">{payload || '(empty)'}</pre>
       {properties && properties.length > 0 && (
         <>
-          <div class="entry-section-label" style={{ marginTop: '12px' }}>Properties</div>
+          <div class="entry-section-label" style={{ marginTop: '12px' }}>{t('msgDetailProperties')}</div>
           <table class="info-table">
             {properties.map((prop, i) => (
               <tr key={i}>
@@ -184,19 +185,19 @@ function PersistTab({ guid, baseUrl }: PersistTabProps) {
   }, [guid, baseUrl]);
 
   if (error) {
-    return <div style={{ padding: '24px', textAlign: 'center', color: '#ef4444' }}>Failed to load persist steps: {error}</div>;
+    return <div style={{ padding: '24px', textAlign: 'center', color: '#ef4444' }}>{tSub('msgDetailFailedToLoad', error)}</div>;
   }
 
   if (entries === null) {
     return (
       <div style={{ padding: '24px', textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
-        <span class="flowmate-spin"><LoaderCircle size={16} /></span> Loading persist steps...
+        <span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('msgDetailLoading')}
       </div>
     );
   }
 
   if (entries.length === 0) {
-    return <div style={{ padding: '32px', textAlign: 'center', color: 'rgba(255,255,255,0.3)' }}>No persist steps found</div>;
+    return <div style={{ padding: '32px', textAlign: 'center', color: 'rgba(255,255,255,0.3)' }}>{t('msgDetailNoPersist')}</div>;
   }
 
   return (
@@ -281,11 +282,11 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
       <div class="detail-overlay" onClick={handleOverlayClick}>
         <div class="detail-modal" onClick={(e) => e.stopPropagation()}>
           <div class="detail-header">
-            <span class="detail-title"><span class="flowmate-spin"><LoaderCircle size={16} /></span> Loading...</span>
+            <span class="detail-title"><span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('msgDetailLoading')}</span>
             <button class="detail-icon-btn" onClick={onClose}><X size={16} /></button>
           </div>
           <div class="detail-body" style={{ padding: '40px', textAlign: 'center', color: 'rgba(255,255,255,0.4)' }}>
-            <span class="flowmate-spin"><LoaderCircle size={16} /></span> Loading message details...
+            <span class="flowmate-spin"><LoaderCircle size={16} /></span> {t('msgDetailLoading')}
           </div>
         </div>
       </div>
@@ -298,11 +299,11 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
       <div class="detail-overlay" onClick={handleOverlayClick}>
         <div class="detail-modal" onClick={(e) => e.stopPropagation()}>
           <div class="detail-header">
-            <span class="detail-title">Error</span>
+            <span class="detail-title">{t('msgDetailError')}</span>
             <button class="detail-icon-btn" onClick={onClose}><X size={16} /></button>
           </div>
           <div class="detail-body" style={{ padding: '32px', textAlign: 'center', color: '#ef4444' }}>
-            Failed to load details: {error}
+            {tSub('msgDetailFailedToLoad', error)}
           </div>
         </div>
       </div>
@@ -321,7 +322,7 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
               width: '10px', height: '10px', borderRadius: '50%',
               background: statusColor, boxShadow: `0 0 6px ${statusColor}80`, flexShrink: 0,
             }} />
-            <span class="detail-title">Message Detail</span>
+            <span class="detail-title">{t('msgDetailMessageDetail')}</span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span class="detail-guid">{detail!.MessageGuid}</span>
@@ -341,13 +342,13 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
               class={`detail-tab ${activeTab === 'info' ? 'detail-tab--active' : ''}`}
               onClick={() => setActiveTab('info')}
             >
-              Info
+              {t('msgDetailInfo')}
             </button>
             <button
               class={`detail-tab ${activeTab === 'persist' ? 'detail-tab--active' : ''}`}
               onClick={() => setActiveTab('persist')}
             >
-              Persist
+              {t('msgDetailPersist')}
             </button>
           </div>
 
