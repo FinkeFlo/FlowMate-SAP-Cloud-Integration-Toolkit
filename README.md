@@ -74,12 +74,8 @@ Hot reload enabled - changes apply automatically without manual reload!
 
 ## Credits & Acknowledgements
 
-Several feature ideas in this extension were inspired by the excellent
-[CPI-Helper-Chrome-Extension](https://github.com/dbeck121/CPI-Helper-Chrome-Extension)
-by [dbeck121](https://github.com/dbeck121) and contributors — thank you for pioneering
-so many useful SAP CPI browser-tooling concepts! FlowMate is an independent,
-from-scratch implementation (no code was copied), built with our own architecture,
-UI, and codebase. Both projects are licensed under GPLv3.
+Feature ideas were inspired by [CPI-Helper-Chrome-Extension](https://github.com/dbeck121/CPI-Helper-Chrome-Extension)
+by dbeck121. FlowMate is an independent implementation with its own codebase.
 
 ## License
 
