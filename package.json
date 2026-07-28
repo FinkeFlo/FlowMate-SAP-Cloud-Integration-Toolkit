@@ -51,8 +51,5 @@
     "lucide-preact": "^1.14.0",
     "preact": "^10.28.4",
     "sortablejs": "^1.15.7"
-  },
-  "optionalDependencies": {
-    "@rolldown/binding-darwin-arm64": "^1.1.5"
   }
 }
