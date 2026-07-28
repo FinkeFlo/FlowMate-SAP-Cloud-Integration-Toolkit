@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2026-07-28
 ### Added
+- Core configuration files (`config/`) for SAP CPI environments.
+- Utility scripts (`scripts/`) for development and testing.
 - Initial setup of the WXT framework.
 - Tailwind CSS and DaisyUI configuration.
 - Basic project structure and core configurations.
