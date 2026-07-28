@@ -79,7 +79,7 @@ Several feature ideas in this extension were inspired by the excellent
 by [dbeck121](https://github.com/dbeck121) and contributors — thank you for pioneering
 so many useful SAP CPI browser-tooling concepts! FlowMate is an independent,
 from-scratch implementation (no code was copied), built with our own architecture,
-UI, and codebase.
+UI, and codebase. Both projects are licensed under GPLv3.
 
 ## License
 
