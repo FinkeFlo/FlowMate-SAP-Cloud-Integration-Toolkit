@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
-import { Info, ExternalLink, Activity, RefreshCw, Layers } from 'lucide-preact';
+import { Info, ExternalLink, Activity, RefreshCw, Layers, Check, X, Clock } from 'lucide-preact';
 import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
@@ -43,6 +43,14 @@ const FILTER_LABELS: Record<FilterCategory, string> = {
   success: 'Filter: Completed',
   error: 'Filter: Failed',
   processing: 'Filter: Processing / Escalated / Retry',
+};
+
+// Icons double up the color coding so filters stay distinguishable for
+// red/green color-blind users (deuteranopia/protanopia), not just by hue.
+const FILTER_ICON: Record<FilterCategory, typeof Check> = {
+  success: Check,
+  error: X,
+  processing: Clock,
 };
 
 function getStatusColor(status: MplStatus): string {
@@ -140,13 +148,16 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
 }
 
 function FilterDot({ category, active, onClick }: { category: FilterCategory; active: boolean; onClick: () => void }) {
+  const Icon = FILTER_ICON[category];
   return (
     <button
       class={`btn btn-circle btn-xs h-6 min-h-0 w-6 p-0 ${active ? FILTER_BORDER_CLASS[category] : 'border-base-300 opacity-40'}`}
       title={FILTER_LABELS[category]}
       onClick={(e) => { e.stopPropagation(); onClick(); }}
     >
-      <span class={`block h-2.5 w-2.5 rounded-full ${FILTER_DOT_CLASS[category]}`} />
+      <span class={`flex h-3.5 w-3.5 items-center justify-center rounded-full text-white ${FILTER_DOT_CLASS[category]}`}>
+        <Icon size={9} strokeWidth={3} />
+      </span>
     </button>
   );
 }
