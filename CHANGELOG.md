@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.1.0] - 2026-07-28
 ### Added
+- Comprehensive public README with installation and usage instructions.
+- Public documentation files (`docs/`).
 - Main SAP CPI integration modules (`features/`): Inline-Trace, Message Log, Settings, and more.
 - Browser extension entrypoints (`entrypoints/`): Background workers, content scripts, popup, and options pages.
 - Core configuration files (`config/`) for SAP CPI environments.
