@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
-import { Info, ExternalLink, Activity, RefreshCw, Layers } from 'lucide-preact';
+import { Info, ExternalLink, Activity, RefreshCw, Layers, Check, X, Clock, Ban } from 'lucide-preact';
 import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
@@ -45,6 +45,26 @@ const FILTER_LABELS: Record<FilterCategory, string> = {
   processing: 'Filter: Processing / Escalated / Retry',
 };
 
+// Icons double up the color coding so filters stay distinguishable for
+// red/green color-blind users (deuteranopia/protanopia), not just by hue.
+const FILTER_ICON: Record<FilterCategory, typeof Check> = {
+  success: Check,
+  error: X,
+  processing: Clock,
+};
+
+// Same idea, applied per-row: mirrors the filter dot icons so the individual
+// message status isn't conveyed by color alone either.
+const STATUS_ICON: Record<string, typeof Check> = {
+  COMPLETED: Check,
+  FAILED: X,
+  PROCESSING: Clock,
+  ESCALATED: Clock,
+  RETRY: Clock,
+  CANCELLED: Ban,
+  ABANDONED: Ban,
+};
+
 function getStatusColor(status: MplStatus): string {
   return MPL_STATUS_COLORS[status] ?? '#6b7280';
 }
@@ -66,6 +86,7 @@ interface MessageRowProps {
 
 function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }: MessageRowProps) {
   const color = getStatusColor(msg.Status);
+  const StatusIcon = STATUS_ICON[msg.Status];
   const endDate = parseODataDate(msg.LogEnd);
 
   async function openTrace() {
@@ -91,9 +112,11 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
       <div class="w-1.5 shrink-0" />
       <span
         title={msg.Status}
-        class="h-2.5 w-2.5 shrink-0 rounded-full"
+        class="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full text-white"
         style={{ background: color, boxShadow: `0 0 6px ${color}80` }}
-      />
+      >
+        {StatusIcon && <StatusIcon size={9} strokeWidth={3} />}
+      </span>
       <span class="font-mono text-xs text-base-content/80">{formatTime(endDate)}</span>
       <span class="rounded bg-base-200 px-1.5 py-0.5 font-mono text-[10px] font-bold text-base-content/60">
         {msg.LogLevel.charAt(0)}
@@ -140,13 +163,16 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
 }
 
 function FilterDot({ category, active, onClick }: { category: FilterCategory; active: boolean; onClick: () => void }) {
+  const Icon = FILTER_ICON[category];
   return (
     <button
       class={`btn btn-circle btn-xs h-6 min-h-0 w-6 p-0 ${active ? FILTER_BORDER_CLASS[category] : 'border-base-300 opacity-40'}`}
       title={FILTER_LABELS[category]}
       onClick={(e) => { e.stopPropagation(); onClick(); }}
     >
-      <span class={`block h-2.5 w-2.5 rounded-full ${FILTER_DOT_CLASS[category]}`} />
+      <span class={`flex h-3.5 w-3.5 items-center justify-center rounded-full text-white ${FILTER_DOT_CLASS[category]}`}>
+        <Icon size={9} strokeWidth={3} />
+      </span>
     </button>
   );
 }
