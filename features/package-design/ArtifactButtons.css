@@ -1,0 +1,41 @@
+.artifact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  user-select: none;
+}
+
+.artifact-btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.artifact-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.artifact-btn--refresh {
+  background: linear-gradient(135deg, #0a6ed1 0%, #0854a0 100%);
+  box-shadow: 0 4px 12px rgba(10, 110, 209, 0.4);
+}
+
+.artifact-btn--refresh:hover:not(:disabled) {
+  box-shadow: 0 6px 16px rgba(10, 110, 209, 0.5);
+}
+
+.artifact-btn--undeploy {
+  background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+}
+
+.artifact-btn--undeploy:hover:not(:disabled) {
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.5);
+}

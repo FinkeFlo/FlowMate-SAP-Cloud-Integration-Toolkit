@@ -1,0 +1,37 @@
+import { useState, useEffect } from 'preact/hooks';
+import { LoaderCircle, RefreshCw } from 'lucide-preact';
+import type { ArtifactStatus } from './ArtifactStatus';
+import './ArtifactButtons.css';
+
+interface ArtifactRefreshButtonProps {
+  artifactStatus: ArtifactStatus;
+}
+
+export function ArtifactRefreshButton({ artifactStatus }: ArtifactRefreshButtonProps) {
+  const [loading, setLoading] = useState(artifactStatus.isLoading);
+
+  useEffect(() => {
+    const unsub = artifactStatus.onLoadingChange(setLoading);
+    return unsub;
+  }, [artifactStatus]);
+
+  return (
+    <button
+      class="artifact-btn artifact-btn--refresh"
+      disabled={loading}
+      onClick={() => artifactStatus.refresh()}
+    >
+      {loading ? (
+        <>
+          <span class="flowmate-spin"><LoaderCircle size={16} /></span>
+          <span>Loading...</span>
+        </>
+      ) : (
+        <>
+          <RefreshCw size={16} />
+          <span>Refresh Status</span>
+        </>
+      )}
+    </button>
+  );
+}
