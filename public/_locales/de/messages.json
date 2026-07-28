@@ -1,0 +1,199 @@
+{
+  "extName": {
+    "message": "FlowMate"
+  },
+  "extDescription": {
+    "message": "Dein SAP CPI Produktivitäts-Toolkit"
+  },
+  
+  "settingsTitle": {
+    "message": "Einstellungen"
+  },
+  "openSettings": {
+    "message": "Einstellungen öffnen"
+  },
+  "manageYourTenants": {
+    "message": "Verwalten Sie Ihre SAP Cloud Integration Tenants"
+  },
+  
+  "customersAndTenants": {
+    "message": "Kunden & Tenants"
+  },
+  "addCustomer": {
+    "message": "Kunde hinzufügen"
+  },
+  "addTenant": {
+    "message": "Tenant hinzufügen"
+  },
+  
+  "customerName": {
+    "message": "Kundenname"
+  },
+  "customerNamePlaceholder": {
+    "message": "z.B. Acme, Contoso, Globex..."
+  },
+  "addNewCustomer": {
+    "message": "Neuen Kunden hinzufügen"
+  },
+  
+  "tenantName": {
+    "message": "Tenant Name"
+  },
+  "tenantNamePlaceholder": {
+    "message": "z.B. DEV, TEST, PROD"
+  },
+  "tenantUrl": {
+    "message": "URL"
+  },
+  "tenantUrlPlaceholder": {
+    "message": "https://dev-tenant.integrationsuite..."
+  },
+  
+  "save": {
+    "message": "Speichern"
+  },
+  "cancel": {
+    "message": "Abbrechen"
+  },
+  "edit": {
+    "message": "Bearbeiten"
+  },
+  "delete": {
+    "message": "Löschen"
+  },
+  
+  "noCustomersYet": {
+    "message": "Noch keine Kunden angelegt. Klicken Sie auf \"Kunde hinzufügen\"."
+  },
+  "noTenantsYet": {
+    "message": "Keine Tenants angelegt"
+  },
+  
+  "deleteCustomerConfirm": {
+    "message": "Kunde wirklich löschen?"
+  },
+  "deleteTenantConfirm": {
+    "message": "Tenant wirklich löschen?"
+  },
+  
+  "exportData": {
+    "message": "Daten exportieren"
+  },
+  "exportMessageUsage": {
+    "message": "Nachrichtenverbrauch exportieren"
+  },
+  "startDate": {
+    "message": "Startdatum"
+  },
+  "endDate": {
+    "message": "Enddatum"
+  },
+  "quickSelect": {
+    "message": "Schnellauswahl"
+  },
+  "lastMonth": {
+    "message": "Letzter Monat"
+  },
+  "currentMonth": {
+    "message": "Aktueller Monat"
+  },
+  "last3Months": {
+    "message": "Letzte 3 Monate"
+  },
+  
+  "validationNameRequired": {
+    "message": "$TYPE$-Name darf nicht leer sein",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Kunden"
+      }
+    }
+  },
+  "validationNameTooShort": {
+    "message": "$TYPE$-Name muss mindestens 2 Zeichen lang sein",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Kunden"
+      }
+    }
+  },
+  "validationNameTooLong": {
+    "message": "$TYPE$-Name darf maximal 50 Zeichen lang sein",
+    "placeholders": {
+      "type": {
+        "content": "$1",
+        "example": "Kunden"
+      }
+    }
+  },
+  "validationUrlRequired": {
+    "message": "URL darf nicht leer sein"
+  },
+  "validationUrlHttps": {
+    "message": "URL muss mit https:// beginnen"
+  },
+  "validationUrlInvalid": {
+    "message": "Ungültige URL"
+  },
+  "validationUrlMustContain": {
+    "message": "URL muss \"$PART$\" enthalten",
+    "placeholders": {
+      "part": {
+        "content": "$1",
+        "example": "integrationsuite"
+      }
+    }
+  },
+  "validationUrlFormat": {
+    "message": "URL entspricht nicht dem erwarteten Format:\nhttps://*.integrationsuite.cfapps.*.hana.ondemand.com"
+  },
+  
+  "errorAdding": {
+    "message": "Fehler beim Hinzufügen: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Netzwerkfehler"
+      }
+    }
+  },
+  "errorSaving": {
+    "message": "Fehler beim Speichern: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1",
+        "example": "Netzwerkfehler"
+      }
+    }
+  },
+  "errorBothFieldsRequired": {
+    "message": "Bitte füllen Sie beide Felder aus"
+  },
+
+  "exportCancelled": {
+    "message": "Export abgebrochen"
+  },
+  "exportFailed": {
+    "message": "Export fehlgeschlagen"
+  },
+  "noTenantsForCustomer": {
+    "message": "Keine Tenants für diesen Kunden gefunden"
+  },
+  "exportIncompleteDates": {
+    "message": "Einige Tage konnten nicht abgerufen werden"
+  },
+  "cancelExport": {
+    "message": "Abbrechen"
+  },
+  "selectBothDates": {
+    "message": "Bitte wählen Sie beide Daten aus"
+  },
+  "startBeforeEnd": {
+    "message": "Startdatum muss vor dem Enddatum liegen"
+  },
+  "selectCustomer": {
+    "message": "Kunde auswählen"
+  }
+}
