@@ -5,11 +5,12 @@
  * Supports Previous/Next navigation between steps.
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'preact/hooks';
+import { useState, useEffect, useMemo } from 'preact/hooks';
 import { X, ChevronLeft, ChevronRight, LoaderCircle } from 'lucide-preact';
 import { t, tSub } from '@/features/shared/i18n';
 import { devLog } from '@/features/shared/dev-logger';
 import { CodeViewer } from '@/features/shared/CodeViewer';
+import { DockPanel } from '@/features/shared/DockPanel';
 import { parseODataDate } from '@/features/message-log/mpl-types';
 import {
   fetchTraceMessages,
@@ -307,12 +308,6 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
     return () => document.removeEventListener('keydown', handler);
   }, [onClose, onNavigate, hasPrev, hasNext, currentIndex, allElements]);
 
-  const handleOverlayClick = useCallback((e: MouseEvent) => {
-    if ((e.target as HTMLElement).classList.contains('modal')) {
-      onClose();
-    }
-  }, [onClose]);
-
   const tabs: Array<{ id: TabId; label: string; show: boolean }> = [
     { id: 'properties', label: t('traceProperties'), show: true },
     { id: 'headers', label: t('traceHeaders'), show: true },
@@ -323,42 +318,42 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
   ];
 
   return (
-    <div class="modal modal-open" onClick={handleOverlayClick}>
-      <div class="modal-box flex max-h-[80vh] w-11/12 max-w-5xl flex-col overflow-hidden p-0" onClick={(e) => e.stopPropagation()}>
-        <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
-          <div class="flex min-w-0 items-center gap-2">
-            <span class={`h-2.5 w-2.5 shrink-0 rounded-full ${element.error ? 'bg-error' : 'bg-success'}`} />
-            <span class="text-sm font-semibold text-base-content">{t('traceStep')}</span>
-            <span class="truncate font-mono text-[11px] text-base-content/50">{element.modelStepId}</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <div class="flex items-center gap-1">
-              <button
-                class="btn btn-ghost btn-sm btn-square"
-                title="Previous step (←)"
-                disabled={!hasPrev}
-                onClick={() => hasPrev && onNavigate(allElements[currentIndex - 1])}
-              >
-                <ChevronLeft size={16} />
-              </button>
-              <span class="px-1 font-mono text-[11px] text-base-content/50">{currentIndex + 1}/{allElements.length}</span>
-              <button
-                class="btn btn-ghost btn-sm btn-square"
-                title="Next step"
-                disabled={!hasNext}
-                onClick={() => hasNext && onNavigate(allElements[currentIndex + 1])}
-              >
-                <ChevronRight size={16} />
+    <DockPanel
+      header={
+        <>
+          <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
+            <div class="flex min-w-0 items-center gap-2">
+              <span class={`h-2.5 w-2.5 shrink-0 rounded-full ${element.error ? 'bg-error' : 'bg-success'}`} />
+              <span class="text-sm font-semibold text-base-content">{t('traceStep')}</span>
+              <span class="truncate font-mono text-[11px] text-base-content/50">{element.modelStepId}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="flex items-center gap-1">
+                <button
+                  class="btn btn-ghost btn-sm btn-square"
+                  title="Previous step (←)"
+                  disabled={!hasPrev}
+                  onClick={() => hasPrev && onNavigate(allElements[currentIndex - 1])}
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <span class="px-1 font-mono text-[11px] text-base-content/50">{currentIndex + 1}/{allElements.length}</span>
+                <button
+                  class="btn btn-ghost btn-sm btn-square"
+                  title="Next step"
+                  disabled={!hasNext}
+                  onClick={() => hasNext && onNavigate(allElements[currentIndex + 1])}
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+              <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}>
+                <X size={16} />
               </button>
             </div>
-            <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}>
-              <X size={16} />
-            </button>
           </div>
-        </div>
 
-        <div class="overflow-y-auto">
-          <div class="tabs tabs-border px-4 pt-2">
+          <div class="tabs tabs-border border-b border-base-300 px-4 pt-2">
             {tabs.filter(tab => tab.show).map(tab => (
               <button
                 key={tab.id}
@@ -369,31 +364,31 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
               </button>
             ))}
           </div>
-
-          <div class="p-4">
-            <div style={{ display: activeTab === 'properties' ? 'block' : 'none' }}>
-              <PropertiesTab key={element.stepId} traceId={traceId} baseUrl={baseUrl} />
-            </div>
-            <div style={{ display: activeTab === 'headers' ? 'block' : 'none' }}>
-              <HeadersTab key={element.stepId} traceId={traceId} baseUrl={baseUrl} />
-            </div>
-            <div style={{ display: activeTab === 'body' ? 'block' : 'none' }}>
-              <BodyTab key={element.stepId} traceId={traceId} baseUrl={baseUrl} />
-            </div>
-            <div style={{ display: activeTab === 'log' ? 'block' : 'none' }}>
-              <LogTab key={element.stepId} baseUrl={baseUrl} element={element} />
-            </div>
-            <div style={{ display: activeTab === 'info' ? 'block' : 'none' }}>
-              <InfoTab element={element} avgDurationMs={avgDurationMs} />
-            </div>
-            {element.error && (
-              <div style={{ display: activeTab === 'error' ? 'block' : 'none' }}>
-                <div class="alert alert-error text-sm whitespace-pre-wrap break-all">{element.error}</div>
-              </div>
-            )}
-          </div>
+        </>
+      }
+    >
+      <div class="p-4">
+        <div style={{ display: activeTab === 'properties' ? 'block' : 'none' }}>
+          <PropertiesTab key={element.stepId} traceId={traceId} baseUrl={baseUrl} />
         </div>
+        <div style={{ display: activeTab === 'headers' ? 'block' : 'none' }}>
+          <HeadersTab key={element.stepId} traceId={traceId} baseUrl={baseUrl} />
+        </div>
+        <div style={{ display: activeTab === 'body' ? 'block' : 'none' }}>
+          <BodyTab key={element.stepId} traceId={traceId} baseUrl={baseUrl} />
+        </div>
+        <div style={{ display: activeTab === 'log' ? 'block' : 'none' }}>
+          <LogTab key={element.stepId} baseUrl={baseUrl} element={element} />
+        </div>
+        <div style={{ display: activeTab === 'info' ? 'block' : 'none' }}>
+          <InfoTab element={element} avgDurationMs={avgDurationMs} />
+        </div>
+        {element.error && (
+          <div style={{ display: activeTab === 'error' ? 'block' : 'none' }}>
+            <div class="alert alert-error text-sm whitespace-pre-wrap break-all">{element.error}</div>
+          </div>
+        )}
       </div>
-    </div>
+    </DockPanel>
   );
 }

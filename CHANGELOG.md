@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- `DockPanel` component (`features/shared/DockPanel.tsx`): a bottom-docked, user-resizable panel replacing centered modals for tabbed, data-heavy detail views.
 - `DESIGN.md` documenting the flowmate daisyUI theme (colors, typography, shapes) for humans and AI agents, following the DESIGN.md format.
+
+### Changed
+- `TraceStepPopup` and `MessageDetailPopup` now use `DockPanel` instead of a centered `modal modal-open` — fixes the popup visually "jumping"/re-centering when switching tabs with different content heights (e.g. Properties → Body). Tabs are now pinned and no longer scroll out of view with long content.
 
 ### Fixed
 - Darkened `success` (#16a34a → #15803d) and `warning` (#d97706 → #b45309) theme colors to meet WCAG AA contrast (4.5:1) for white button/badge text — found via `design.md lint`.
