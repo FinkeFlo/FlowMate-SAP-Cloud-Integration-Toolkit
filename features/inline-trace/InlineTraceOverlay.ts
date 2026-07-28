@@ -16,12 +16,18 @@ import type { InlineTraceElement, PerformanceTier, RunStep } from './inline-trac
 const LOG_TAG = 'InlineTraceOverlay';
 const TRACE_CLICKABLE_CLASS = 'cursor-pointer';
 
-const COLOR_SUCCESS = 'var(--color-success)';
-const COLOR_ERROR = 'var(--color-error)';
-const COLOR_PRIMARY = 'var(--color-primary)';
-const COLOR_INFO = 'var(--color-info)';
-const COLOR_WARNING = 'var(--color-warning)';
-const COLOR_ACCENT = 'var(--color-accent)';
+// Hardcoded hex values (not `var(--color-*)`) — these are applied directly to
+// SVG elements on the SAP host page, *outside* our Shadow Root. daisyUI's CSS
+// custom properties only exist inside the Shadow Root (`data-theme="flowmate"`),
+// so `var(--color-success)` etc. would be invalid there and the SVG `fill`
+// would fall back to its initial value (black), painting the shapes solid
+// black. Keep these in sync with the `flowmate` theme in assets/flowmate-theme.css.
+const COLOR_SUCCESS = '#15803d';
+const COLOR_ERROR = '#d32f2f';
+const COLOR_PRIMARY = '#0070f2';
+const COLOR_INFO = '#0a6ed1';
+const COLOR_WARNING = '#b45309';
+const COLOR_ACCENT = '#0070f2';
 
 type StepClickHandler = (element: InlineTraceElement, allElements: InlineTraceElement[]) => void;
 

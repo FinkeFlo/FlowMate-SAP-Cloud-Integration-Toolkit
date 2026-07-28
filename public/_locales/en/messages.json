@@ -260,6 +260,12 @@
   "traceError": {
     "message": "Error"
   },
+  "codeViewerFormat": {
+    "message": "Format"
+  },
+  "codeViewerRaw": {
+    "message": "Raw"
+  },
   "traceFailedToLoad": {
     "message": "Failed to load: $ERROR$",
     "placeholders": {
