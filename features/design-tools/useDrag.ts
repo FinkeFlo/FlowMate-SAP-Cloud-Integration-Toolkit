@@ -27,6 +27,11 @@ function savePosition(x: number, y: number): void {
 
 export function useDrag() {
   const containerRef = useRef<HTMLDivElement>(null);
+  // Drag start/move/up handlers are only ever attached to this element (the
+  // header/handle), so pointer capture must be set on this same element too —
+  // capturing on a different node than the one holding the listeners would
+  // silently stop them from receiving the retargeted events.
+  const handleRef = useRef<HTMLButtonElement>(null);
   const stateRef = useRef({
     isDragging: false,
     wasDragged: false,
@@ -56,8 +61,9 @@ export function useDrag() {
 
   const onPointerMove = useCallback((e: PointerEvent) => {
     const s = stateRef.current;
-    const el = containerRef.current;
-    if (!s.isDragging || e.pointerId !== s.activePointerId || !el) return;
+    const container = containerRef.current;
+    const handle = handleRef.current;
+    if (!s.isDragging || e.pointerId !== s.activePointerId || !container || !handle) return;
 
     const dx = e.clientX - s.startX;
     const dy = e.clientY - s.startY;
@@ -68,33 +74,34 @@ export function useDrag() {
 
     if (!s.wasDragged) {
       s.wasDragged = true;
-      el.setPointerCapture(e.pointerId);
-      el.style.cursor = 'grabbing';
+      handle.setPointerCapture(e.pointerId);
+      container.style.cursor = 'grabbing';
     }
 
-    const rect = el.getBoundingClientRect();
+    const rect = container.getBoundingClientRect();
     let newX = e.clientX - s.offsetX;
     let newY = e.clientY - s.offsetY;
     newX = Math.max(0, Math.min(newX, window.innerWidth - rect.width));
     newY = Math.max(0, Math.min(newY, window.innerHeight - rect.height));
 
-    el.style.left = `${newX}px`;
-    el.style.top = `${newY}px`;
-    el.style.right = 'auto';
+    container.style.left = `${newX}px`;
+    container.style.top = `${newY}px`;
+    container.style.right = 'auto';
   }, []);
 
   const onPointerUp = useCallback((e: PointerEvent) => {
     const s = stateRef.current;
-    const el = containerRef.current;
-    if (!s.isDragging || e.pointerId !== s.activePointerId || !el) return;
+    const container = containerRef.current;
+    const handle = handleRef.current;
+    if (!s.isDragging || e.pointerId !== s.activePointerId || !container || !handle) return;
 
     s.isDragging = false;
     s.activePointerId = null;
 
     if (s.wasDragged) {
-      el.releasePointerCapture(e.pointerId);
-      el.style.cursor = 'grab';
-      const rect = el.getBoundingClientRect();
+      handle.releasePointerCapture(e.pointerId);
+      container.style.cursor = 'grab';
+      const rect = container.getBoundingClientRect();
       savePosition(rect.left, rect.top);
     }
   }, []);
@@ -111,6 +118,7 @@ export function useDrag() {
 
   return {
     containerRef,
+    handleRef,
     initialPosition,
     dragHandlers: {
       onPointerDown,
