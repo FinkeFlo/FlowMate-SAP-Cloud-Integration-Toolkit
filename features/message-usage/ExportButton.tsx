@@ -133,7 +133,7 @@ export function ExportButton() {
     for (let i = 0; i < customer.tenants.length; i++) {
       if (signal.aborted) break;
 
-      const tenant = customer.tenants[i];
+      const tenant = customer.tenants[i]!;
       if (mountedRef.current) {
         setProgressText(
           `${t('cancelExport') || 'Cancel'} - ${tenant.name} (${i + 1}/${customer.tenants.length})`,

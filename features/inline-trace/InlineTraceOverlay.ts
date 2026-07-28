@@ -58,11 +58,12 @@ export class InlineTraceOverlay {
         return false;
       }
 
-      let selectedRun = runs[0];
+      // Safe: guarded by the runs.length === 0 check above.
+      let selectedRun = runs[0]!;
       if (runs.length > 1) {
         const state = selectedRun.OverallState;
         if (state !== 'COMPLETED' && state !== 'ESCALATED') {
-          selectedRun = runs[1];
+          selectedRun = runs[1]!;
         }
       }
       const runId = selectedRun.Id;

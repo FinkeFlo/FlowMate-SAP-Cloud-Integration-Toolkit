@@ -12,7 +12,7 @@ const LOG_TAG = 'TraceApi';
 
 export function extractIFlowId(): string | null {
   const match = window.location.pathname.match(/\/integrationflows\/([^/]+)/);
-  return match ? match[1] : null;
+  return match ? match[1]! : null;
 }
 
 async function getArtifactId(iflowId: string): Promise<string> {

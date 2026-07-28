@@ -229,8 +229,8 @@ function PersistTab({ guid, baseUrl }: PersistTabProps) {
         ))}
       </div>
       <EntryContent
-        key={entries[activeEntry].Id}
-        entryId={entries[activeEntry].Id}
+        key={entries[activeEntry]!.Id}
+        entryId={entries[activeEntry]!.Id}
         baseUrl={baseUrl}
       />
     </div>

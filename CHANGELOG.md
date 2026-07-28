@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Upgraded `wxt` 0.20.27 → 0.21.2 (and its `vite`/`rolldown` toolchain), which removes the unused `web-ext-run` dependency and with it four vulnerable transitive packages (`shell-quote` critical+high, `adm-zip` high, `tmp` high, `uuid` medium). Added `@types/node` as an explicit dev dependency (needed by `wxt.config.ts`'s `node:fs`/`node:path` imports, previously resolved transitively) and dropped the now-unsupported `esbuild.charset` Vite option (Vite 8 no longer exposes it; ASCII-escaping for content scripts is still handled by the existing `asciiContentScriptPlugin`).
+- Enabled by wxt 0.21's generated `tsconfig`: `noUncheckedIndexedAccess`. Fixed the ~20 newly-surfaced strict-null findings across `InlineTraceOverlay.ts`, `TraceStepPopup.tsx`, `MessageDetailPopup.tsx`, `MessageLogPanel.tsx`, `ExportButton.tsx`, `ArtifactStatus.ts`, `api-client.ts`, and `trace-api.ts` — all were array-index accesses already guarded by a preceding length/existence check, so fixed with narrow non-null assertions at the guarded call sites.
+
 ### Added
 - `CodeViewer` size guards + download: payloads over ~2 MB skip CodeMirror rendering entirely (avoids freezing the UI on huge message bodies) and show a "Download" action instead; the pretty-print formatter is skipped above ~500 KB for the same reason. A "Download" button is now always available in `CodeViewer` (Body tab, Persist tab) to save the currently displayed payload as a `.json`/`.xml`/`.txt` file.
 - Optional JSON/XML "Format" toggle in `CodeViewer` (`features/shared/CodeViewer.tsx`, `features/shared/formatters.ts`): reformats a compact/minified payload into an indented, readable view on demand, off by default so the raw payload is shown unchanged. Used by both the inline-trace Body tab and the Message Detail Persist tab (now rendered via `CodeViewer` for syntax highlighting too).

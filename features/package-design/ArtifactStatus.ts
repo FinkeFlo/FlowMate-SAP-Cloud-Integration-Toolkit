@@ -62,7 +62,7 @@ export class ArtifactStatus {
 
   private getPackageIdFromUrl(): string | null {
     const match = window.location.href.match(/contentpackage\/([^?]+)/);
-    return match ? match[1] : null;
+    return match ? match[1]! : null;
   }
 
   /**
@@ -297,7 +297,7 @@ export class ArtifactStatus {
         this.addStatusIndicator(nameElement, status, designTimeVersion);
       } else if (textNodes.length > 0 && !foundSymbolicName) {
         // Artifact is not in the deployed map — show "NOT DEPLOYED"
-        const candidateText = textNodes[0];
+        const candidateText = textNodes[0]!;
         const candidateElement = this.findElementWithText(rowEl, candidateText);
         if (candidateElement) {
           this.addNotDeployedIndicator(candidateElement);
