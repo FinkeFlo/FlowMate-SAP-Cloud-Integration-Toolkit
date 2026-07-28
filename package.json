@@ -22,12 +22,12 @@
   },
   "devDependencies": {
     "@release-it/conventional-changelog": "^11.0.0",
-    "@tailwindcss/vite": "^4.3.0",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/sortablejs": "^1.15.9",
-    "daisyui": "^5.5.19",
+    "daisyui": "^5.7.4",
     "playwright": "^1.55.0",
     "release-it": "^20.0.1",
-    "tailwindcss": "^4.3.0",
+    "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "wxt": "^0.20.6"
   },

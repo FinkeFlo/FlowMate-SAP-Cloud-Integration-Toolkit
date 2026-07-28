@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Changed
+- Adopted daisyUI + Tailwind CSS v4 as the single mandatory styling framework across the entire extension (content-script overlay, Options page, Popup), replacing all hand-rolled component CSS.
+- Introduced one shared light theme (`flowmate`) — no dark theme, matching SAP Cloud Integration's own UI.
+- Documented the UI framework choice and the Shadow-DOM theming caveat in `CONTRIBUTING.md`.
+
 ## [0.1.0] - 2026-07-28
 ### Added
 - Extracted hardcoded UI strings to `i18n` localization dictionaries (English & German).

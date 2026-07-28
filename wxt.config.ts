@@ -1,5 +1,6 @@
 import { defineConfig } from 'wxt';
 import preact from '@preact/preset-vite';
+import tailwindcss from '@tailwindcss/vite';
 import { mkdirSync, appendFileSync, writeFileSync, readdirSync, statSync, unlinkSync, writeFile } from 'node:fs';
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
@@ -106,7 +107,7 @@ export default defineConfig({
     disabled: true,
   },
   vite: () => ({
-    plugins: [preact(), devLoggerPlugin(), asciiContentScriptPlugin()],
+    plugins: [tailwindcss(), preact(), devLoggerPlugin(), asciiContentScriptPlugin()],
     esbuild: {
       charset: 'ascii',
     },
