@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- `CodeViewer` size guards + download: payloads over ~2 MB skip CodeMirror rendering entirely (avoids freezing the UI on huge message bodies) and show a "Download" action instead; the pretty-print formatter is skipped above ~500 KB for the same reason. A "Download" button is now always available in `CodeViewer` (Body tab, Persist tab) to save the currently displayed payload as a `.json`/`.xml`/`.txt` file.
+- Optional JSON/XML "Format" toggle in `CodeViewer` (`features/shared/CodeViewer.tsx`, `features/shared/formatters.ts`): reformats a compact/minified payload into an indented, readable view on demand, off by default so the raw payload is shown unchanged. Used by both the inline-trace Body tab and the Message Detail Persist tab (now rendered via `CodeViewer` for syntax highlighting too).
 - `DockPanel` component (`features/shared/DockPanel.tsx`): a bottom-docked, user-resizable panel replacing centered modals for tabbed, data-heavy detail views.
 - `DESIGN.md` documenting the flowmate daisyUI theme (colors, typography, shapes) for humans and AI agents, following the DESIGN.md format.
 - CI workflow (`.github/workflows/ci.yml`): typecheck, ESLint, `DESIGN.md` lint, and chrome/firefox build checks on every PR and push to `main`, gated behind a single aggregating `CI` job for stable branch-protection status checks.
@@ -17,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Replaced substring-based `hana.ondemand.com` hostname checks with anchored `endsWith`/hostname-parsed checks in `validators.ts` and `useActiveTenant.ts` — fixes CodeQL "Incomplete URL substring sanitization" alerts (bypassable via crafted hostnames like `evil-hana.ondemand.com.attacker.com`).
+- Inline-trace step highlighting (`InlineTraceOverlay.ts`) set `fill`/`stroke` on BPMN SVG shapes using `var(--color-success)` etc. — these daisyUI CSS variables only exist inside our Shadow Root, so on the SAP host page (outside the Shadow Root) they were invalid, causing the SVG `fill` to fall back to its initial value and paint highlighted steps solid black. Now uses hardcoded hex values matching the `flowmate` theme.
+- Message log row action buttons (Info/Open in Monitoring/Inline Trace/Open Trace) were hidden until hover, causing them to appear/disappear and shift focus when moving the mouse; now always visible.
+- `CodeViewer` used CodeMirror's bundled dark `oneDark` theme, which looked out of place against the rest of the (light-only) extension UI; replaced with a light theme matching the `flowmate` palette, slightly larger font size, and soft line-wrapping for long lines (copy/paste still yields the original, unwrapped content).
 
 ### Changed
 - `TraceStepPopup` and `MessageDetailPopup` now use `DockPanel` instead of a centered `modal modal-open` — fixes the popup visually "jumping"/re-centering when switching tabs with different content heights (e.g. Properties → Body). Tabs are now pinned and no longer scroll out of view with long content.

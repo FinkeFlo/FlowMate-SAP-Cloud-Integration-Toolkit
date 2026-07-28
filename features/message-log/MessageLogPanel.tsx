@@ -99,7 +99,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
         {msg.LogLevel.charAt(0)}
       </span>
       <div class="flex-1" />
-      <div class="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+      <div class="flex gap-1">
         <button
           class="btn btn-ghost btn-xs btn-square"
           title="Message Details"

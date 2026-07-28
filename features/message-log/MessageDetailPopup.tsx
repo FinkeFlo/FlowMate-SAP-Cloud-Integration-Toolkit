@@ -5,6 +5,7 @@ import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
 import { MPL_STATUS_COLORS } from '@/features/shared/constants';
 import { DockPanel } from '@/features/shared/DockPanel';
+import { CodeViewer } from '@/features/shared/CodeViewer';
 import {
   fetchMessageDetail,
   fetchMessageStoreEntries,
@@ -149,7 +150,7 @@ function EntryContent({ entryId, baseUrl }: EntryContentProps) {
     <div class="space-y-4 py-1">
       <div>
         <div class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-base-content/50">{t('msgDetailPayload')}</div>
-        <pre class="m-0 max-h-[400px] overflow-auto rounded-box border border-base-300 bg-base-200/60 p-3 font-mono text-xs whitespace-pre-wrap break-all text-base-content">{payload || '(empty)'}</pre>
+        {payload ? <CodeViewer content={payload} maxHeight="400px" /> : <div class="py-2 text-sm text-base-content/50">(empty)</div>}
       </div>
       {properties && properties.length > 0 && (
         <div>
