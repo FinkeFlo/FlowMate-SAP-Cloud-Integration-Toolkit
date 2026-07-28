@@ -107,10 +107,9 @@ export default defineConfig({
     disabled: true,
   },
   vite: () => ({
+    // Vite 8's esbuild option no longer supports `charset`; ASCII-escaping for
+    // content scripts is still handled explicitly by asciiContentScriptPlugin().
     plugins: [tailwindcss(), preact(), devLoggerPlugin(), asciiContentScriptPlugin()],
-    esbuild: {
-      charset: 'ascii',
-    },
   }),
   manifest: {
     name: '__MSG_extName__',

@@ -82,7 +82,7 @@ export class CPIApiClient {
         break;
       }
 
-      const date = availableDates[i];
+      const date = availableDates[i]!;
       try {
         const data = await this.getSpecificDate(date);
         dayData.push(data);

@@ -26,6 +26,7 @@
     "@google/design.md": "^0.4.0",
     "@release-it/conventional-changelog": "^11.0.0",
     "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "^24.13.3",
     "@types/sortablejs": "^1.15.9",
     "daisyui": "^5.7.4",
     "eslint": "^9.39.5",
@@ -36,7 +37,7 @@
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.65.0",
-    "wxt": "^0.20.6"
+    "wxt": "^0.21.2"
   },
   "dependencies": {
     "@codemirror/lang-json": "^6.0.2",
@@ -50,5 +51,8 @@
     "lucide-preact": "^1.14.0",
     "preact": "^10.28.4",
     "sortablejs": "^1.15.7"
+  },
+  "optionalDependencies": {
+    "@rolldown/binding-darwin-arm64": "^1.1.5"
   }
 }

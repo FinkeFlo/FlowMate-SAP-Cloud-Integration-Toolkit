@@ -76,7 +76,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
         showToast('No trace runs found for this message', 'warning');
         return;
       }
-      const runId = runs[0].Id;
+      const runId = runs[0]!.Id;
       const traceUrl = `${window.location.origin}${baseUrl}/shell/monitoring/MessageProcessingRun?MessageGuid='${msg.MessageGuid}'&RunId='${runId}'`;
       window.open(traceUrl, '_blank');
       devLog.info(LOG_TAG, 'Opened trace', { messageGuid: msg.MessageGuid, runId });

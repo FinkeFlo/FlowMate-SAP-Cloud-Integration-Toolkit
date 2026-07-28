@@ -287,7 +287,7 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
       try {
         const msgs = await fetchTraceMessages(baseUrl, element.runId, element.childCount);
         if (!cancelled && msgs.length > 0) {
-          setTraceId(msgs[0].TraceId);
+          setTraceId(msgs[0]!.TraceId);
         }
       } catch (err) {
         devLog.error(LOG_TAG, 'Failed to fetch TraceId', { error: String(err) });
@@ -301,8 +301,8 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
       const target = e.target as HTMLElement;
       if (target.closest?.('.cm-editor') || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') return;
       if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft' && hasPrev) onNavigate(allElements[currentIndex - 1]);
-      if (e.key === 'ArrowRight' && hasNext) onNavigate(allElements[currentIndex + 1]);
+      if (e.key === 'ArrowLeft' && hasPrev) onNavigate(allElements[currentIndex - 1]!);
+      if (e.key === 'ArrowRight' && hasNext) onNavigate(allElements[currentIndex + 1]!);
     };
     document.addEventListener('keydown', handler);
     return () => document.removeEventListener('keydown', handler);
@@ -333,7 +333,7 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
                   class="btn btn-ghost btn-sm btn-square"
                   title="Previous step (←)"
                   disabled={!hasPrev}
-                  onClick={() => hasPrev && onNavigate(allElements[currentIndex - 1])}
+                  onClick={() => hasPrev && onNavigate(allElements[currentIndex - 1]!)}
                 >
                   <ChevronLeft size={16} />
                 </button>
@@ -342,7 +342,7 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
                   class="btn btn-ghost btn-sm btn-square"
                   title="Next step"
                   disabled={!hasNext}
-                  onClick={() => hasNext && onNavigate(allElements[currentIndex + 1])}
+                  onClick={() => hasNext && onNavigate(allElements[currentIndex + 1]!)}
                 >
                   <ChevronRight size={16} />
                 </button>
