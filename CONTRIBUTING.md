@@ -47,7 +47,13 @@ The extension is built on top of the [WXT framework](https://wxt.dev/).
    Do not use hardcoded text strings in UI components. All user-facing strings must be defined in the localization dictionaries (`public/_locales/en/messages.json` & `de/messages.json`). Reference them in code using the `t('key')` function exported from `features/shared/i18n.ts`.
 
 3. **UI Framework**
-   The UI is built using **Preact** (TSX) and **Tailwind CSS**. Keep UI components focused on rendering and decouple business logic into separate hooks or utility functions where possible.
+   The UI is built using **Preact** (TSX), **Tailwind CSS v4**, and **daisyUI v5**. This is the single, mandatory styling stack across the entire extension (content-script overlay, Options page, Popup) — do not introduce other CSS frameworks or hand-rolled component CSS files.
+   - Use daisyUI component classes (`btn`, `card`, `modal`, `input input-bordered`, `checkbox`, `alert`, `badge`, etc.) first, and Tailwind utility classes for layout/spacing on top.
+   - There is exactly **one** theme, `flowmate` (light), defined in `assets/flowmate-theme.css`. There is intentionally **no dark theme** — SAP Cloud Integration itself has no dark mode, so we don't need one either.
+   - Every entrypoint (`entrypoints/content.ts`, `entrypoints/options/main.ts`, `entrypoints/popup/main.ts`) must import `@/assets/flowmate-theme.css` and every root HTML element must set `data-theme="flowmate"`.
+   - **Shadow DOM gotcha**: the content script renders inside a Shadow Root (`createShadowRootUi`, `cssInjectionMode: 'ui'`) for style isolation from the SAP host page. daisyUI/Tailwind apply theme CSS variables via a `:root`/`[data-theme=...]` selector, and `:root` never matches inside a shadow tree. This is why `data-theme="flowmate"` must be set explicitly on the shadow container element in code (see `entrypoints/content.ts`), not just on `<html>`.
+   - Only keep a component-local `.css` file if it defines a genuinely custom `@keyframes` animation with no Tailwind/daisyUI equivalent (see `features/design-tools/DesignTimeToolbar.css` for the pattern) — never for layout or color rules.
+   - Keep UI components focused on rendering and decouple business logic into separate hooks or utility functions where possible.
 
 ---
 
