@@ -1,0 +1,158 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.RELEASE_BOT_APP_ID }}
+          private-key: ${{ secrets.RELEASE_BOT_PRIVATE_KEY }}
+
+      # Checkout the tag commit initially
+      - name: Checkout tag
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          fetch-depth: 0
+
+      - name: Extract version from tag
+        id: ver
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Target Release Version: $VERSION"
+
+      # Guard against infinite loops: if the tag already points to a commit
+      # where the version is bumped, we skip processing.
+      - name: Check if version is already bumped
+        id: guard
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          CURRENT_VERSION="$(node -p "require('./package.json').version")"
+          echo "Current codebase version: $CURRENT_VERSION"
+          if [ "$CURRENT_VERSION" = "$VERSION" ]; then
+            echo "already_bumped=true" >> "$GITHUB_OUTPUT"
+            echo "Version is already bumped in this commit. Skipping code modification."
+          else
+            echo "already_bumped=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Configure Git Bot
+        if: steps.guard.outputs.already_bumped == 'false'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Update versions and changelog in codebase
+        if: steps.guard.outputs.already_bumped == 'false'
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          echo "Setting codebase version to $VERSION"
+
+          # 1. Update package.json / package-lock.json (no git tag, we manage tags ourselves)
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
+
+          # 2. Update CHANGELOG.md (replace Unreleased heading with the version and current date)
+          TODAY=$(date +%Y-%m-%d)
+          if grep -q "^## \[Unreleased\]" CHANGELOG.md; then
+            echo "Updating CHANGELOG.md: replacing [Unreleased] with [$VERSION] - $TODAY"
+            sed -i "s/^## \[Unreleased\]/## [$VERSION] - $TODAY/" CHANGELOG.md
+          else
+            echo "No [Unreleased] heading found in CHANGELOG.md. Skipping changelog update."
+          fi
+
+      - name: Commit and push version bump to main
+        if: steps.guard.outputs.already_bumped == 'false'
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+
+          # Checkout main branch to apply the commit onto main
+          git checkout main
+
+          git add package.json package-lock.json CHANGELOG.md
+          git commit -m "chore: bump version to $VERSION [skip ci]"
+          git push origin main
+
+      - name: Update tag to point to the new main commit
+        if: steps.guard.outputs.already_bumped == 'false'
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          # Move tag to the new commit on main (which contains the skip ci commit)
+          git tag -d "v$VERSION"
+          git tag "v$VERSION" origin/main
+          git push origin :refs/tags/v$VERSION
+          git push origin "v$VERSION"
+
+      # If we skipped because it was already bumped, we can just exit early in this job run
+      # to prevent duplicate builds/releases.
+      - name: Exit early for duplicate trigger
+        if: steps.guard.outputs.already_bumped == 'true'
+        run: |
+          echo "This run was triggered by the tag re-push. Exiting to avoid duplicate build."
+          exit 0
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run compile
+
+      - name: Build & package extension zips
+        run: |
+          npm run zip
+          npm run zip:firefox
+
+      - name: Locate zip artifacts
+        id: artifacts
+        run: |
+          CHROME_ZIP="$(find .output -maxdepth 1 -name '*-chrome.zip' | head -1)"
+          FIREFOX_ZIP="$(find .output -maxdepth 1 -name '*-firefox.zip' | head -1)"
+          if [ -z "$CHROME_ZIP" ] || [ -z "$FIREFOX_ZIP" ]; then
+            echo "::error::Could not find both chrome and firefox zip artifacts"
+            exit 1
+          fi
+          echo "chrome=$CHROME_ZIP" >> "$GITHUB_OUTPUT"
+          echo "firefox=$FIREFOX_ZIP" >> "$GITHUB_OUTPUT"
+
+      - name: Extract release notes from CHANGELOG
+        id: notes
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          awk -v v="$VERSION" '
+            $0 ~ ("^## \\[" v "\\]") { flag=1; next }
+            flag && /^## \[/ { exit }
+            flag { print }
+          ' CHANGELOG.md > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "Release v$VERSION. See CHANGELOG.md for details." > release-notes.md
+          fi
+          echo "----- release notes -----"
+          cat release-notes.md
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          VERSION="${{ steps.ver.outputs.version }}"
+          gh release create "v${VERSION}" \
+            "${{ steps.artifacts.outputs.chrome }}" \
+            "${{ steps.artifacts.outputs.firefox }}" \
+            --title "v${VERSION}" \
+            --notes-file release-notes.md
