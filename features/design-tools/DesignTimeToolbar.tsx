@@ -15,6 +15,15 @@ function loadMinimized(): boolean {
   }
 }
 
+function FlowMateLogo() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 128 128" aria-hidden="true" class="shrink-0">
+      <rect width="128" height="128" rx="22" fill="#0070F2" />
+      <path d="M 32 24 H 100 V 40 H 48 V 56 H 88 V 72 H 48 V 104 H 32 Z" fill="white" />
+    </svg>
+  );
+}
+
 interface DesignTimeToolbarProps {
   children: ComponentChildren;
 }
@@ -36,34 +45,26 @@ export function DesignTimeToolbar({ children }: DesignTimeToolbarProps) {
   return (
     <div
       ref={containerRef}
-      class="design-toolbar"
+      class="fixed z-[9999] select-none cursor-grab rounded-box border border-base-300 bg-base-100/95 p-1.5 shadow-lg backdrop-blur-sm"
       style={positionStyle}
       {...dragHandlers}
     >
-      {minimized ? (
-        <button
-          class="flex w-full items-center gap-2 rounded-md border-0 bg-transparent px-2 py-1 text-base-content transition-colors hover:bg-base-content/5 cursor-pointer"
-          title={t('showToolbar')}
-          onClick={toggleMinimized}
-        >
-          <svg width="16" height="16" viewBox="0 0 128 128" aria-hidden="true">
-            <rect width="128" height="128" rx="22" fill="#0070F2" />
-            <path d="M 32 24 H 100 V 40 H 48 V 56 H 88 V 72 H 48 V 104 H 32 Z" fill="white" />
-          </svg>
-          <span class="text-sm font-semibold leading-none">{t('extName')}</span>
+      {/* Header row: FlowMate branding stays visible whether minimized or expanded */}
+      <button
+        class="btn btn-ghost btn-sm w-full justify-start gap-2 px-2"
+        title={minimized ? t('showToolbar') : t('hideToolbar')}
+        onClick={toggleMinimized}
+      >
+        <FlowMateLogo />
+        <span class="text-sm font-semibold leading-none">{t('extName')}</span>
+        {minimized ? (
           <ChevronDown size={14} class="ml-auto opacity-60" />
-        </button>
-      ) : (
-        <button
-          class="flex w-full items-center justify-center rounded-md border-0 bg-transparent px-0 py-1 text-base-content-soft transition-colors hover:bg-base-content/5 hover:text-base-content cursor-pointer"
-          title={t('hideToolbar')}
-          onClick={toggleMinimized}
-        >
-          <ChevronUp size={16} />
-        </button>
-      )}
+        ) : (
+          <ChevronUp size={14} class="ml-auto opacity-60" />
+        )}
+      </button>
       {!minimized && (
-        <div class="flex flex-col items-stretch gap-1">
+        <div class="mt-1 flex flex-col items-stretch gap-1">
           {children}
         </div>
       )}

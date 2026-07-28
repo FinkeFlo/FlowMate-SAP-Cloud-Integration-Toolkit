@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Adopted daisyUI + Tailwind CSS v4 as the single mandatory styling framework across the entire extension (content-script overlay, Options page, Popup), replacing all hand-rolled component CSS.
 - Introduced one shared light theme (`flowmate`) — no dark theme, matching SAP Cloud Integration's own UI.
-- Documented the UI framework choice and the Shadow-DOM theming caveat in `CONTRIBUTING.md`.
+- Migrated the content-script overlay to render inside an isolated Shadow Root (`cssInjectionMode: 'ui'`) instead of injecting CSS globally into the SAP host page.
+- Fixed the floating design-time toolbar losing its FlowMate branding when expanded.
 
 ## [0.1.0] - 2026-07-28
 ### Added
