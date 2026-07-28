@@ -11,7 +11,6 @@ import {
   SAP_SELECTED_ROW_SELECTORS,
   SAP_CHECKED_ROW_SELECTORS,
 } from '@/features/shared/constants';
-import './ArtifactButtons.css';
 
 const LOG_TAG = 'ArtifactUndeploy';
 
@@ -114,7 +113,7 @@ export function ArtifactUndeployButton({ artifactStatus }: ArtifactUndeployButto
 
   return (
     <button
-      class="artifact-btn artifact-btn--undeploy"
+      class="btn btn-error btn-soft btn-sm w-full justify-start gap-2"
       disabled={running}
       onClick={handleUndeploy}
     >

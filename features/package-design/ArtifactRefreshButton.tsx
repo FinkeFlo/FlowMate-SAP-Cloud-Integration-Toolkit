@@ -2,7 +2,6 @@ import { useState, useEffect } from 'preact/hooks';
 import { LoaderCircle, RefreshCw } from 'lucide-preact';
 import { t } from '@/features/shared/i18n';
 import type { ArtifactStatus } from './ArtifactStatus';
-import './ArtifactButtons.css';
 
 interface ArtifactRefreshButtonProps {
   artifactStatus: ArtifactStatus;
@@ -18,7 +17,7 @@ export function ArtifactRefreshButton({ artifactStatus }: ArtifactRefreshButtonP
 
   return (
     <button
-      class="artifact-btn artifact-btn--refresh"
+      class="btn btn-primary btn-soft btn-sm w-full justify-start gap-2"
       disabled={loading}
       onClick={() => artifactStatus.refresh()}
     >

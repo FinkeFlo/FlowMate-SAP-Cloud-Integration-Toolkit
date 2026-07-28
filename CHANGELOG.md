@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Introduced one shared light theme (`flowmate`) — no dark theme, matching SAP Cloud Integration's own UI.
 - Migrated the content-script overlay to render inside an isolated Shadow Root (`cssInjectionMode: 'ui'`) instead of injecting CSS globally into the SAP host page.
 - Fixed the floating design-time toolbar losing its FlowMate branding when expanded.
+- Migrated the artifact Refresh/Undeploy buttons to daisyUI (`btn-primary btn-soft` / `btn-error btn-soft`).
 
 ## [0.1.0] - 2026-07-28
 ### Added
