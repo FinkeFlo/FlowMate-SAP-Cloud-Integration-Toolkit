@@ -111,19 +111,21 @@ export default defineConfig({
     // content scripts is still handled explicitly by asciiContentScriptPlugin().
     plugins: [tailwindcss(), preact(), devLoggerPlugin(), asciiContentScriptPlugin()],
   }),
-  manifest: {
-    name: '__MSG_extName__',
-    description: '__MSG_extDescription__',
-    default_locale: 'en',
-    permissions: ['storage', 'tabs'],
-    host_permissions: [
-      '*://*.hana.ondemand.com/*'
-    ],
-    browser_specific_settings: {
-      gecko: {
-        id: 'flowmate@fkube.local',
-        strict_min_version: '57.0'
-      }
-    }
+  manifest: ({ mode }) => {
+    const isDev = mode === 'development';
+
+    return {
+      name: isDev ? 'FlowMate (DEV)' : '__MSG_extName__',
+      description: isDev ? 'FlowMate development build' : '__MSG_extDescription__',
+      default_locale: 'en',
+      permissions: ['storage', 'tabs'],
+      host_permissions: ['*://*.hana.ondemand.com/*'],
+      browser_specific_settings: {
+        gecko: {
+          id: 'flowmate@fkube.local',
+          strict_min_version: '57.0',
+        },
+      },
+    };
   },
 });
