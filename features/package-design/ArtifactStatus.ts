@@ -1,15 +1,23 @@
 import { devLog } from '@/features/shared/dev-logger';
 import { getCpiBaseUrl } from '@/features/shared/navigation';
-import { fetchCpiText, fetchCsrfToken as fetchCsrfTokenShared } from '@/features/shared/fetch-client';
+import { fetchCpiText, fetchCpiJson, fetchCsrfToken as fetchCsrfTokenShared } from '@/features/shared/fetch-client';
 import { showToast } from '@/features/shared/toast';
 import {
   SAP_CMD_LIST_ARTIFACTS,
   SAP_RUNTIME_LOCATION_ID,
+  SAP_ODATA_PACKAGE_ARTIFACTS,
   SAP_TABLE_SELECTORS,
   SAP_ROW_SELECTORS,
   STATUS_BADGE_CLASS,
   STATUS_CHECKED_ATTR,
 } from '@/features/shared/constants';
+
+export interface DesigntimeArtifactInfo {
+  id: string;
+  name: string;
+  version: string;
+  type: string;
+}
 
 export interface DeployedArtifactInfo {
   deployState: string | null;
@@ -27,6 +35,7 @@ const LOG_TAG = 'ArtifactStatus';
 export class ArtifactStatus {
   private maxAttempts = 60;
   private deployedArtifactsMap: Map<string, DeployedArtifactInfo> = new Map();
+  private designtimeArtifactsMap: Map<string, DesigntimeArtifactInfo> = new Map();
   private currentPackageId: string | null = null;
   private isFetching = false;
   private observer: MutationObserver | null = null;
@@ -85,7 +94,10 @@ export class ArtifactStatus {
     this.setLoading(true);
 
     try {
-      await this.fetchDeployedArtifacts();
+      await Promise.all([
+        this.fetchDeployedArtifacts(),
+        this.fetchDesigntimeArtifacts(packageId),
+      ]);
       showToast(`Found ${this.deployedArtifactsMap.size} deployed artifacts`, 'success');
       this.waitForTable();
     } catch (error) {
@@ -170,6 +182,37 @@ export class ArtifactStatus {
     }
 
     devLog.info(LOG_TAG, `Found ${this.deployedArtifactsMap.size} deployed artifacts`);
+  }
+
+  private async fetchDesigntimeArtifacts(packageId: string | null): Promise<void> {
+    if (!packageId) return;
+
+    const baseUrl = getCpiBaseUrl();
+    const url = `${baseUrl}${SAP_ODATA_PACKAGE_ARTIFACTS}('${encodeURIComponent(packageId)}')/IntegrationDesigntimeArtifacts?$format=json`;
+
+    devLog.info(LOG_TAG, 'Fetching design-time artifacts', { url });
+
+    try {
+      const data = await fetchCpiJson<{ d: { results: Array<{ Id: string; Name: string; Version: string; Type: string }> } }>(url);
+      this.designtimeArtifactsMap.clear();
+
+      for (const artifact of data.d.results) {
+        const info: DesigntimeArtifactInfo = {
+          id: artifact.Id,
+          name: artifact.Name,
+          version: artifact.Version,
+          type: artifact.Type,
+        };
+        this.designtimeArtifactsMap.set(artifact.Id, info);
+        if (artifact.Name !== artifact.Id) {
+          this.designtimeArtifactsMap.set(artifact.Name, info);
+        }
+      }
+
+      devLog.info(LOG_TAG, `Found ${data.d.results.length} design-time artifacts`);
+    } catch (error) {
+      devLog.warn(LOG_TAG, 'Failed to fetch design-time artifacts (non-fatal)', { error: String(error) });
+    }
   }
 
   private waitForTable(): void {
@@ -463,6 +506,13 @@ export class ArtifactStatus {
    */
   getDeployedArtifactsMap(): Map<string, DeployedArtifactInfo> {
     return this.deployedArtifactsMap;
+  }
+
+  /**
+   * Returns all design-time artifacts for the current package (keyed by Id and Name).
+   */
+  getDesigntimeArtifactsMap(): Map<string, DesigntimeArtifactInfo> {
+    return this.designtimeArtifactsMap;
   }
 
   /**

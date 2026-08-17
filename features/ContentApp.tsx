@@ -3,9 +3,8 @@ import { DesignTimeToolbar } from '@/features/design-tools/DesignTimeToolbar';
 import { TraceToggleButton } from '@/features/trace-mode/TraceToggleButton';
 import { MessageLogPanel } from '@/features/message-log/MessageLogPanel';
 import { MessageDetailPopup } from '@/features/message-log/MessageDetailPopup';
-import { ArtifactRefreshButton } from '@/features/package-design/ArtifactRefreshButton';
-import { ArtifactUndeployButton } from '@/features/package-design/ArtifactUndeployButton';
 import { ArtifactStatus } from '@/features/package-design/ArtifactStatus';
+import { PackageArtifactsPanel } from '@/features/package-design/PackageArtifactsPanel';
 import { ExportButton } from '@/features/message-usage/ExportButton';
 import { LogThrottlePanel } from '@/features/log-throttle';
 import { InlineTraceOverlay, TraceStepPopup } from '@/features/inline-trace';
@@ -92,8 +91,7 @@ export function ContentApp() {
       {/* Package Artifacts Page: Refresh + Undeploy */}
       {pageType === 'package-artifacts' && (
         <DesignTimeToolbar>
-          <ArtifactRefreshButton artifactStatus={artifactStatus} />
-          <ArtifactUndeployButton artifactStatus={artifactStatus} />
+          <PackageArtifactsPanel artifactStatus={artifactStatus} />
         </DesignTimeToolbar>
       )}
 

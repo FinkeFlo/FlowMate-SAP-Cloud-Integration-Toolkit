@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Enforcement hooks** (`.claude/hooks/`): ESLint `--fix` after every edit, type-check + lint + tests + en/de locale-key parity before a turn ends with changed sources, `CHANGELOG.md` required in every commit, and a local denylist scan for real customer/tenant names (`.claude/denylist.example.txt`).
 - **Vitest unit tests** for the pure boundary modules `validators`, `tenant-url-builder`, `formatters` and `csv-exporter` (28 tests); `npm run test`, `npm run test:watch`, and `npm run verify` (compile + lint + lint:design + test + build). New `Unit tests` job in CI, part of the aggregating `CI` check.
 - `.github/pull_request_template.md` with the definition-of-done checklist; `.nvmrc` (Node 24) and `engines` in `package.json`.
+- **Deploy multiple iFlows from package overview**: New "Deploy" button in the FlowMate toolbar on the Package Artifacts page. Selecting one or more iFlow rows and clicking Deploy triggers `DeployIntegrationDesigntimeArtifact` for each selected artifact (version `active`). Works for both deployed (redeploy) and undeployed artifacts. Design-time artifact IDs are fetched from the OData API (`IntegrationPackages/.../IntegrationDesigntimeArtifacts`) on page load alongside the existing runtime status fetch.
+- **`PackageArtifactsPanel` component**: Replaces the three loose buttons in `ContentApp.tsx` with a structured panel. The panel shows a "Status" section (Refresh button) and a "Deployment" section (Deploy + Undeploy side by side as a flex row), separated by a labeled divider.
 
 ### Changed
 - ESLint: `no-console` is now an error (`console.warn`/`console.error` allowed; `dev-logger.ts` and `background.ts` exempt).
