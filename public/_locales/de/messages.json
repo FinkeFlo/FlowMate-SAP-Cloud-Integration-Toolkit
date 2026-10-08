@@ -462,5 +462,26 @@
         "example": "OrderToCash"
       }
     }
+  },
+  "msgLogAutoRefresh": {
+    "message": "Automatisch alle $SECONDS$ s aktualisieren",
+    "placeholders": {
+      "seconds": {
+        "content": "$1",
+        "example": "10"
+      }
+    }
+  },
+  "prefsTitle": {
+    "message": "Einstellungen"
+  },
+  "prefsMessageLogRefresh": {
+    "message": "Aktualisierungsintervall des Message-Logs"
+  },
+  "prefsMessageLogRefreshHint": {
+    "message": "Gilt für den „Auto“-Button im Message-Log. Kürzere Intervalle bedeuten mehr API-Aufrufe auf dem Tenant."
+  },
+  "prefsSaved": {
+    "message": "Einstellungen gespeichert"
   }
 }

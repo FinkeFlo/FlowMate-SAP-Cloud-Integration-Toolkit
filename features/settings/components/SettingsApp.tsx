@@ -6,6 +6,7 @@ import { t } from '@/features/shared/i18n';
 import { ToastContainer } from '@/features/shared/ToastContainer';
 import { CustomerCard } from './CustomerCard';
 import { AddCustomerForm } from './AddCustomerForm';
+import { PreferencesCard } from './PreferencesCard';
 
 export function SettingsApp() {
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -41,6 +42,8 @@ export function SettingsApp() {
         <h1 class="text-2xl font-bold text-primary">{t('settingsTitle') || 'FlowMate Settings'}</h1>
         <p class="text-base-content/60">{t('settingsDescription') || 'Manage your Customers and CPI Tenants'}</p>
       </header>
+
+      <PreferencesCard />
 
       <div class="card bg-base-100 p-8 shadow">
         <div class="mb-8 flex items-center justify-between border-b-2 border-base-200 pb-4">

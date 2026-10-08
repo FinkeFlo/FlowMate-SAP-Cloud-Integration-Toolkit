@@ -462,5 +462,26 @@
         "example": "OrderToCash"
       }
     }
+  },
+  "msgLogAutoRefresh": {
+    "message": "Auto-refresh every $SECONDS$ s",
+    "placeholders": {
+      "seconds": {
+        "content": "$1",
+        "example": "10"
+      }
+    }
+  },
+  "prefsTitle": {
+    "message": "Preferences"
+  },
+  "prefsMessageLogRefresh": {
+    "message": "Message log auto-refresh interval"
+  },
+  "prefsMessageLogRefreshHint": {
+    "message": "Used by the \"Auto\" button in the message log panel. Shorter intervals mean more API calls on the tenant."
+  },
+  "prefsSaved": {
+    "message": "Preferences saved"
   }
 }
