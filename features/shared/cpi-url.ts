@@ -31,10 +31,10 @@ export const CPI_UI_DOMAIN_SUFFIXES = ['hana.ondemand.com'] as const;
  * are bypassable. Standalone Cloud Integration (`it-cpiNNN`), runtime hosts
  * (`it-cpiNNN-rt`) and Neo (`-tmn.hci.`) are intentionally rejected.
  */
-export const CPI_UI_HOSTNAME_RE = new RegExp(
-  `^[a-z0-9-]+\\.integrationsuite(-trial|-cpi[0-9]+)?\\.cfapps\\.[a-z0-9-]+\\.(${CPI_UI_DOMAIN_SUFFIXES.map((d) => d.replace(/\./g, '\\.')).join('|')})$`,
-  'i',
-);
+export const CPI_UI_HOSTNAME_RE =
+  /^[a-z0-9-]+\.integrationsuite(-trial|-cpi[0-9]+)?\.cfapps\.[a-z0-9-]+\.hana\.ondemand\.com$/i;
+// Written as a literal (not built from CPI_UI_DOMAIN_SUFFIXES) so the escaping is
+// statically checkable; `cpi-url.test.ts` asserts that every listed suffix is accepted.
 
 /** True when `hostname` (no scheme, no path) is an Integration Suite UI host. */
 export function isCpiUiHostname(hostname: string): boolean {

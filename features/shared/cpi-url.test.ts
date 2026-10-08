@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SAP_CPI_URL_PATTERNS } from '@/config/sap-cpi-urls';
-import { CPI_UI_DOMAIN_SUFFIXES, CPI_UI_HOSTNAME_RE, isCpiUiHostname, isCpiUrl, toCpiOrigin } from './cpi-url';
+import { CPI_UI_DOMAIN_SUFFIXES, isCpiUiHostname, isCpiUrl, toCpiOrigin } from './cpi-url';
 
 const UI = 'https://acme-dev.integrationsuite.cfapps.eu10-003.hana.ondemand.com';
 const TRIAL = 'https://acme.integrationsuite-trial.cfapps.us10.hana.ondemand.com';
@@ -84,11 +84,12 @@ describe('manifest patterns agree with the runtime check', () => {
     }
   });
 
-  it('the regex only accepts the listed domain suffixes', () => {
+  it('accepts every listed domain suffix and nothing else', () => {
     for (const d of CPI_UI_DOMAIN_SUFFIXES) {
-      expect(CPI_UI_HOSTNAME_RE.source).toContain(d.replace(/\./g, '\\.'));
+      expect(isCpiUiHostname(`acme-dev.integrationsuite.cfapps.eu10.${d}`)).toBe(true);
     }
     expect(isCpiUiHostname('acme.integrationsuite.cfapps.eu10.example.com')).toBe(false);
+    expect(isCpiUiHostname('acme.integrationsuite.cfapps.eu10.hanaXondemandXcom')).toBe(false);
   });
 });
 
