@@ -25,6 +25,13 @@ export const SAP_CMD_SET_LOG_LEVEL =
 export const SAP_CMD_DELETE_CONTENT =
   '/Operations/com.sap.it.nm.commands.deploy.DeleteContentCommand';
 
+/** Deploy a design-time artifact to the runtime (OData action, POST). */
+export const SAP_ODATA_DEPLOY_ARTIFACT =
+  '/api/v1/DeployIntegrationDesigntimeArtifact';
+
+/** OData path to list design-time artifacts for a package. */
+export const SAP_ODATA_PACKAGE_ARTIFACTS = '/api/v1/IntegrationPackages';
+
 /** CSRF token endpoint. */
 export const SAP_CSRF_ENDPOINT = '/api/1.0/user';
 

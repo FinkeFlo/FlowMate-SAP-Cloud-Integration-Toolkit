@@ -196,7 +196,7 @@ export function LogThrottlePanel() {
   }
 
   return (
-    <div class="flex min-w-[360px] max-w-[420px] max-h-[480px] flex-col gap-2 text-[13px] text-base-content" onPointerDown={(e) => e.stopPropagation()}>
+    <div class="flex w-full flex-col gap-2 text-[13px] text-base-content" onPointerDown={(e) => e.stopPropagation()}>
       <header class="flex items-center gap-2 border-b border-base-300 pb-2">
         <span class="font-semibold tracking-wide">{t('logThrottleTopLoggers')}</span>
         {levelsLoading && (
@@ -304,7 +304,9 @@ export function LogThrottlePanel() {
                     aria-label={`Select ${row.symbolicName}`}
                   />
                 )}
-                <span class="flex-1 truncate font-mono text-xs" title={row.symbolicName}>{row.symbolicName}</span>
+                <span class="tooltip tooltip-bottom flex-1 overflow-hidden text-left" data-tip={row.symbolicName}>
+                  <span class="block truncate font-mono text-xs">{row.symbolicName}</span>
+                </span>
                 <span class={`shrink-0 font-mono text-xs font-semibold tabular-nums ${isHot ? 'text-error' : 'text-base-content/80'}`}>
                   {formatCount(row.count)}
                 </span>

@@ -11,31 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Enforcement hooks** (`.claude/hooks/`): ESLint `--fix` after every edit, type-check + lint + tests + en/de locale-key parity before a turn ends with changed sources, `CHANGELOG.md` required in every commit, and a local denylist scan for real customer/tenant names (`.claude/denylist.example.txt`).
 - **Vitest unit tests** for the pure boundary modules `validators`, `tenant-url-builder`, `formatters` and `csv-exporter` (28 tests); `npm run test`, `npm run test:watch`, and `npm run verify` (compile + lint + lint:design + test + build). New `Unit tests` job in CI, part of the aggregating `CI` check.
 - `.github/pull_request_template.md` with the definition-of-done checklist; `.nvmrc` (Node 24) and `engines` in `package.json`.
-
-### Changed
-- ESLint: `no-console` is now an error (`console.warn`/`console.error` allowed; `dev-logger.ts` and `background.ts` exempt).
-- `.github/copilot-instructions.md` now points to `AGENTS.md` and repeats only the review-relevant rules.
-- `CONTRIBUTING.md`: Node 24, tag-driven release instructions (no manual version bump), verification and AI-agent section. `features/README.md` regenerated from the actual directory layout. `DESIGN.md` prose colours for success/warning aligned with the theme CSS.
-- `.gitignore`: `.claude/settings.local.json` and `.claude/denylist.txt`.
-
-### Removed
-- `docs/audit-2026-06.md`: open findings are now GitHub issues (`security` / `tech-debt` labels); fixed findings needed no record.
-
-### Changed
-- Upgraded `wxt` 0.21.2 → 0.21.4; upgraded `@release-it/conventional-changelog` 11 → 12 (required peer dependency for `release-it` v21).
-- Added `.github/copilot-instructions.md` with build commands, architecture overview, and key conventions for AI-assisted development sessions.
-
-
-### Fixed
-- The floating toolbar's drag-to-move behavior was attached to its entire container instead of just the header handle, so pointerdown/move events bubbling up from nested buttons (message log filters, refresh, auto-refresh, etc.) could hijack the toolbar's drag state and swallow the click. Dragging is now scoped to the header handle only — nested panel buttons work reliably regardless of small mouse movement during a click.
-- Message log status filter dots (success/error/processing) and per-message row status dots relied on color (green/red/orange/gray) alone, which is hard to distinguish for red/green color-blind users. Both now show a distinct icon (check/cross/clock/ban) inside the dot so the meaning no longer depends on hue perception.
-
-### Changed
-- Made the extension name/environment visible in the manifest so development builds appear as `FlowMate (DEV)` in the browser extension list, while production builds keep the normal `FlowMate` name.
-- Upgraded `wxt` 0.20.27 → 0.21.2 (and its `vite`/`rolldown` toolchain), which removes the unused `web-ext-run` dependency and with it four vulnerable transitive packages (`shell-quote` critical+high, `adm-zip` high, `tmp` high, `uuid` medium). Added `@types/node` as an explicit dev dependency (needed by `wxt.config.ts`'s `node:fs`/`node:path` imports, previously resolved transitively) and dropped the now-unsupported `esbuild.charset` Vite option (Vite 8 no longer exposes it; ASCII-escaping for content scripts is still handled by the existing `asciiContentScriptPlugin`).
-- Enabled by wxt 0.21's generated `tsconfig`: `noUncheckedIndexedAccess`. Fixed the ~20 newly-surfaced strict-null findings across `InlineTraceOverlay.ts`, `TraceStepPopup.tsx`, `MessageDetailPopup.tsx`, `MessageLogPanel.tsx`, `ExportButton.tsx`, `ArtifactStatus.ts`, `api-client.ts`, and `trace-api.ts` — all were array-index accesses already guarded by a preceding length/existence check, so fixed with narrow non-null assertions at the guarded call sites.
-
-### Added
+- **Resizable toolbar width**: The floating `DesignTimeToolbar` now has a right-edge drag handle (ew-resize cursor) so users can widen or narrow the overlay. The chosen width is persisted in `localStorage` (`flowmate-design-toolbar-width`). Default 420 px, min 280 px, max 720 px.
+- **iFlow name tooltip in Top Logger panel**: Truncated iFlow names in `LogThrottlePanel` now show a daisyUI `tooltip` on hover with the full symbolic name — works correctly inside the Shadow DOM where native `title` attributes are unreliable.
+- **Deploy multiple iFlows from package overview**: New "Deploy" button in the FlowMate toolbar on the Package Artifacts page. Selecting one or more iFlow rows and clicking Deploy triggers `DeployIntegrationDesigntimeArtifact` for each selected artifact (version `active`). Works for both deployed (redeploy) and undeployed artifacts. Design-time artifact IDs are fetched from the OData API (`IntegrationPackages/.../IntegrationDesigntimeArtifacts`) on page load alongside the existing runtime status fetch.
+- **`PackageArtifactsPanel` component**: Replaces the three loose buttons in `ContentApp.tsx` with a structured panel. The panel shows a "Status" section (Refresh button) and a "Deployment" section (Deploy + Undeploy side by side as a flex row), separated by a labeled divider.
 - `CodeViewer` size guards + download: payloads over ~2 MB skip CodeMirror rendering entirely (avoids freezing the UI on huge message bodies) and show a "Download" action instead; the pretty-print formatter is skipped above ~500 KB for the same reason. A "Download" button is now always available in `CodeViewer` (Body tab, Persist tab) to save the currently displayed payload as a `.json`/`.xml`/`.txt` file.
 - Optional JSON/XML "Format" toggle in `CodeViewer` (`features/shared/CodeViewer.tsx`, `features/shared/formatters.ts`): reformats a compact/minified payload into an indented, readable view on demand, off by default so the raw payload is shown unchanged. Used by both the inline-trace Body tab and the Message Detail Persist tab (now rendered via `CodeViewer` for syntax highlighting too).
 - `DockPanel` component (`features/shared/DockPanel.tsx`): a bottom-docked, user-resizable panel replacing centered modals for tabbed, data-heavy detail views.
@@ -46,20 +25,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ESLint 9 flat config (`eslint.config.mjs`) with TypeScript, Preact hooks, and WXT auto-import globals support; added `lint` and `lint:design` npm scripts.
 - CodeQL security analysis workflow (`.github/workflows/codeql.yml`).
 
-### Fixed
-- Replaced substring-based `hana.ondemand.com` hostname checks with anchored `endsWith`/hostname-parsed checks in `validators.ts` and `useActiveTenant.ts` — fixes CodeQL "Incomplete URL substring sanitization" alerts (bypassable via crafted hostnames like `evil-hana.ondemand.com.attacker.com`).
-- Inline-trace step highlighting (`InlineTraceOverlay.ts`) set `fill`/`stroke` on BPMN SVG shapes using `var(--color-success)` etc. — these daisyUI CSS variables only exist inside our Shadow Root, so on the SAP host page (outside the Shadow Root) they were invalid, causing the SVG `fill` to fall back to its initial value and paint highlighted steps solid black. Now uses hardcoded hex values matching the `flowmate` theme.
-- Message log row action buttons (Info/Open in Monitoring/Inline Trace/Open Trace) were hidden until hover, causing them to appear/disappear and shift focus when moving the mouse; now always visible.
-- `CodeViewer` used CodeMirror's bundled dark `oneDark` theme, which looked out of place against the rest of the (light-only) extension UI; replaced with a light theme matching the `flowmate` palette, slightly larger font size, and soft line-wrapping for long lines (copy/paste still yields the original, unwrapped content).
-
 ### Changed
+- ESLint: `no-console` is now an error (`console.warn`/`console.error` allowed; `dev-logger.ts` and `background.ts` exempt).
+- `.github/copilot-instructions.md` now points to `AGENTS.md` and repeats only the review-relevant rules.
+- `CONTRIBUTING.md`: Node 24, tag-driven release instructions (no manual version bump), verification and AI-agent section. `features/README.md` regenerated from the actual directory layout. `DESIGN.md` prose colours for success/warning aligned with the theme CSS.
+- `.gitignore`: `.claude/settings.local.json` and `.claude/denylist.txt`.
+- `LogThrottlePanel` root element no longer has fixed `min-w`/`max-w` — width is now driven by the resizable `DesignTimeToolbar` container.
+- Upgraded `preact` 10 → 11, `eslint` 9 → 10, `eslint-plugin-react-hooks` 5 → 7 and `globals` 15 → 17; adapted `ContentApp`, `MessageLogPanel` and `TraceToggleButton` to the stricter react-hooks v7 rules (no ref writes during render, effect-scoped async init). Moved `vite` and `@preact/preset-vite` to `devDependencies` (build-time only).
+- Upgraded `wxt` 0.21.2 → 0.21.4; upgraded `@release-it/conventional-changelog` 11 → 12 (required peer dependency for `release-it` v21).
+- Added `.github/copilot-instructions.md` with build commands, architecture overview, and key conventions for AI-assisted development sessions.
+- Made the extension name/environment visible in the manifest so development builds appear as `FlowMate (DEV)` in the browser extension list, while production builds keep the normal `FlowMate` name.
+- Upgraded `wxt` 0.20.27 → 0.21.2 (and its `vite`/`rolldown` toolchain), which removes the unused `web-ext-run` dependency and with it four vulnerable transitive packages (`shell-quote` critical+high, `adm-zip` high, `tmp` high, `uuid` medium). Added `@types/node` as an explicit dev dependency (needed by `wxt.config.ts`'s `node:fs`/`node:path` imports, previously resolved transitively) and dropped the now-unsupported `esbuild.charset` Vite option (Vite 8 no longer exposes it; ASCII-escaping for content scripts is still handled by the existing `asciiContentScriptPlugin`).
+- Enabled by wxt 0.21's generated `tsconfig`: `noUncheckedIndexedAccess`. Fixed the ~20 newly-surfaced strict-null findings across `InlineTraceOverlay.ts`, `TraceStepPopup.tsx`, `MessageDetailPopup.tsx`, `MessageLogPanel.tsx`, `ExportButton.tsx`, `ArtifactStatus.ts`, `api-client.ts`, and `trace-api.ts` — all were array-index accesses already guarded by a preceding length/existence check, so fixed with narrow non-null assertions at the guarded call sites.
 - `TraceStepPopup` and `MessageDetailPopup` now use `DockPanel` instead of a centered `modal modal-open` — fixes the popup visually "jumping"/re-centering when switching tabs with different content heights (e.g. Properties → Body). Tabs are now pinned and no longer scroll out of view with long content.
-
-### Fixed
-- Darkened `success` (#16a34a → #15803d) and `warning` (#d97706 → #b45309) theme colors to meet WCAG AA contrast (4.5:1) for white button/badge text — found via `design.md lint`.
-### Fixed
-- Migrated a missed component, `ProgressBar` (message-usage export), to daisyUI's native `progress` element — was still using leftover dark-theme inline styles.
-### Changed
 - Adopted daisyUI + Tailwind CSS v4 as the single mandatory styling framework across the entire extension (content-script overlay, Options page, Popup), replacing all hand-rolled component CSS.
 - Introduced one shared light theme (`flowmate`) — no dark theme, matching SAP Cloud Integration's own UI.
 - Migrated the content-script overlay to render inside an isolated Shadow Root (`cssInjectionMode: 'ui'`) instead of injecting CSS globally into the SAP host page.
@@ -69,8 +47,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Migrated the Popup and tenant quick-links panel (incl. SortableJS drag-and-drop) to daisyUI, softening quick-link buttons and replacing the broken "More links" table grid with clean pill chips.
 - Migrated remaining components (Message Log, Message Detail popup, Inline Trace overlay/popup, Export button, Date Range dialog, Toast notifications, Log Throttle panel, Trace toggle button) to daisyUI, removing all their hand-rolled CSS files.
 
+### Fixed
+- The floating toolbar's drag-to-move behavior was attached to its entire container instead of just the header handle, so pointerdown/move events bubbling up from nested buttons (message log filters, refresh, auto-refresh, etc.) could hijack the toolbar's drag state and swallow the click. Dragging is now scoped to the header handle only — nested panel buttons work reliably regardless of small mouse movement during a click.
+- Message log status filter dots (success/error/processing) and per-message row status dots relied on color (green/red/orange/gray) alone, which is hard to distinguish for red/green color-blind users. Both now show a distinct icon (check/cross/clock/ban) inside the dot so the meaning no longer depends on hue perception.
+- Replaced substring-based `hana.ondemand.com` hostname checks with anchored `endsWith`/hostname-parsed checks in `validators.ts` and `useActiveTenant.ts` — fixes CodeQL "Incomplete URL substring sanitization" alerts (bypassable via crafted hostnames like `evil-hana.ondemand.com.attacker.com`).
+- Inline-trace step highlighting (`InlineTraceOverlay.ts`) set `fill`/`stroke` on BPMN SVG shapes using `var(--color-success)` etc. — these daisyUI CSS variables only exist inside our Shadow Root, so on the SAP host page (outside the Shadow Root) they were invalid, causing the SVG `fill` to fall back to its initial value and paint highlighted steps solid black. Now uses hardcoded hex values matching the `flowmate` theme.
+- Message log row action buttons (Info/Open in Monitoring/Inline Trace/Open Trace) were hidden until hover, causing them to appear/disappear and shift focus when moving the mouse; now always visible.
+- `CodeViewer` used CodeMirror's bundled dark `oneDark` theme, which looked out of place against the rest of the (light-only) extension UI; replaced with a light theme matching the `flowmate` palette, slightly larger font size, and soft line-wrapping for long lines (copy/paste still yields the original, unwrapped content).
+- Darkened `success` (#16a34a → #15803d) and `warning` (#d97706 → #b45309) theme colors to meet WCAG AA contrast (4.5:1) for white button/badge text — found via `design.md lint`.
+- Migrated a missed component, `ProgressBar` (message-usage export), to daisyUI's native `progress` element — was still using leftover dark-theme inline styles.
+
+### Removed
+- `docs/audit-2026-06.md`: open findings are now GitHub issues (`security` / `tech-debt` labels); fixed findings needed no record.
+
 ### Docs
 - Documented daisyUI + Tailwind CSS v4 as the mandatory UI framework in `CONTRIBUTING.md`, including the Shadow-DOM `data-theme` caveat for content-script theming.
+
 
 ## [0.1.0] - 2026-07-28
 ### Added

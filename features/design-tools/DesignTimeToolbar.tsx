@@ -1,7 +1,7 @@
-import { useState } from 'preact/hooks';
+import { useState, useRef, useCallback, useEffect } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { ChevronDown, ChevronUp } from 'lucide-preact';
-import { useDrag } from './useDrag';
+import { useDrag, getSavedWidth, MIN_WIDTH, MAX_WIDTH, WIDTH_STORAGE_KEY } from './useDrag';
 import { t } from '@/features/shared/i18n';
 import './DesignTimeToolbar.css';
 
@@ -31,6 +31,8 @@ interface DesignTimeToolbarProps {
 export function DesignTimeToolbar({ children }: DesignTimeToolbarProps) {
   const [minimized, setMinimized] = useState(loadMinimized);
   const { containerRef, handleRef, initialPosition, dragHandlers } = useDrag();
+  const [width, setWidth] = useState(getSavedWidth);
+  const resizingRef = useRef(false);
 
   const toggleMinimized = () => {
     const next = !minimized;
@@ -42,11 +44,36 @@ export function DesignTimeToolbar({ children }: DesignTimeToolbarProps) {
     ? { left: `${initialPosition.x}px`, top: `${initialPosition.y}px` }
     : { top: '80px', right: '20px' };
 
+  const handleResizePointerDown = useCallback((e: PointerEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    resizingRef.current = true;
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  }, []);
+
+  const handleResizePointerMove = useCallback((e: PointerEvent) => {
+    if (!resizingRef.current || !containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const newWidth = Math.min(MAX_WIDTH, Math.max(MIN_WIDTH, e.clientX - rect.left));
+    setWidth(newWidth);
+    containerRef.current.style.width = `${newWidth}px`;
+  }, [containerRef]);
+
+  const handleResizePointerUp = useCallback(() => {
+    resizingRef.current = false;
+  }, []);
+
+  // Persist the width whenever it changes (not only on pointer-up): the
+  // pointer-up handler would otherwise close over a stale `width` value.
+  useEffect(() => {
+    try { localStorage.setItem(WIDTH_STORAGE_KEY, String(width)); } catch { /* ignore */ }
+  }, [width]);
+
   return (
     <div
       ref={containerRef}
-      class="fixed z-[9999] select-none rounded-box border border-base-300 bg-base-100/95 p-1.5 shadow-lg backdrop-blur-sm"
-      style={positionStyle}
+      class="fixed z-[9999] select-none rounded-box border border-base-300 bg-base-100/95 pr-3 pl-1.5 py-1.5 shadow-lg backdrop-blur-sm"
+      style={{ ...positionStyle, width: `${width}px` }}
     >
       {/* Header row: FlowMate branding stays visible whether minimized or expanded.
           Dragging is scoped to this handle only — attaching it to the whole
@@ -73,6 +100,20 @@ export function DesignTimeToolbar({ children }: DesignTimeToolbarProps) {
           {children}
         </div>
       )}
+      {/* Right-edge resize handle */}
+      <div
+        class="group absolute right-0 top-0 flex h-full w-3 cursor-ew-resize touch-none items-center justify-center rounded-r-box hover:bg-base-300/50"
+        title={t('resizeToolbar')}
+        onPointerDown={handleResizePointerDown}
+        onPointerMove={handleResizePointerMove}
+        onPointerUp={handleResizePointerUp}
+      >
+        <div class="flex flex-col gap-[3px] opacity-30 group-hover:opacity-70 transition-opacity">
+          <div class="h-1 w-1 rounded-full bg-base-content" />
+          <div class="h-1 w-1 rounded-full bg-base-content" />
+          <div class="h-1 w-1 rounded-full bg-base-content" />
+        </div>
+      </div>
     </div>
   );
 }

@@ -194,7 +194,9 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
   const [lastRefresh, setLastRefresh] = useState('');
 
   const messageLimitRef = useRef(messageLimit);
-  messageLimitRef.current = messageLimit;
+  useEffect(() => {
+    messageLimitRef.current = messageLimit;
+  }, [messageLimit]);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const mountedRef = useRef(true);
 

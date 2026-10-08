@@ -370,6 +370,18 @@
   "artifactUndeploy": {
     "message": "Undeploy"
   },
+  "artifactDeploying": {
+    "message": "Wird deployt..."
+  },
+  "artifactDeploy": {
+    "message": "Deploy"
+  },
+  "packagePanelStatus": {
+    "message": "Status"
+  },
+  "packagePanelDeployment": {
+    "message": "Deployment"
+  },
   "quickLinksTitle": {
     "message": "Schnellzugriff"
   },
@@ -381,5 +393,8 @@
   },
   "hideToolbar": {
     "message": "Symbolleiste ausblenden"
+  },
+  "resizeToolbar": {
+    "message": "Ziehen zum Anpassen der Breite"
   }
 }
