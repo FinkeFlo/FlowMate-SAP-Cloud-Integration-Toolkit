@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'preact/hooks';
 import { X, Download } from 'lucide-preact';
-import { t } from '@/features/shared/i18n';
+import { t, tSub } from '@/features/shared/i18n';
 import { showToast } from '@/features/shared/toast';
 import { MSG_OPEN_TENANT_TABS, sendTypedMessage } from '@/features/shared/messages';
 import { toCpiOrigin } from '@/features/shared/cpi-url';
@@ -59,7 +59,7 @@ export function ExportButton() {
     } catch (error) {
       if (!controller.signal.aborted) {
         showToast(
-          `${t('exportFailed') || 'Export failed'}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+          `${t('exportFailed') || 'Export failed'}: ${error instanceof Error ? error.message : t('unknownError')}`,
           'error',
         );
       } else {
@@ -163,7 +163,7 @@ export function ExportButton() {
         totalSuccess++;
 
         if (failedDates.length > 0) {
-          showToast(`${tenant.name}: ${failedDates.length} dates failed`, 'warning');
+          showToast(t('exportDatesFailed', [tenant.name, String(failedDates.length)]), 'warning');
         }
       } catch (error) {
         console.error(`Export failed for tenant ${tenant.name}:`, error);
@@ -180,7 +180,7 @@ export function ExportButton() {
         showToast(`${t('exportFailed') || 'Export failed'}: ${failedTenants.join(', ')}`, 'error');
       }
       if (totalSuccess > 0) {
-        showToast(`${totalSuccess} tenant(s) exported`, 'success');
+        showToast(tSub('exportTenantsDone', String(totalSuccess)), 'success');
       }
     }
   }

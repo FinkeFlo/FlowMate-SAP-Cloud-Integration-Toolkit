@@ -24,7 +24,7 @@ export function SettingsApp() {
   async function handleAddCustomer(name: string) {
     await addCustomer(name);
     setShowAddForm(false);
-    showToast(`${t('customerAdded') || 'Customer added'}: ${name}`, 'success');
+    showToast(`${t('customerAdded')}: ${name}`, 'success');
     await loadSettings();
   }
 
@@ -40,7 +40,7 @@ export function SettingsApp() {
     <div class="mx-auto max-w-5xl">
       <header class="card mb-8 bg-base-100 p-8 shadow">
         <h1 class="text-2xl font-bold text-primary">{t('settingsTitle') || 'FlowMate Settings'}</h1>
-        <p class="text-base-content/60">{t('settingsDescription') || 'Manage your Customers and CPI Tenants'}</p>
+        <p class="text-base-content/60">{t('manageYourTenants')}</p>
       </header>
 
       <PreferencesCard />
@@ -69,7 +69,7 @@ export function SettingsApp() {
         <div class="flex flex-col gap-6">
           {settings.customers.length === 0 ? (
             <p class="py-8 text-center italic text-base-content/50">
-              {t('noCustomers') || 'No customers created yet. Click "Add Customer".'}
+              {t('noCustomersYet')}
             </p>
           ) : (
             settings.customers.map(customer => (

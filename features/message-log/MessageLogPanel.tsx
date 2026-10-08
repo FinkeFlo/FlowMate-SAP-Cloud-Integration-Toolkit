@@ -126,7 +126,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
       <div class="flex gap-1">
         <button
           class="btn btn-ghost btn-xs btn-square"
-          title={t('msgLogDetails')}
+          title={t('msgDetailMessageDetail')}
           onClick={(e) => { e.stopPropagation(); onShowDetail(msg.MessageGuid); }}
         >
           <Info size={16} />

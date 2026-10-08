@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'preact/hooks';
 import { updateTenant, deleteTenant, type Tenant } from '@/features/settings/settings';
 import { validateName, validateCpiUrl } from '@/features/settings/validators';
 import { Check, X, Pencil, Trash2 } from 'lucide-preact';
-import { t } from '@/features/shared/i18n';
+import { t, tSub } from '@/features/shared/i18n';
 import { ConfirmDialog } from '@/features/shared/ConfirmDialog';
 
 interface TenantItemProps {
@@ -119,7 +119,7 @@ export function TenantItem({ customerId, tenant, onRefresh }: TenantItemProps) {
               type="button"
               class="btn btn-ghost btn-sm btn-square"
               onClick={() => setEditing(true)}
-              title={t('editTenant') || 'Edit tenant'}
+              title={t('editTenant')}
             >
               <Pencil size={16} />
             </button>
@@ -127,7 +127,7 @@ export function TenantItem({ customerId, tenant, onRefresh }: TenantItemProps) {
               type="button"
               class="btn btn-ghost btn-sm btn-square"
               onClick={() => setConfirmDelete(true)}
-              title={t('deleteTenant') || 'Delete tenant'}
+              title={t('deleteTenant')}
             >
               <Trash2 size={16} />
             </button>
@@ -137,7 +137,7 @@ export function TenantItem({ customerId, tenant, onRefresh }: TenantItemProps) {
 
       {confirmDelete && (
         <ConfirmDialog
-          message={`${t('confirmDeleteTenant') || 'Delete tenant'} "${tenant.name}"?`}
+          title={tSub('confirmDeleteTenantTitle', tenant.name)}
           onConfirm={handleDelete}
           onCancel={() => setConfirmDelete(false)}
         />

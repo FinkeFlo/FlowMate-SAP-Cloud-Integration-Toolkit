@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'preact/hooks';
 import { Download } from 'lucide-preact';
-import { t } from '@/features/shared/i18n';
+import { t, tSub } from '@/features/shared/i18n';
 import { showToast } from '@/features/shared/toast';
 import { getSettings, type Customer } from '@/features/settings/settings';
 
@@ -118,7 +118,7 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
 
         <div class="space-y-5">
           <div>
-            <label class={sectionLabelClass}>{t('exportMode') || 'Export Mode'}</label>
+            <label class={sectionLabelClass}>{t('exportMode')}</label>
             <div class="rounded-box border border-base-300 bg-base-200 p-4">
               <div class="flex flex-col gap-3 sm:flex-row sm:gap-6">
                 <label class="flex cursor-pointer items-center gap-2 text-sm">
@@ -129,7 +129,7 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
                     checked={exportMode === 'single'}
                     onChange={() => setExportMode('single')}
                   />
-                  <span>{t('currentTenantOnly') || 'Current Tenant Only'}</span>
+                  <span>{t('currentTenantOnly')}</span>
                 </label>
                 <label
                   class={`flex items-center gap-2 text-sm ${customers.length === 0 ? 'cursor-not-allowed opacity-40' : 'cursor-pointer'}`}
@@ -142,7 +142,7 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
                     disabled={customers.length === 0}
                     onChange={() => setExportMode('customer')}
                   />
-                  <span>{t('allTenantsFromCustomer') || 'All Tenants from Customer'}</span>
+                  <span>{t('allTenantsFromCustomer')}</span>
                 </label>
               </div>
             </div>
@@ -159,7 +159,7 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
                 <option value="">-- {t('selectCustomer') || 'Select Customer'} --</option>
                 {customers.map(c => (
                   <option key={c.id} value={c.id}>
-                    {c.name} ({c.tenants.length} tenant{c.tenants.length !== 1 ? 's' : ''})
+                    {c.name} ({tSub('tenantCount', String(c.tenants.length))})
                   </option>
                 ))}
               </select>
@@ -222,7 +222,7 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
             {t('cancel') || 'Cancel'}
           </button>
           <button type="button" class="btn btn-primary" onClick={handleSubmit}>
-            {t('export') || 'Export'}
+            {t('export')}
           </button>
         </div>
       </div>

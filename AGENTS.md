@@ -14,9 +14,10 @@ npm run dev           # Dev build with hot reload → .output/chrome-mv3-dev (lo
 npm run compile       # TypeScript type-check (tsc --noEmit)
 npm run lint          # ESLint (no-console, react-hooks, typescript-eslint)
 npm run lint:design   # Validate DESIGN.md tokens
+npm run lint:i18n     # en/de key parity, every t() key exists, placeholders match
 npm run test          # Vitest unit tests (features/**/*.test.ts)
 npm run build         # Production build (Chrome); build:firefox for Firefox
-npm run verify        # compile + lint + lint:design + test + build — run before claiming anything is done
+npm run verify        # compile + lint + lint:design + lint:i18n + test + build — run before claiming anything is done
 ```
 
 Node 24 (`.nvmrc`). CI runs exactly these checks; a change is only "done" when `npm run verify` is green locally.
