@@ -89,11 +89,11 @@ extension's logo, plus SAP-Fiori-adjacent neutrals.
 
 - **Primary (`#0070f2`):** FlowMate brand blue. Used for primary actions,
   links, and the "Design" quick link.
-- **Success (`#16a34a`):** Deployed/processed/healthy states (e.g. "Processed
+- **Success (`#15803d`):** Deployed/processed/healthy states (e.g. "Processed
   Messages" quick link, success toasts).
 - **Error (`#d32f2f`):** Failed/destructive states (e.g. "Failed Messages"
   quick link, Undeploy button, error toasts).
-- **Warning (`#d97706`):** Escalated/retry/above-average-performance states.
+- **Warning (`#b45309`):** Escalated/retry/above-average-performance states.
 - **Info (`#0a6ed1`):** Informational badges, below-average-performance
   states.
 - **Neutral (`#24292f`):** Dark slate used sparingly for the "Integration
