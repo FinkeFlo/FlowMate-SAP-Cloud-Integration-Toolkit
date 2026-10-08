@@ -5,7 +5,7 @@ import { Check, X, Pencil, Trash2, Plus } from 'lucide-preact';
 import { t } from '@/features/shared/i18n';
 import { TenantItem } from './TenantItem';
 import { AddTenantForm } from './AddTenantForm';
-import { ConfirmDialog } from './ConfirmDialog';
+import { ConfirmDialog } from '@/features/shared/ConfirmDialog';
 
 interface CustomerCardProps {
   customer: Customer;

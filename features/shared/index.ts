@@ -10,5 +10,6 @@ export { isMessageUsagePage, getCpiBaseUrl } from './navigation';
 export { fetchCpi, fetchCpiJson, fetchCpiText, fetchCsrfToken } from './fetch-client';
 export { showToast } from './toast';
 export { ToastContainer } from './ToastContainer';
+export { ConfirmDialog } from './ConfirmDialog';
 export * from './messages';
 export { devLog } from './dev-logger';

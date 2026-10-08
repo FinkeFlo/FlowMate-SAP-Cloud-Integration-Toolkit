@@ -396,5 +396,71 @@
   },
   "resizeToolbar": {
     "message": "Drag to resize"
+  },
+  "confirmDeployTitle": {
+    "message": "Deploy $COUNT$ artifacts?",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmUndeployTitle": {
+    "message": "Undeploy $COUNT$ artifacts?",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmSilenceOneTitle": {
+    "message": "Set log level of \"$NAME$\" to ERROR?",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "confirmSilenceManyTitle": {
+    "message": "Set log level of $COUNT$ iFlows to ERROR?",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmSilenceHint": {
+    "message": "New INFO/DEBUG logs will be suppressed until the log level is restored manually."
+  },
+  "confirmMoreItems": {
+    "message": "… and $COUNT$ more",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeployOneTitle": {
+    "message": "Deploy \"$NAME$\"?",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "confirmUndeployOneTitle": {
+    "message": "Undeploy \"$NAME$\"?",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
   }
 }

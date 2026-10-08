@@ -3,7 +3,7 @@ import { updateTenant, deleteTenant, type Tenant } from '@/features/settings/set
 import { validateName, validateCpiUrl } from '@/features/settings/validators';
 import { Check, X, Pencil, Trash2 } from 'lucide-preact';
 import { t } from '@/features/shared/i18n';
-import { ConfirmDialog } from './ConfirmDialog';
+import { ConfirmDialog } from '@/features/shared/ConfirmDialog';
 
 interface TenantItemProps {
   customerId: string;

@@ -4,6 +4,7 @@ import { LoaderCircle, RefreshCw, TriangleAlert, Zap, Check } from 'lucide-preac
 import { devLog } from '@/features/shared/dev-logger';
 import { showToast } from '@/features/shared/toast';
 import { t, tSub } from '@/features/shared/i18n';
+import { ConfirmDialog } from '@/features/shared/ConfirmDialog';
 import { setMplLogLevel, fetchLogLevels, type MplLogLevel } from '@/features/shared/log-level-api';
 import { fetchTopLoggers, type UsageEntry } from './usage-api';
 
@@ -16,6 +17,9 @@ function formatCount(n: number): string {
 }
 
 const THRESHOLD_STORAGE_KEY = 'logThrottle.threshold';
+const CONFIRM_PREVIEW_ITEMS = 5;
+
+type PendingConfirm = { kind: 'one'; name: string } | { kind: 'bulk'; list: string[] };
 const DEFAULT_THRESHOLD = 10_000;
 
 async function loadThreshold(): Promise<number> {
@@ -44,6 +48,7 @@ export function LogThrottlePanel() {
   const [threshold, setThreshold] = useState<number>(DEFAULT_THRESHOLD);
   const [throttledSet, setThrottledSet] = useState<Set<string>>(new Set());
   const [throttlingNow, setThrottlingNow] = useState<string | null>(null);
+  const [pendingConfirm, setPendingConfirm] = useState<PendingConfirm | null>(null);
   const [levels, setLevels] = useState<Map<string, MplLogLevel | null> | null>(null);
   const [levelsLoading, setLevelsLoading] = useState(false);
   const [selectedSet, setSelectedSet] = useState<Set<string>>(new Set());
@@ -90,14 +95,13 @@ export function LogThrottlePanel() {
     saveThreshold(next);
   }
 
-  async function handleThrottle(symbolicName: string) {
-    if (throttlingNow) return;
-    const confirmed = window.confirm(
-      `Set log level of "${symbolicName}" to ERROR?\n\n` +
-      `New INFO/DEBUG logs will be suppressed until you manually restore the level.`,
-    );
-    if (!confirmed) return;
+  function handleThrottle(symbolicName: string) {
+    if (throttlingNow || pendingConfirm) return;
+    setPendingConfirm({ kind: 'one', name: symbolicName });
+  }
 
+  async function runThrottle(symbolicName: string) {
+    setPendingConfirm(null);
     setThrottlingNow(symbolicName);
     try {
       await setMplLogLevel(symbolicName, 'ERROR');
@@ -136,17 +140,13 @@ export function LogThrottlePanel() {
     setSelectedSet(new Set(hot));
   }
 
-  async function handleBulkSilence() {
-    if (selectedSet.size === 0 || bulkRunning) return;
-    const list = Array.from(selectedSet);
-    const preview = list.slice(0, 5).map(n => `• ${n}`).join('\n');
-    const rest = list.length > 5 ? `\n• … and ${list.length - 5} more` : '';
-    const confirmed = window.confirm(
-      `Set log level of ${list.length} iFlow${list.length > 1 ? 's' : ''} to ERROR?\n\n` +
-      preview + rest,
-    );
-    if (!confirmed) return;
+  function handleBulkSilence() {
+    if (selectedSet.size === 0 || bulkRunning || pendingConfirm) return;
+    setPendingConfirm({ kind: 'bulk', list: Array.from(selectedSet) });
+  }
 
+  async function runBulkSilence(list: string[]) {
+    setPendingConfirm(null);
     setBulkRunning(true);
     const newlyThrottled = new Set<string>();
     let failures = 0;
@@ -195,8 +195,30 @@ export function LogThrottlePanel() {
     return levels?.get(symbolicName) === 'ERROR';
   }
 
+  const confirmItems = pendingConfirm?.kind === 'bulk'
+    ? [
+        ...pendingConfirm.list.slice(0, CONFIRM_PREVIEW_ITEMS),
+        ...(pendingConfirm.list.length > CONFIRM_PREVIEW_ITEMS
+          ? [tSub('confirmMoreItems', String(pendingConfirm.list.length - CONFIRM_PREVIEW_ITEMS))]
+          : []),
+      ]
+    : undefined;
+
   return (
     <div class="flex w-full flex-col gap-2 text-[13px] text-base-content" onPointerDown={(e) => e.stopPropagation()}>
+      {pendingConfirm && (
+        <ConfirmDialog
+          title={pendingConfirm.kind === 'one' || pendingConfirm.list.length === 1
+            ? tSub('confirmSilenceOneTitle', pendingConfirm.kind === 'one' ? pendingConfirm.name : pendingConfirm.list[0]!)
+            : tSub('confirmSilenceManyTitle', String(pendingConfirm.list.length))}
+          message={t('confirmSilenceHint')}
+          items={confirmItems}
+          confirmLabel={t('logThrottleSilence')}
+          confirmClass="btn-primary"
+          onConfirm={() => (pendingConfirm.kind === 'one' ? runThrottle(pendingConfirm.name) : runBulkSilence(pendingConfirm.list))}
+          onCancel={() => setPendingConfirm(null)}
+        />
+      )}
       <header class="flex items-center gap-2 border-b border-base-300 pb-2">
         <span class="font-semibold tracking-wide">{t('logThrottleTopLoggers')}</span>
         {levelsLoading && (
