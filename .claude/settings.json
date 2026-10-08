@@ -1,14 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run *)",
-      "Bash(npm test *)",
-      "Bash(npx vitest *)",
-      "Bash(npx eslint *)",
-      "Bash(npx tsc *)",
+      "Bash(npm run compile)",
+      "Bash(npm run lint)",
+      "Bash(npm run lint:design)",
+      "Bash(npm run test)",
+      "Bash(npm run test:watch)",
+      "Bash(npm run build)",
+      "Bash(npm run build:firefox)",
+      "Bash(npm run verify)",
       "Bash(gh pr view *)",
       "Bash(gh pr list *)",
       "Bash(gh pr diff *)",
+      "Bash(gh pr checks *)",
       "Bash(gh issue list *)",
       "Bash(gh issue view *)",
       "Bash(gh run list *)",
