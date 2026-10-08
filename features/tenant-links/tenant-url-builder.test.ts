@@ -5,7 +5,6 @@ const IS_HOST = 'https://acme-dev.integrationsuite.cfapps.eu10.hana.ondemand.com
 const TRIAL_HOST = 'https://acme-trial.integrationsuite-trial.cfapps.us10.hana.ondemand.com';
 const NEO_HOST = 'https://acme-tmn.hci.eu1.hana.ondemand.com';
 const CPI_NNN_HOST = 'https://acme-dev.integrationsuite-cpi033.cfapps.eu10-005.hana.ondemand.com';
-const CN_HOST = 'https://acme-dev.integrationsuite.cfapps.cn40.platform.sapcloud.cn';
 
 describe('isIntegrationSuite', () => {
   it('detects Integration Suite and trial hosts', () => {
@@ -13,9 +12,8 @@ describe('isIntegrationSuite', () => {
     expect(isIntegrationSuite(TRIAL_HOST)).toBe(true);
   });
 
-  it('detects integrationsuite-cpiNNN and China hosts (regression: these got the /itspaces prefix)', () => {
+  it('detects integrationsuite-cpiNNN hosts (regression: these got the /itspaces prefix)', () => {
     expect(isIntegrationSuite(CPI_NNN_HOST)).toBe(true);
-    expect(isIntegrationSuite(CN_HOST)).toBe(true);
     expect(buildTenantUrl(CPI_NNN_HOST, '/shell/design')).toBe(`${CPI_NNN_HOST}/shell/design`);
   });
 

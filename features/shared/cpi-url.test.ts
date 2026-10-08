@@ -24,9 +24,6 @@ const VERIFIED_UI_HOSTS = [
   // trial (us10, ap21)
   'acme.integrationsuite-trial.cfapps.us10.hana.ondemand.com',
   'acme.integrationsuite-trial.cfapps.ap21.hana.ondemand.com',
-  // China regions on platform.sapcloud.cn
-  'acme-dev.integrationsuite.cfapps.cn40.platform.sapcloud.cn',
-  'acme-dev.integrationsuite.cfapps.cn20.platform.sapcloud.cn',
 ];
 
 const REJECTED_HOSTS = [
@@ -44,8 +41,8 @@ const REJECTED_HOSTS = [
   'acme.authentication.eu10.hana.ondemand.com',
   'cockpit.eu10.hana.ondemand.com',
   'api.cf.eu10.hana.ondemand.com',
-  'acme.cfapps.cn40.platform.sapcloud.cn',
-  'cn40.platform.sapcloud.cn',
+  // China domain: not verified for Integration Suite yet, so not accepted (docs/sap-cpi-hosts.md)
+  'acme-dev.integrationsuite.cfapps.cn40.platform.sapcloud.cn',
   // malformed variants of the real shape
   'integrationsuite-x.hana.ondemand.com',
   'foo.integrationsuite.hana.ondemand.com',
@@ -53,7 +50,6 @@ const REJECTED_HOSTS = [
   'acme.integrationsuite-foo.cfapps.eu10.hana.ondemand.com',
   'acme.integrationsuite.cfapps.hana.ondemand.com',
   'acme.integrationsuite.cfapps.eu10.ondemand.com',
-  'acme.integrationsuite.cfapps.eu10.sapcloud.cn',
   // look-alikes and suffix attacks
   'acme.integrationsuite.cfapps.eu10.hana.ondemand.com.attacker.example',
   'acme.integrationsuite.cfapps.eu10.hana-ondemand.com',
@@ -101,13 +97,10 @@ describe('toCpiOrigin', () => {
     expect(toCpiOrigin(`${UI}/shell/monitoring/MessageUsage?x=1#frag`)).toBe(UI);
     expect(toCpiOrigin(TRIAL)).toBe(TRIAL);
     expect(toCpiOrigin(`${UI}:443/x`)).toBe(UI);
-    expect(toCpiOrigin('https://acme.integrationsuite.cfapps.cn40.platform.sapcloud.cn/shell/home'))
-      .toBe('https://acme.integrationsuite.cfapps.cn40.platform.sapcloud.cn');
   });
 
   it('fails closed for http, credentials, other hosts and garbage', () => {
     expect(toCpiOrigin('http://acme-dev.integrationsuite.cfapps.eu10.hana.ondemand.com')).toBeNull();
-    expect(toCpiOrigin('http://acme.integrationsuite.cfapps.cn40.platform.sapcloud.cn')).toBeNull();
     expect(toCpiOrigin('https://user:pw@acme-dev.integrationsuite.cfapps.eu10.hana.ondemand.com')).toBeNull();
     expect(toCpiOrigin('https://attacker.example/?u=acme.integrationsuite.cfapps.eu10.hana.ondemand.com')).toBeNull();
     expect(toCpiOrigin('https://acme-tmn.hci.eu1.hana.ondemand.com/itspaces')).toBeNull();

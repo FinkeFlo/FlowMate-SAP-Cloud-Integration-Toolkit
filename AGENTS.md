@@ -48,7 +48,7 @@ docs/                 Design specs (docs/superpowers/specs/) and other documenta
 - **SPA navigation.** SAP CPI is a single-page app. Detect page changes with `features/shared/navigation.ts` and
   render feature UI conditionally through the `usePageType` hook, never via `load`/`DOMContentLoaded`.
 - **SAP CPI hosts.** The extension only runs on Integration Suite UI hosts
-  (`<sub>.integrationsuite[-trial|-cpiNNN].cfapps.<region>[-NNN].{hana.ondemand.com|platform.sapcloud.cn}`).
+  (`<sub>.integrationsuite[-trial|-cpiNNN].cfapps.<region>[-NNN].hana.ondemand.com`).
   `features/shared/cpi-url.ts` is the single trust-boundary check; the manifest patterns in
   `config/sap-cpi-urls.ts` are derived from it. Verified hosts, sources and unsupported variants:
   `docs/sap-cpi-hosts.md`.

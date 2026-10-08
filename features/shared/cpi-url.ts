@@ -10,11 +10,13 @@
 
 /**
  * SAP BTP Cloud Foundry domain suffixes under which Integration Suite UI hosts
- * live. `hana.ondemand.com` covers every region except China; the China
- * regions (cn20 Azure, cn40 Alibaba) use `platform.sapcloud.cn`.
+ * live. `hana.ondemand.com` covers every verified region. The China regions
+ * (cn20, cn40) use `platform.sapcloud.cn`, but no Integration Suite host on that
+ * domain has been verified yet, so it is deliberately not listed (see
+ * docs/sap-cpi-hosts.md); add it here when a user reports such a tenant.
  * `config/sap-cpi-urls.ts` derives the manifest match patterns from this list.
  */
-export const CPI_UI_DOMAIN_SUFFIXES = ['hana.ondemand.com', 'platform.sapcloud.cn'] as const;
+export const CPI_UI_DOMAIN_SUFFIXES = ['hana.ondemand.com'] as const;
 
 /**
  * Integration Suite UI hosts:
