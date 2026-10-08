@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- Dependabot ignores TypeScript major updates until `typescript-eslint` supports TypeScript 7 (the grouped bump failed `npm ci` with ERESOLVE).
+
 ### Security
 - **Trust-boundary validation for every URL that reaches `fetch`, `tabs.create` or `window.open`** (closes #32, #33, #34, #35). New pure module `features/shared/cpi-url.ts` with an anchored Integration Suite hostname check (`<sub>.integrationsuite(-trial).cfapps.<region>.hana.ondemand.com`, https only, no credentials). The background worker now ignores messages from other senders, reduces `baseUrl` to a validated origin before metering calls, and refuses to open tenant tabs for non-CPI URLs. The content script mounts only on an exact Integration Suite host instead of any hostname containing `integrationsuite`. Tenant URLs are validated in the storage layer (add/update) and invalid stored tenants are dropped on read. `extractHost`/`extractHostname` return `null` instead of the raw input on parse failure. The message-log "Open in Monitoring" link is only rendered for CPI URLs.
 
