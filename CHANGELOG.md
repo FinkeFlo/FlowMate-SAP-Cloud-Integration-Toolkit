@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`PackageArtifactsPanel` component**: Replaces the three loose buttons in `ContentApp.tsx` with a structured panel. The panel shows a "Status" section (Refresh button) and a "Deployment" section (Deploy + Undeploy side by side as a flex row), separated by a labeled divider.
 
 ### Changed
+<<<<<<< HEAD
 - ESLint: `no-console` is now an error (`console.warn`/`console.error` allowed; `dev-logger.ts` and `background.ts` exempt).
 - `.github/copilot-instructions.md` now points to `AGENTS.md` and repeats only the review-relevant rules.
 - `CONTRIBUTING.md`: Node 24, tag-driven release instructions (no manual version bump), verification and AI-agent section. `features/README.md` regenerated from the actual directory layout. `DESIGN.md` prose colours for success/warning aligned with the theme CSS.
@@ -24,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/audit-2026-06.md`: open findings are now GitHub issues (`security` / `tech-debt` labels); fixed findings needed no record.
 
 ### Changed
+=======
+- Upgraded `preact` 10 → 11, `eslint` 9 → 10, `eslint-plugin-react-hooks` 5 → 7 and `globals` 15 → 17; adapted `ContentApp`, `MessageLogPanel` and `TraceToggleButton` to the stricter react-hooks v7 rules (no ref writes during render, effect-scoped async init). Moved `vite` and `@preact/preset-vite` to `devDependencies` (build-time only).
+>>>>>>> f56917a (chore(deps): upgrade preact 10→11, eslint 9→10, react-hooks 5→7; adapt to react-hooks v7 rules)
 - Upgraded `wxt` 0.21.2 → 0.21.4; upgraded `@release-it/conventional-changelog` 11 → 12 (required peer dependency for `release-it` v21).
 - Added `.github/copilot-instructions.md` with build commands, architecture overview, and key conventions for AI-assisted development sessions.
 

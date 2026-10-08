@@ -16,35 +16,36 @@ export function TraceToggleButton() {
 
   useEffect(() => {
     mountedRef.current = true;
+
+    async function fetchInitial() {
+      const iflowId = extractIFlowId();
+      if (!iflowId) return;
+
+      await new Promise(r => setTimeout(r, INITIAL_FETCH_DELAY_MS));
+
+      for (let attempt = 1; attempt <= INITIAL_FETCH_RETRIES; attempt++) {
+        if (!mountedRef.current) return;
+        try {
+          devLog.debug(LOG_TAG, `Fetching initial trace state (attempt ${attempt}/${INITIAL_FETCH_RETRIES})`, { iflowId });
+          const isActive = await fetchTraceState(iflowId);
+          if (mountedRef.current) {
+            setTraceActive(isActive);
+            devLog.info(LOG_TAG, 'Initial trace state loaded', { iflowId, traceActive: isActive });
+          }
+          return;
+        } catch (error) {
+          devLog.warn(LOG_TAG, `Failed to fetch initial state (attempt ${attempt})`, { error: String(error) });
+          if (attempt < INITIAL_FETCH_RETRIES) {
+            await new Promise(r => setTimeout(r, INITIAL_FETCH_RETRY_DELAY_MS));
+          }
+        }
+      }
+      devLog.warn(LOG_TAG, 'Could not determine initial trace state after all retries - defaulting to OFF');
+    }
+
     fetchInitial();
     return () => { mountedRef.current = false; };
   }, []);
-
-  async function fetchInitial() {
-    const iflowId = extractIFlowId();
-    if (!iflowId) return;
-
-    await new Promise(r => setTimeout(r, INITIAL_FETCH_DELAY_MS));
-
-    for (let attempt = 1; attempt <= INITIAL_FETCH_RETRIES; attempt++) {
-      if (!mountedRef.current) return;
-      try {
-        devLog.debug(LOG_TAG, `Fetching initial trace state (attempt ${attempt}/${INITIAL_FETCH_RETRIES})`, { iflowId });
-        const isActive = await fetchTraceState(iflowId);
-        if (mountedRef.current) {
-          setTraceActive(isActive);
-          devLog.info(LOG_TAG, 'Initial trace state loaded', { iflowId, traceActive: isActive });
-        }
-        return;
-      } catch (error) {
-        devLog.warn(LOG_TAG, `Failed to fetch initial state (attempt ${attempt})`, { error: String(error) });
-        if (attempt < INITIAL_FETCH_RETRIES) {
-          await new Promise(r => setTimeout(r, INITIAL_FETCH_RETRY_DELAY_MS));
-        }
-      }
-    }
-    devLog.warn(LOG_TAG, 'Could not determine initial trace state after all retries - defaulting to OFF');
-  }
 
   async function handleToggle() {
     const iflowId = extractIFlowId();

@@ -20,14 +20,12 @@ interface DetailPopupState {
 
 export function ContentApp() {
   const pageType = usePageType();
-  const artifactStatusRef = useRef(new ArtifactStatus());
+  const [artifactStatus] = useState(() => new ArtifactStatus());
   const overlayRef = useRef(new InlineTraceOverlay());
   const [detailPopup, setDetailPopup] = useState<DetailPopupState | null>(null);
   const [activeInlineTrace, setActiveInlineTrace] = useState<string | null>(null);
   const [tracePopup, setTracePopup] = useState<(TracePopupState & { baseUrl: string }) | null>(null);
   const prevPageTypeRef = useRef(pageType);
-
-  const artifactStatus = artifactStatusRef.current;
 
   // Handle ArtifactStatus show/hide based on page type
   useEffect(() => {
