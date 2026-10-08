@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- **Configurable message-log auto-refresh interval** (closes #14): the Options page has a new "Preferences" card with a 5/10/15/30/60 s selector (default now 10 s, previously a fixed 30 s). Stored in `browser.storage.sync` via the new `features/shared/preferences.ts`; the message log panel picks up changes live and shows the current interval in the "Auto" button tooltip.
 - **Engineering baseline for humans and AI agents**: `AGENTS.md` (tool-neutral conventions, imported by `CLAUDE.md`), path-scoped rules in `.claude/rules/` (styling, messaging/SAP API, i18n, security, git workflow, testing), skills `/verify`, `/review`, `/new-feature`, `/release`, and read-only reviewer agents (`flowmate-reviewer`, `ux-reviewer`). Design spec: `docs/superpowers/specs/2026-10-08-engineering-baseline-design.md`.
 - **Enforcement hooks** (`.claude/hooks/`): ESLint `--fix` after every edit, type-check + lint + tests + en/de locale-key parity before a turn ends with changed sources, `CHANGELOG.md` required in every commit, and a local denylist scan for real customer/tenant names (`.claude/denylist.example.txt`).
 - **Vitest unit tests** for the pure boundary modules `validators`, `tenant-url-builder`, `formatters` and `csv-exporter` (28 tests); `npm run test`, `npm run test:watch`, and `npm run verify` (compile + lint + lint:design + test + build). New `Unit tests` job in CI, part of the aggregating `CI` check.
@@ -26,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CodeQL security analysis workflow (`.github/workflows/codeql.yml`).
 
 ### Changed
+- Dependabot ignores TypeScript major updates until `typescript-eslint` supports TypeScript 7 (the grouped bump failed `npm ci` with ERESOLVE).
 - **Confirmations use the FlowMate dialog instead of `window.confirm`** (closes #36): Deploy, Undeploy and the two "Silence" actions in the Top Logger panel open the shared daisyUI `ConfirmDialog` (`features/shared/ConfirmDialog.tsx`, moved from `features/settings/components/`) with a translated title, the list of affected artifacts/iFlows and a colored confirm button. The dialog has `role="dialog"`, `aria-modal`, Escape-to-cancel, a minimal focus trap, initial focus (Cancel for destructive actions) and focus restore on close. It is portaled next to the toolbar so it covers the whole page.
 - Dependabot ignores TypeScript major updates until `typescript-eslint` supports TypeScript 7 (the grouped bump failed `npm ci` with ERESOLVE).
 - ESLint: `no-console` is now an error (`console.warn`/`console.error` allowed; `dev-logger.ts` and `background.ts` exempt).
@@ -63,6 +65,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `docs/audit-2026-06.md`: open findings are now GitHub issues (`security` / `tech-debt` labels); fixed findings needed no record.
 
 ### Security
+- **Trust-boundary validation for every URL that reaches `fetch`, `tabs.create` or `window.open`** (closes #32, #33, #34, #35). New pure module `features/shared/cpi-url.ts` with an anchored Integration Suite hostname check (`<sub>.integrationsuite(-trial).cfapps.<region>.hana.ondemand.com`, https only, no credentials). The background worker now ignores messages from other senders, reduces `baseUrl` to a validated origin before metering calls, and refuses to open tenant tabs for non-CPI URLs. The content script mounts only on an exact Integration Suite host instead of any hostname containing `integrationsuite`. Tenant URLs are validated in the storage layer (add/update) and invalid stored tenants are dropped on read. `extractHost`/`extractHostname` return `null` instead of the raw input on parse failure. The message-log "Open in Monitoring" link is only rendered for CPI URLs.
 - **Trust-boundary validation for every URL that reaches `fetch`, `tabs.create` or `window.open`** (closes #32, #33, #34, #35). New pure module `features/shared/cpi-url.ts` with an anchored Integration Suite hostname check (`<sub>.integrationsuite(-trial).cfapps.<region>.hana.ondemand.com`, https only, no credentials). The background worker now ignores messages from other senders, reduces `baseUrl` to a validated origin before metering calls, and refuses to open tenant tabs for non-CPI URLs. The content script mounts only on an exact Integration Suite host instead of any hostname containing `integrationsuite`. Tenant URLs are validated in the storage layer (add/update) and invalid stored tenants are dropped on read. `extractHost`/`extractHostname` return `null` instead of the raw input on parse failure. The message-log "Open in Monitoring" link is only rendered for CPI URLs.
 
 ### Docs

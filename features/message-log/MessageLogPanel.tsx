@@ -3,7 +3,8 @@ import { Info, ExternalLink, Activity, RefreshCw, Layers, Check, X, Clock, Ban }
 import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
-import { t } from '@/features/shared/i18n';
+import { t, tSub } from '@/features/shared/i18n';
+import { getPreferences, onPreferencesChange, DEFAULT_PREFERENCES } from '@/features/shared/preferences';
 import { isCpiUrl } from '@/features/shared/cpi-url';
 import { MPL_STATUS_COLORS } from '@/features/shared/constants';
 import { extractIFlowId } from '@/features/trace-mode/trace-api';
@@ -12,7 +13,6 @@ import { parseODataDate } from './mpl-types';
 import type { MessageProcessingLog, MplStatus } from './mpl-types';
 
 const LOG_TAG = 'MessageLog';
-const AUTO_REFRESH_INTERVAL_MS = 30_000;
 const INITIAL_FETCH_DELAY_MS = 2000;
 
 type FilterCategory = 'success' | 'error' | 'processing';
@@ -191,6 +191,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
     new Set(['success', 'error', 'processing']),
   );
   const [autoRefresh, setAutoRefresh] = useState(false);
+  const [refreshSec, setRefreshSec] = useState(DEFAULT_PREFERENCES.messageLogRefreshSec);
   const [messageLimit, setMessageLimit] = useState(10);
   const [lastRefresh, setLastRefresh] = useState('');
 
@@ -230,9 +231,17 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
     };
   }, [refresh]);
 
+  // Interval is a user preference (Options page); follow changes live.
+  useEffect(() => {
+    let active = true;
+    getPreferences().then(p => { if (active) setRefreshSec(p.messageLogRefreshSec); });
+    const unsubscribe = onPreferencesChange(p => setRefreshSec(p.messageLogRefreshSec));
+    return () => { active = false; unsubscribe(); };
+  }, []);
+
   useEffect(() => {
     if (autoRefresh && panelOpen) {
-      timerRef.current = setInterval(() => refresh(), AUTO_REFRESH_INTERVAL_MS);
+      timerRef.current = setInterval(() => refresh(), refreshSec * 1000);
       devLog.debug(LOG_TAG, 'Auto-refresh started');
     }
     return () => {
@@ -242,7 +251,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
         devLog.debug(LOG_TAG, 'Auto-refresh stopped');
       }
     };
-  }, [autoRefresh, panelOpen, refresh]);
+  }, [autoRefresh, panelOpen, refresh, refreshSec]);
 
   function toggleFilter(cat: FilterCategory) {
     setActiveFilters(prev => {
@@ -303,7 +312,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
 
             <button
               class={`btn btn-xs ${autoRefresh ? 'btn-primary' : 'btn-ghost'}`}
-              title="Auto-refresh (30s)"
+              title={tSub('msgLogAutoRefresh', String(refreshSec))}
               onClick={(e) => { e.stopPropagation(); setAutoRefresh(v => !v); }}
             >
               Auto
