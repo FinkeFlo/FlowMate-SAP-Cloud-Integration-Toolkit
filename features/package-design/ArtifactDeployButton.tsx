@@ -3,7 +3,8 @@ import { LoaderCircle, CloudUpload } from 'lucide-preact';
 import type { ArtifactStatus } from './ArtifactStatus';
 import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { fetchCpi } from '@/features/shared/fetch-client';
-import { t } from '@/features/shared/i18n';
+import { t, tSub } from '@/features/shared/i18n';
+import { ConfirmDialog } from '@/features/shared/ConfirmDialog';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
 import {
@@ -39,17 +40,20 @@ function getSelectedArtifactNames(): string[] {
   return names;
 }
 
+type DeployTarget = { displayName: string; artifactId: string };
+
 export function ArtifactDeployButton({ artifactStatus }: ArtifactDeployButtonProps) {
   const [running, setRunning] = useState(false);
+  const [pending, setPending] = useState<DeployTarget[] | null>(null);
 
-  async function handleDeploy() {
-    if (running) return;
+  function requestDeploy() {
+    if (running || pending) return;
 
     const deployedMap = artifactStatus.getDeployedArtifactsMap();
     const designtimeMap = artifactStatus.getDesigntimeArtifactsMap();
     const selectedNames = getSelectedArtifactNames();
 
-    const toDeploy: Array<{ displayName: string; artifactId: string }> = [];
+    const toDeploy: DeployTarget[] = [];
     const seen = new Set<string>();
 
     for (const text of selectedNames) {
@@ -73,16 +77,15 @@ export function ArtifactDeployButton({ artifactStatus }: ArtifactDeployButtonPro
     }
 
     if (toDeploy.length === 0) {
-      showToast('No deployable artifacts selected', 'warning');
+      showToast(t('artifactNoneDeployable'), 'warning');
       return;
     }
 
-    const nameList = toDeploy.map(a => `  - ${a.displayName}`).join('\n');
-    const confirmed = window.confirm(
-      `Deploy ${toDeploy.length} artifact(s)?\n\n${nameList}`
-    );
-    if (!confirmed) return;
+    setPending(toDeploy);
+  }
 
+  async function runDeploy(toDeploy: DeployTarget[]) {
+    setPending(null);
     setRunning(true);
     let successCount = 0;
     const baseUrl = getCpiBaseUrl();
@@ -109,17 +112,17 @@ export function ArtifactDeployButton({ artifactStatus }: ArtifactDeployButtonPro
           devLog.info(LOG_TAG, `Successfully triggered deploy for ${displayName}`);
         } catch (error) {
           devLog.error(LOG_TAG, `Error deploying ${displayName}`, { error: String(error) });
-          showToast(`Error deploying ${displayName}: ${error}`, 'error');
+          showToast(`${tSub('artifactDeployError', displayName)}: ${error}`, 'error');
         }
       }
 
       showToast(
-        `${successCount} of ${toDeploy.length} artifact(s) deployment triggered`,
+        t('artifactDeployTriggered', [String(successCount), String(toDeploy.length)]),
         successCount > 0 ? 'success' : 'error'
       );
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to fetch CSRF token', { error: String(error) });
-      showToast(`Failed to fetch CSRF token: ${error}`, 'error');
+      showToast(`${t('artifactCsrfFailed')}: ${error}`, 'error');
     } finally {
       setRunning(false);
       artifactStatus.refresh();
@@ -127,10 +130,23 @@ export function ArtifactDeployButton({ artifactStatus }: ArtifactDeployButtonPro
   }
 
   return (
+    <>
+    {pending && (
+      <ConfirmDialog
+        title={pending.length === 1
+          ? tSub('confirmDeployOneTitle', pending[0]!.displayName)
+          : tSub('confirmDeployTitle', String(pending.length))}
+        items={pending.map(a => a.displayName)}
+        confirmLabel={t('artifactDeploy')}
+        confirmClass="btn-success"
+        onConfirm={() => runDeploy(pending)}
+        onCancel={() => setPending(null)}
+      />
+    )}
     <button
       class="btn btn-success btn-soft btn-sm w-full justify-start gap-2"
       disabled={running}
-      onClick={handleDeploy}
+      onClick={requestDeploy}
     >
       {running ? (
         <>
@@ -144,5 +160,6 @@ export function ArtifactDeployButton({ artifactStatus }: ArtifactDeployButtonPro
         </>
       )}
     </button>
+    </>
   );
 }

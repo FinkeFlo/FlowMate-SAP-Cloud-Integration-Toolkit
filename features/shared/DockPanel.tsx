@@ -8,6 +8,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
+import { t } from '@/features/shared/i18n';
 
 const STORAGE_KEY = 'flowmate-dock-panel-height';
 const DEFAULT_HEIGHT = 420;
@@ -69,7 +70,7 @@ export function DockPanel({ header, children }: DockPanelProps) {
     >
       <div
         class="flex h-2.5 shrink-0 cursor-ns-resize items-center justify-center touch-none hover:bg-base-200"
-        title="Drag to resize"
+        title={t('resizePanel')}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}

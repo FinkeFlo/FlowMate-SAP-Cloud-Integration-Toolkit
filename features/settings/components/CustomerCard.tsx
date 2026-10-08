@@ -2,10 +2,10 @@ import { useState, useRef, useEffect } from 'preact/hooks';
 import { updateCustomer, deleteCustomer, type Customer } from '@/features/settings/settings';
 import { validateName } from '@/features/settings/validators';
 import { Check, X, Pencil, Trash2, Plus } from 'lucide-preact';
-import { t } from '@/features/shared/i18n';
+import { t, tSub } from '@/features/shared/i18n';
 import { TenantItem } from './TenantItem';
 import { AddTenantForm } from './AddTenantForm';
-import { ConfirmDialog } from './ConfirmDialog';
+import { ConfirmDialog } from '@/features/shared/ConfirmDialog';
 
 interface CustomerCardProps {
   customer: Customer;
@@ -113,7 +113,7 @@ export function CustomerCard({ customer, onRefresh }: CustomerCardProps) {
 
       <div class="my-2 flex flex-col gap-2">
         {customer.tenants.length === 0 ? (
-          <p class="py-4 text-center italic text-base-content/50">{t('noTenants') || 'No tenants created'}</p>
+          <p class="py-4 text-center italic text-base-content/50">{t('noTenantsYet')}</p>
         ) : (
           customer.tenants.map(tenant => (
             <TenantItem
@@ -138,7 +138,7 @@ export function CustomerCard({ customer, onRefresh }: CustomerCardProps) {
 
       {confirmDelete && (
         <ConfirmDialog
-          message={`${t('confirmDeleteCustomer') || 'Delete customer'} "${customer.name}" ${t('andAllTenants') || 'and all its tenants'}?`}
+          title={tSub('confirmDeleteCustomerTitle', customer.name)}
           onConfirm={handleDelete}
           onCancel={() => setConfirmDelete(false)}
         />

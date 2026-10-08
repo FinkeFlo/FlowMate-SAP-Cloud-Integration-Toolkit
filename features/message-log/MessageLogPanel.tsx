@@ -3,7 +3,8 @@ import { Info, ExternalLink, Activity, RefreshCw, Layers, Check, X, Clock, Ban }
 import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
-import { t } from '@/features/shared/i18n';
+import { t, tSub } from '@/features/shared/i18n';
+import { getPreferences, onPreferencesChange, DEFAULT_PREFERENCES } from '@/features/shared/preferences';
 import { isCpiUrl } from '@/features/shared/cpi-url';
 import { MPL_STATUS_COLORS } from '@/features/shared/constants';
 import { extractIFlowId } from '@/features/trace-mode/trace-api';
@@ -12,7 +13,6 @@ import { parseODataDate } from './mpl-types';
 import type { MessageProcessingLog, MplStatus } from './mpl-types';
 
 const LOG_TAG = 'MessageLog';
-const AUTO_REFRESH_INTERVAL_MS = 30_000;
 const INITIAL_FETCH_DELAY_MS = 2000;
 
 type FilterCategory = 'success' | 'error' | 'processing';
@@ -95,7 +95,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
       const baseUrl = getCpiBaseUrl();
       const runs = await fetchRuns(baseUrl, msg.MessageGuid);
       if (runs.length === 0) {
-        showToast('No trace runs found for this message', 'warning');
+        showToast(t('msgLogNoTraceRuns'), 'warning');
         return;
       }
       const runId = runs[0]!.Id;
@@ -104,7 +104,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
       devLog.info(LOG_TAG, 'Opened trace', { messageGuid: msg.MessageGuid, runId });
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to open trace', { error: String(error) });
-      showToast(`Failed to load trace: ${error}`, 'error');
+      showToast(`${t('msgLogTraceLoadFailed')}: ${error}`, 'error');
     }
   }
 
@@ -126,7 +126,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
       <div class="flex gap-1">
         <button
           class="btn btn-ghost btn-xs btn-square"
-          title="Message Details"
+          title={t('msgDetailMessageDetail')}
           onClick={(e) => { e.stopPropagation(); onShowDetail(msg.MessageGuid); }}
         >
           <Info size={16} />
@@ -134,7 +134,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
         {msg.AlternateWebLink && isCpiUrl(msg.AlternateWebLink) && (
           <button
             class="btn btn-ghost btn-xs btn-square"
-            title="Open in Monitoring"
+            title={t('msgLogOpenMonitoring')}
             onClick={(e) => { e.stopPropagation(); window.open(msg.AlternateWebLink, '_blank'); }}
           >
             <ExternalLink size={16} />
@@ -144,14 +144,14 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
           <>
             <button
               class={`btn btn-xs btn-square ${activeInlineTrace === msg.MessageGuid ? 'btn-success' : 'btn-ghost'}`}
-              title="Show Inline Trace"
+              title={t('msgLogShowInlineTrace')}
               onClick={(e) => { e.stopPropagation(); onStartInlineTrace?.(msg.MessageGuid); }}
             >
               <Layers size={16} />
             </button>
             <button
               class="btn btn-ghost btn-xs btn-square"
-              title="Open Trace"
+              title={t('msgLogOpenTrace')}
               onClick={(e) => { e.stopPropagation(); openTrace(); }}
             >
               <Activity size={16} />
@@ -191,6 +191,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
     new Set(['success', 'error', 'processing']),
   );
   const [autoRefresh, setAutoRefresh] = useState(false);
+  const [refreshSec, setRefreshSec] = useState(DEFAULT_PREFERENCES.messageLogRefreshSec);
   const [messageLimit, setMessageLimit] = useState(10);
   const [lastRefresh, setLastRefresh] = useState('');
 
@@ -230,9 +231,17 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
     };
   }, [refresh]);
 
+  // Interval is a user preference (Options page); follow changes live.
+  useEffect(() => {
+    let active = true;
+    getPreferences().then(p => { if (active) setRefreshSec(p.messageLogRefreshSec); });
+    const unsubscribe = onPreferencesChange(p => setRefreshSec(p.messageLogRefreshSec));
+    return () => { active = false; unsubscribe(); };
+  }, []);
+
   useEffect(() => {
     if (autoRefresh && panelOpen) {
-      timerRef.current = setInterval(() => refresh(), AUTO_REFRESH_INTERVAL_MS);
+      timerRef.current = setInterval(() => refresh(), refreshSec * 1000);
       devLog.debug(LOG_TAG, 'Auto-refresh started');
     }
     return () => {
@@ -242,7 +251,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
         devLog.debug(LOG_TAG, 'Auto-refresh stopped');
       }
     };
-  }, [autoRefresh, panelOpen, refresh]);
+  }, [autoRefresh, panelOpen, refresh, refreshSec]);
 
   function toggleFilter(cat: FilterCategory) {
     setActiveFilters(prev => {
@@ -295,7 +304,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
           <div class="flex items-center gap-2 border-b border-base-300 px-3 py-2">
             <button
               class="btn btn-ghost btn-xs btn-square"
-              title="Refresh"
+              title={t('refresh')}
               onClick={(e) => { e.stopPropagation(); refresh(); }}
             >
               <RefreshCw size={16} />
@@ -303,10 +312,10 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
 
             <button
               class={`btn btn-xs ${autoRefresh ? 'btn-primary' : 'btn-ghost'}`}
-              title="Auto-refresh (30s)"
+              title={tSub('msgLogAutoRefresh', String(refreshSec))}
               onClick={(e) => { e.stopPropagation(); setAutoRefresh(v => !v); }}
             >
-              Auto
+              {t('msgLogAuto')}
             </button>
 
             {FILTER_CATEGORIES.map(cat => (
@@ -320,7 +329,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
 
             <select
               class="select select-bordered select-xs w-14 min-w-0"
-              title="Message limit"
+              title={t('msgLogMessageLimit')}
               value={messageLimit}
               onChange={handleLimitChange}
               onClick={(e) => e.stopPropagation()}

@@ -3,7 +3,8 @@ import { LoaderCircle, CloudOff } from 'lucide-preact';
 import type { ArtifactStatus, DeployedArtifactInfo } from './ArtifactStatus';
 import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { fetchCpi } from '@/features/shared/fetch-client';
-import { t } from '@/features/shared/i18n';
+import { t, tSub } from '@/features/shared/i18n';
+import { ConfirmDialog } from '@/features/shared/ConfirmDialog';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
 import {
@@ -39,16 +40,19 @@ function getSelectedArtifactNames(): string[] {
   return names;
 }
 
+type UndeployTarget = { name: string; info: DeployedArtifactInfo };
+
 export function ArtifactUndeployButton({ artifactStatus }: ArtifactUndeployButtonProps) {
   const [running, setRunning] = useState(false);
+  const [pending, setPending] = useState<UndeployTarget[] | null>(null);
 
-  async function handleUndeploy() {
-    if (running) return;
+  function requestUndeploy() {
+    if (running || pending) return;
 
     const deployedMap = artifactStatus.getDeployedArtifactsMap();
     const selectedNames = getSelectedArtifactNames();
 
-    const toUndeploy: Array<{ name: string; info: DeployedArtifactInfo }> = [];
+    const toUndeploy: UndeployTarget[] = [];
     const seen = new Set<string>();
 
     for (const text of selectedNames) {
@@ -60,16 +64,15 @@ export function ArtifactUndeployButton({ artifactStatus }: ArtifactUndeployButto
     }
 
     if (toUndeploy.length === 0) {
-      showToast('No deployed artifacts selected', 'warning');
+      showToast(t('artifactNoneDeployed'), 'warning');
       return;
     }
 
-    const nameList = toUndeploy.map(a => `  - ${a.name}`).join('\n');
-    const confirmed = window.confirm(
-      `Undeploy ${toUndeploy.length} artifact(s)?\n\n${nameList}`
-    );
-    if (!confirmed) return;
+    setPending(toUndeploy);
+  }
 
+  async function runUndeploy(toUndeploy: UndeployTarget[]) {
+    setPending(null);
     setRunning(true);
     let successCount = 0;
     const baseUrl = getCpiBaseUrl();
@@ -97,14 +100,14 @@ export function ArtifactUndeployButton({ artifactStatus }: ArtifactUndeployButto
           devLog.info(LOG_TAG, `Successfully undeployed ${name}`);
         } catch (error) {
           devLog.error(LOG_TAG, `Error undeploying ${name}`, { error: String(error) });
-          showToast(`Error undeploying ${name}: ${error}`, 'error');
+          showToast(`${tSub('artifactUndeployError', name)}: ${error}`, 'error');
         }
       }
 
-      showToast(`${successCount} of ${toUndeploy.length} artifact(s) undeployed`, successCount > 0 ? 'success' : 'error');
+      showToast(t('artifactUndeployed', [String(successCount), String(toUndeploy.length)]), successCount > 0 ? 'success' : 'error');
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to fetch CSRF token', { error: String(error) });
-      showToast(`Failed to fetch CSRF token: ${error}`, 'error');
+      showToast(`${t('artifactCsrfFailed')}: ${error}`, 'error');
     } finally {
       setRunning(false);
       artifactStatus.refresh();
@@ -112,10 +115,23 @@ export function ArtifactUndeployButton({ artifactStatus }: ArtifactUndeployButto
   }
 
   return (
+    <>
+    {pending && (
+      <ConfirmDialog
+        title={pending.length === 1
+          ? tSub('confirmUndeployOneTitle', pending[0]!.name)
+          : tSub('confirmUndeployTitle', String(pending.length))}
+        items={pending.map(a => a.name)}
+        confirmLabel={t('artifactUndeploy')}
+        confirmClass="btn-error"
+        onConfirm={() => runUndeploy(pending)}
+        onCancel={() => setPending(null)}
+      />
+    )}
     <button
       class="btn btn-error btn-soft btn-sm w-full justify-start gap-2"
       disabled={running}
-      onClick={handleUndeploy}
+      onClick={requestUndeploy}
     >
       {running ? (
         <>
@@ -129,5 +145,6 @@ export function ArtifactUndeployButton({ artifactStatus }: ArtifactUndeployButto
         </>
       )}
     </button>
+    </>
   );
 }

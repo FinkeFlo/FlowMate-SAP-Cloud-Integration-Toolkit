@@ -4,6 +4,7 @@ import { LoaderCircle, RefreshCw, TriangleAlert, Zap, Check } from 'lucide-preac
 import { devLog } from '@/features/shared/dev-logger';
 import { showToast } from '@/features/shared/toast';
 import { t, tSub } from '@/features/shared/i18n';
+import { ConfirmDialog } from '@/features/shared/ConfirmDialog';
 import { setMplLogLevel, fetchLogLevels, type MplLogLevel } from '@/features/shared/log-level-api';
 import { fetchTopLoggers, type UsageEntry } from './usage-api';
 
@@ -16,6 +17,9 @@ function formatCount(n: number): string {
 }
 
 const THRESHOLD_STORAGE_KEY = 'logThrottle.threshold';
+const CONFIRM_PREVIEW_ITEMS = 5;
+
+type PendingConfirm = { kind: 'one'; name: string } | { kind: 'bulk'; list: string[] };
 const DEFAULT_THRESHOLD = 10_000;
 
 async function loadThreshold(): Promise<number> {
@@ -44,6 +48,7 @@ export function LogThrottlePanel() {
   const [threshold, setThreshold] = useState<number>(DEFAULT_THRESHOLD);
   const [throttledSet, setThrottledSet] = useState<Set<string>>(new Set());
   const [throttlingNow, setThrottlingNow] = useState<string | null>(null);
+  const [pendingConfirm, setPendingConfirm] = useState<PendingConfirm | null>(null);
   const [levels, setLevels] = useState<Map<string, MplLogLevel | null> | null>(null);
   const [levelsLoading, setLevelsLoading] = useState(false);
   const [selectedSet, setSelectedSet] = useState<Set<string>>(new Set());
@@ -90,14 +95,13 @@ export function LogThrottlePanel() {
     saveThreshold(next);
   }
 
-  async function handleThrottle(symbolicName: string) {
-    if (throttlingNow) return;
-    const confirmed = window.confirm(
-      `Set log level of "${symbolicName}" to ERROR?\n\n` +
-      `New INFO/DEBUG logs will be suppressed until you manually restore the level.`,
-    );
-    if (!confirmed) return;
+  function handleThrottle(symbolicName: string) {
+    if (throttlingNow || pendingConfirm) return;
+    setPendingConfirm({ kind: 'one', name: symbolicName });
+  }
 
+  async function runThrottle(symbolicName: string) {
+    setPendingConfirm(null);
     setThrottlingNow(symbolicName);
     try {
       await setMplLogLevel(symbolicName, 'ERROR');
@@ -107,13 +111,13 @@ export function LogThrottlePanel() {
           next.add(symbolicName);
           return next;
         });
-        showToast(`Silenced "${symbolicName}" (log level: ERROR)`, 'success');
+        showToast(tSub('logThrottleSilenced', symbolicName), 'success');
         devLog.info(LOG_TAG, 'Throttled iFlow', { symbolicName });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       devLog.error(LOG_TAG, 'Failed to throttle iFlow', { symbolicName, error: message });
-      showToast(`Failed to silence "${symbolicName}": ${message}`, 'error');
+      showToast(`${tSub('logThrottleSilenceFailed', symbolicName)}: ${message}`, 'error');
     } finally {
       if (mountedRef.current) setThrottlingNow(null);
     }
@@ -136,17 +140,13 @@ export function LogThrottlePanel() {
     setSelectedSet(new Set(hot));
   }
 
-  async function handleBulkSilence() {
-    if (selectedSet.size === 0 || bulkRunning) return;
-    const list = Array.from(selectedSet);
-    const preview = list.slice(0, 5).map(n => `• ${n}`).join('\n');
-    const rest = list.length > 5 ? `\n• … and ${list.length - 5} more` : '';
-    const confirmed = window.confirm(
-      `Set log level of ${list.length} iFlow${list.length > 1 ? 's' : ''} to ERROR?\n\n` +
-      preview + rest,
-    );
-    if (!confirmed) return;
+  function handleBulkSilence() {
+    if (selectedSet.size === 0 || bulkRunning || pendingConfirm) return;
+    setPendingConfirm({ kind: 'bulk', list: Array.from(selectedSet) });
+  }
 
+  async function runBulkSilence(list: string[]) {
+    setPendingConfirm(null);
     setBulkRunning(true);
     const newlyThrottled = new Set<string>();
     let failures = 0;
@@ -167,11 +167,11 @@ export function LogThrottlePanel() {
       setSelectedSet(new Set());
       setBulkRunning(false);
       if (failures === 0) {
-        showToast(`Silenced ${newlyThrottled.size} iFlow${newlyThrottled.size > 1 ? 's' : ''}`, 'success');
+        showToast(tSub('logThrottleSilencedCount', String(newlyThrottled.size)), 'success');
       } else if (newlyThrottled.size === 0) {
-        showToast(`Failed to silence ${failures} iFlow${failures > 1 ? 's' : ''}`, 'error');
+        showToast(tSub('logThrottleSilenceFailedCount', String(failures)), 'error');
       } else {
-        showToast(`Silenced ${newlyThrottled.size}, ${failures} failed`, 'warning');
+        showToast(t('logThrottleSilencedPartial', [String(newlyThrottled.size), String(failures)]), 'warning');
       }
       devLog.info(LOG_TAG, 'Bulk silence done', { silenced: newlyThrottled.size, failures });
     }
@@ -195,12 +195,34 @@ export function LogThrottlePanel() {
     return levels?.get(symbolicName) === 'ERROR';
   }
 
+  const confirmItems = pendingConfirm?.kind === 'bulk'
+    ? [
+        ...pendingConfirm.list.slice(0, CONFIRM_PREVIEW_ITEMS),
+        ...(pendingConfirm.list.length > CONFIRM_PREVIEW_ITEMS
+          ? [tSub('confirmMoreItems', String(pendingConfirm.list.length - CONFIRM_PREVIEW_ITEMS))]
+          : []),
+      ]
+    : undefined;
+
   return (
     <div class="flex w-full flex-col gap-2 text-[13px] text-base-content" onPointerDown={(e) => e.stopPropagation()}>
+      {pendingConfirm && (
+        <ConfirmDialog
+          title={pendingConfirm.kind === 'one' || pendingConfirm.list.length === 1
+            ? tSub('confirmSilenceOneTitle', pendingConfirm.kind === 'one' ? pendingConfirm.name : pendingConfirm.list[0]!)
+            : tSub('confirmSilenceManyTitle', String(pendingConfirm.list.length))}
+          message={t('confirmSilenceHint')}
+          items={confirmItems}
+          confirmLabel={t('logThrottleSilence')}
+          confirmClass="btn-primary"
+          onConfirm={() => (pendingConfirm.kind === 'one' ? runThrottle(pendingConfirm.name) : runBulkSilence(pendingConfirm.list))}
+          onCancel={() => setPendingConfirm(null)}
+        />
+      )}
       <header class="flex items-center gap-2 border-b border-base-300 pb-2">
         <span class="font-semibold tracking-wide">{t('logThrottleTopLoggers')}</span>
         {levelsLoading && (
-          <span class="ml-auto animate-spin text-base-content/50" title="Checking current log levels">
+          <span class="ml-auto animate-spin text-base-content/50" title={t('logThrottleCheckingLevels')}>
             <LoaderCircle size={12} />
           </span>
         )}
@@ -208,7 +230,7 @@ export function LogThrottlePanel() {
           class="btn btn-ghost btn-xs btn-square"
           onClick={load}
           disabled={loading}
-          title="Refresh"
+          title={t('refresh')}
         >
           {loading ? (
             <span class="animate-spin"><LoaderCircle size={14} /></span>
@@ -301,7 +323,7 @@ export function LogThrottlePanel() {
                     checked={selectedSet.has(row.symbolicName)}
                     onChange={() => toggleSelected(row.symbolicName)}
                     disabled={isBusy}
-                    aria-label={`Select ${row.symbolicName}`}
+                    aria-label={tSub('selectItem', row.symbolicName)}
                   />
                 )}
                 <span class="tooltip tooltip-bottom flex-1 overflow-hidden text-left" data-tip={row.symbolicName}>
@@ -311,7 +333,7 @@ export function LogThrottlePanel() {
                   {formatCount(row.count)}
                 </span>
                 {throttled ? (
-                  <span class="badge badge-success badge-outline badge-sm gap-1" title="Log level set to ERROR">
+                  <span class="badge badge-success badge-outline badge-sm gap-1" title={t('logThrottleLevelIsError')}>
                     <Check size={12} /> ERROR
                   </span>
                 ) : (
@@ -319,7 +341,7 @@ export function LogThrottlePanel() {
                     class="btn btn-primary btn-soft btn-xs gap-1"
                     onClick={() => handleThrottle(row.symbolicName)}
                     disabled={throttlingNow === row.symbolicName}
-                    title="Set log level to ERROR"
+                    title={t('logThrottleSetError')}
                   >
                     {throttlingNow === row.symbolicName ? (
                       <span class="animate-spin"><LoaderCircle size={14} /></span>

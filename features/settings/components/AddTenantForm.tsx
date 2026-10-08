@@ -49,18 +49,18 @@ export function AddTenantForm({ customerId, onSave, onCancel }: AddTenantFormPro
             ref={nameRef}
             type="text"
             class={`input input-bordered input-sm w-full ${nameError ? 'input-error' : ''}`}
-            placeholder="e.g. DEV, TEST, PROD"
+            placeholder={t('tenantNamePlaceholder')}
             value={name}
             onInput={e => setName((e.target as HTMLInputElement).value)}
           />
           {nameError && <span class="text-xs text-error">{nameError}</span>}
         </div>
         <div class="flex min-w-[150px] flex-1 flex-col gap-1">
-          <label class="text-xs font-semibold text-base-content/70">URL:</label>
+          <label class="text-xs font-semibold text-base-content/70">{t('tenantUrl')}:</label>
           <input
             type="url"
             class={`input input-bordered input-sm w-full ${urlError ? 'input-error' : ''}`}
-            placeholder="https://dev-tenant.integrationsuite..."
+            placeholder={t('tenantUrlPlaceholder')}
             value={url}
             onInput={e => setUrl((e.target as HTMLInputElement).value)}
           />

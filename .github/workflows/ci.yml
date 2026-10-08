@@ -34,6 +34,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - run: npm run lint:i18n
 
   lint-design:
     name: Lint (DESIGN.md)

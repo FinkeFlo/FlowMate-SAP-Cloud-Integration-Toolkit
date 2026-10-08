@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import type { DayData, MessageDetail } from '@/features/shared/api-client';
 
 vi.mock('@/features/shared/toast', () => ({ showToast: vi.fn() }));
+vi.mock('@/features/shared/i18n', () => ({ t: (k: string) => k, tSub: (k: string, v: string) => `${k}:${v}` }));
 
 import { CSVExporter } from './csv-exporter';
 

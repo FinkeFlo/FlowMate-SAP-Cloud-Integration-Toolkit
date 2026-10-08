@@ -6,6 +6,7 @@ import { t } from '@/features/shared/i18n';
 import { ToastContainer } from '@/features/shared/ToastContainer';
 import { CustomerCard } from './CustomerCard';
 import { AddCustomerForm } from './AddCustomerForm';
+import { PreferencesCard } from './PreferencesCard';
 
 export function SettingsApp() {
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -23,7 +24,7 @@ export function SettingsApp() {
   async function handleAddCustomer(name: string) {
     await addCustomer(name);
     setShowAddForm(false);
-    showToast(`${t('customerAdded') || 'Customer added'}: ${name}`, 'success');
+    showToast(`${t('customerAdded')}: ${name}`, 'success');
     await loadSettings();
   }
 
@@ -39,8 +40,10 @@ export function SettingsApp() {
     <div class="mx-auto max-w-5xl">
       <header class="card mb-8 bg-base-100 p-8 shadow">
         <h1 class="text-2xl font-bold text-primary">{t('settingsTitle') || 'FlowMate Settings'}</h1>
-        <p class="text-base-content/60">{t('settingsDescription') || 'Manage your Customers and CPI Tenants'}</p>
+        <p class="text-base-content/60">{t('manageYourTenants')}</p>
       </header>
+
+      <PreferencesCard />
 
       <div class="card bg-base-100 p-8 shadow">
         <div class="mb-8 flex items-center justify-between border-b-2 border-base-200 pb-4">
@@ -66,7 +69,7 @@ export function SettingsApp() {
         <div class="flex flex-col gap-6">
           {settings.customers.length === 0 ? (
             <p class="py-8 text-center italic text-base-content/50">
-              {t('noCustomers') || 'No customers created yet. Click "Add Customer".'}
+              {t('noCustomersYet')}
             </p>
           ) : (
             settings.customers.map(customer => (

@@ -16,7 +16,7 @@ export function PopupApp() {
           type="button"
           class="btn btn-ghost btn-sm btn-square"
           onClick={handleOpenSettings}
-          title="Open Settings"
+          title={t('openSettings')}
         >
           <Settings size={16} />
         </button>

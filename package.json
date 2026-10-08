@@ -26,7 +26,8 @@
     "release:dry": "release-it --dry-run",
     "test": "vitest run",
     "test:watch": "vitest",
-    "verify": "npm run compile && npm run lint && npm run lint:design && npm run test && npm run build"
+    "verify": "npm run compile && npm run lint && npm run lint:design && npm run lint:i18n && npm run test && npm run build",
+    "lint:i18n": "node scripts/check-i18n.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

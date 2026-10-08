@@ -62,12 +62,6 @@
   "noTenantsYet": {
     "message": "Keine Tenants angelegt"
   },
-  "deleteCustomerConfirm": {
-    "message": "Kunde wirklich löschen?"
-  },
-  "deleteTenantConfirm": {
-    "message": "Tenant wirklich löschen?"
-  },
   "exportData": {
     "message": "Daten exportieren"
   },
@@ -140,15 +134,6 @@
   "validationUrlFormat": {
     "message": "URL entspricht nicht dem erwarteten Format:\nhttps://*.integrationsuite.cfapps.*.hana.ondemand.com"
   },
-  "errorAdding": {
-    "message": "Fehler beim Hinzufügen: $ERROR$",
-    "placeholders": {
-      "error": {
-        "content": "$1",
-        "example": "Netzwerkfehler"
-      }
-    }
-  },
   "errorSaving": {
     "message": "Fehler beim Speichern: $ERROR$",
     "placeholders": {
@@ -157,9 +142,6 @@
         "example": "Netzwerkfehler"
       }
     }
-  },
-  "errorBothFieldsRequired": {
-    "message": "Bitte füllen Sie beide Felder aus"
   },
   "exportCancelled": {
     "message": "Export abgebrochen"
@@ -365,7 +347,7 @@
     "message": "Status aktualisieren"
   },
   "artifactUndeploying": {
-    "message": "Wird undeployed..."
+    "message": "Wird undeployt..."
   },
   "artifactUndeploy": {
     "message": "Undeploy"
@@ -396,5 +378,429 @@
   },
   "resizeToolbar": {
     "message": "Ziehen zum Anpassen der Breite"
+  },
+  "confirmDeployTitle": {
+    "message": "$COUNT$ Artefakte deployen?",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmUndeployTitle": {
+    "message": "$COUNT$ Artefakte undeployen?",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmSilenceOneTitle": {
+    "message": "Log-Level von „$NAME$“ auf ERROR setzen?",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "confirmSilenceManyTitle": {
+    "message": "Log-Level von $COUNT$ iFlows auf ERROR setzen?",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmSilenceHint": {
+    "message": "Neue INFO/DEBUG-Logs werden unterdrückt, bis das Log-Level manuell zurückgesetzt wird."
+  },
+  "confirmMoreItems": {
+    "message": "… und $COUNT$ weitere",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "confirmDeployOneTitle": {
+    "message": "„$NAME$“ deployen?",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "confirmUndeployOneTitle": {
+    "message": "„$NAME$“ undeployen?",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "msgLogAutoRefresh": {
+    "message": "Automatisch alle $SECONDS$ s aktualisieren",
+    "placeholders": {
+      "seconds": {
+        "content": "$1",
+        "example": "10"
+      }
+    }
+  },
+  "prefsTitle": {
+    "message": "Einstellungen"
+  },
+  "prefsMessageLogRefresh": {
+    "message": "Aktualisierungsintervall des Message-Logs"
+  },
+  "prefsMessageLogRefreshHint": {
+    "message": "Gilt für den „Auto“-Button im Message-Log. Kürzere Intervalle bedeuten mehr API-Aufrufe auf dem Tenant."
+  },
+  "prefsSaved": {
+    "message": "Einstellungen gespeichert"
+  },
+  "refresh": {
+    "message": "Aktualisieren"
+  },
+  "loading": {
+    "message": "Wird geladen..."
+  },
+  "done": {
+    "message": "Fertig"
+  },
+  "unknown": {
+    "message": "Unbekannt"
+  },
+  "selectItem": {
+    "message": "$NAME$ auswählen",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "logThrottleCheckingLevels": {
+    "message": "Aktuelle Log-Level werden geprüft"
+  },
+  "logThrottleLevelIsError": {
+    "message": "Log-Level ist auf ERROR gesetzt"
+  },
+  "logThrottleSetError": {
+    "message": "Log-Level auf ERROR setzen"
+  },
+  "logThrottleSilenced": {
+    "message": "„$NAME$“ stummgeschaltet (Log-Level: ERROR)",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "logThrottleSilenceFailed": {
+    "message": "„$NAME$“ konnte nicht stummgeschaltet werden",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "logThrottleSilencedCount": {
+    "message": "$COUNT$ iFlow(s) stummgeschaltet",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "logThrottleSilenceFailedCount": {
+    "message": "$COUNT$ iFlow(s) konnten nicht stummgeschaltet werden",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "logThrottleSilencedPartial": {
+    "message": "$DONE$ stummgeschaltet, $FAILED$ fehlgeschlagen",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "2"
+      },
+      "failed": {
+        "content": "$2",
+        "example": "1"
+      }
+    }
+  },
+  "msgDetailCopyGuid": {
+    "message": "GUID kopieren"
+  },
+  "msgDetailGuidCopied": {
+    "message": "GUID in die Zwischenablage kopiert"
+  },
+  "tracePrevStep": {
+    "message": "Vorheriger Schritt (←)"
+  },
+  "traceNextStep": {
+    "message": "Nächster Schritt (→)"
+  },
+  "msgLogOpenMonitoring": {
+    "message": "Im Monitoring öffnen"
+  },
+  "msgLogShowInlineTrace": {
+    "message": "Inline-Trace anzeigen"
+  },
+  "msgLogOpenTrace": {
+    "message": "Trace öffnen"
+  },
+  "msgLogMessageLimit": {
+    "message": "Maximale Anzahl Nachrichten"
+  },
+  "msgLogNoTraceRuns": {
+    "message": "Keine Trace-Läufe für diese Nachricht gefunden"
+  },
+  "msgLogTraceLoadFailed": {
+    "message": "Trace konnte nicht geladen werden"
+  },
+  "traceEnabledToast": {
+    "message": "Trace aktiviert – Log-Level auf TRACE gesetzt"
+  },
+  "traceDisabledToast": {
+    "message": "Trace deaktiviert – Log-Level auf INFO gesetzt"
+  },
+  "traceToggleFailed": {
+    "message": "Trace konnte nicht umgeschaltet werden"
+  },
+  "traceOn": {
+    "message": "Trace AN"
+  },
+  "traceOff": {
+    "message": "Trace AUS"
+  },
+  "quickLinksDoneEditing": {
+    "message": "Bearbeitung beenden"
+  },
+  "quickLinksEditLayout": {
+    "message": "Anordnung bearbeiten"
+  },
+  "quickLinksDetecting": {
+    "message": "Tenant wird erkannt..."
+  },
+  "quickLinksNoTenant": {
+    "message": "Öffnen Sie eine SAP-CPI-Seite, um Tenant-Links zu sehen."
+  },
+  "exportDownloaded": {
+    "message": "Heruntergeladen: $FILE$",
+    "placeholders": {
+      "file": {
+        "content": "$1",
+        "example": "acme-dev_2026-01-01_2026-01-31.csv"
+      }
+    }
+  },
+  "artifactNoneDeployable": {
+    "message": "Keine deploybaren Artefakte ausgewählt"
+  },
+  "artifactNoneDeployed": {
+    "message": "Keine deployten Artefakte ausgewählt"
+  },
+  "artifactDeployError": {
+    "message": "Fehler beim Deployen von $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "artifactUndeployError": {
+    "message": "Fehler beim Undeployen von $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "artifactDeployTriggered": {
+    "message": "Deployment für $DONE$ von $TOTAL$ Artefakt(en) ausgelöst",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "2"
+      },
+      "total": {
+        "content": "$2",
+        "example": "3"
+      }
+    }
+  },
+  "artifactUndeployed": {
+    "message": "$DONE$ von $TOTAL$ Artefakt(en) undeployt",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "2"
+      },
+      "total": {
+        "content": "$2",
+        "example": "3"
+      }
+    }
+  },
+  "artifactCsrfFailed": {
+    "message": "CSRF-Token konnte nicht geladen werden"
+  },
+  "artifactFoundDeployed": {
+    "message": "$COUNT$ deployte(s) Artefakt(e) gefunden",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "artifactStatusFailed": {
+    "message": "Artefakt-Status konnte nicht geladen werden"
+  },
+  "artifactRuntimeVersion": {
+    "message": "Runtime-Version"
+  },
+  "artifactDesignTimeVersion": {
+    "message": "Design-Time-Version"
+  },
+  "artifactVersionMismatch": {
+    "message": "Versionsunterschied – erneutes Deployment erforderlich"
+  },
+  "artifactVersion": {
+    "message": "Version"
+  },
+  "artifactState": {
+    "message": "Status"
+  },
+  "artifactDeployedBy": {
+    "message": "Deployt von"
+  },
+  "artifactDeployedOn": {
+    "message": "Deployt am"
+  },
+  "artifactNotDeployed": {
+    "message": "NICHT DEPLOYT"
+  },
+  "artifactNotDeployedHint": {
+    "message": "Dieses Artefakt ist nicht auf der Runtime deployt."
+  },
+  "traceNoRuns": {
+    "message": "Keine Trace-Läufe gefunden"
+  },
+  "traceNoSteps": {
+    "message": "Keine Trace-Schritte gefunden"
+  },
+  "traceMapFailed": {
+    "message": "Trace-Schritte konnten dem BPMN-Diagramm nicht zugeordnet werden"
+  },
+  "traceStepsHighlighted": {
+    "message": "Inline-Trace: $COUNT$ Schritte hervorgehoben",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "traceInlineLoadFailed": {
+    "message": "Inline-Trace konnte nicht geladen werden"
+  },
+  "msgLogAuto": {
+    "message": "Auto"
+  },
+  "customerAdded": {
+    "message": "Kunde hinzugefügt"
+  },
+  "editTenant": {
+    "message": "Tenant bearbeiten"
+  },
+  "deleteTenant": {
+    "message": "Tenant löschen"
+  },
+  "confirmDeleteCustomerTitle": {
+    "message": "Kunde „$NAME$“ und alle zugehörigen Tenants löschen?",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Acme Corp"
+      }
+    }
+  },
+  "confirmDeleteTenantTitle": {
+    "message": "Tenant „$NAME$“ löschen?",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Acme Corp"
+      }
+    }
+  },
+  "exportMode": {
+    "message": "Exportmodus"
+  },
+  "currentTenantOnly": {
+    "message": "Nur aktueller Tenant"
+  },
+  "allTenantsFromCustomer": {
+    "message": "Alle Tenants des Kunden"
+  },
+  "export": {
+    "message": "Exportieren"
+  },
+  "tenantCount": {
+    "message": "$COUNT$ Tenant(s)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "unknownError": {
+    "message": "Unbekannter Fehler"
+  },
+  "exportDatesFailed": {
+    "message": "$TENANT$: $COUNT$ Tag(e) konnten nicht abgerufen werden",
+    "placeholders": {
+      "tenant": {
+        "content": "$1",
+        "example": "DEV"
+      },
+      "count": {
+        "content": "$2",
+        "example": "3"
+      }
+    }
+  },
+  "exportTenantsDone": {
+    "message": "$COUNT$ Tenant(s) exportiert",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "resizePanel": {
+    "message": "Ziehen zum Anpassen der Höhe"
   }
 }
