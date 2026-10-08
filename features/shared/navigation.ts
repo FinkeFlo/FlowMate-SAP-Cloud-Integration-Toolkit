@@ -2,17 +2,14 @@
  * Navigation utilities for SAP CPI SPA
  */
 
+import { isCpiUiHostname } from './cpi-url';
+
 /**
  * Get the CPI base URL prefix.
  * Integration Suite URLs use root (''), Neo/Classic URLs need '/itspaces'.
  */
 export function getCpiBaseUrl(): string {
-  const host = window.location.host;
-  const cpiTypeRegexp = /^[^/]*\.integrationsuite(-trial)?.*/;
-  if (!cpiTypeRegexp.test(host)) {
-    return '/itspaces';
-  }
-  return '';
+  return isCpiUiHostname(window.location.hostname) ? '' : '/itspaces';
 }
 
 export function isMessageUsagePage(): boolean {

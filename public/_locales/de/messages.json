@@ -132,7 +132,7 @@
     }
   },
   "validationUrlFormat": {
-    "message": "URL entspricht nicht dem erwarteten Format:\nhttps://*.integrationsuite.cfapps.*.hana.ondemand.com"
+    "message": "URL entspricht nicht dem erwarteten Format:\nhttps://*.integrationsuite.cfapps.*.hana.ondemand.com (China: *.platform.sapcloud.cn)"
   },
   "errorSaving": {
     "message": "Fehler beim Speichern: $ERROR$",

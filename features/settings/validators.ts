@@ -3,11 +3,12 @@
  */
 
 import { t, tSub } from '@/features/shared/i18n';
-import { isCpiUiHostname } from '@/features/shared/cpi-url';
+import { CPI_UI_DOMAIN_SUFFIXES, isCpiUiHostname } from '@/features/shared/cpi-url';
 
 /**
  * Validate SAP CPI URL
- * Expected format: https://*.integrationsuite.cfapps.*.hana.ondemand.com
+ * Expected format: https://<sub>.integrationsuite[-trial|-cpiNNN].cfapps.<region>.<domain>
+ * (see features/shared/cpi-url.ts and docs/sap-cpi-hosts.md)
  */
 export function validateCpiUrl(url: string): { valid: boolean; error?: string } {
   if (!url || !url.trim()) {
@@ -28,11 +29,11 @@ export function validateCpiUrl(url: string): { valid: boolean; error?: string } 
 
     // Must match exact required suffix/segments (anchored checks, not
     // substring checks — avoids bypasses like "evil-hana.ondemand.com.attacker.com").
-    if (!hostname.endsWith('.hana.ondemand.com')) {
-      return { valid: false, error: tSub('validationUrlMustContain', 'hana.ondemand.com') };
+    if (!CPI_UI_DOMAIN_SUFFIXES.some((domain) => hostname.endsWith(`.${domain}`))) {
+      return { valid: false, error: tSub('validationUrlMustContain', CPI_UI_DOMAIN_SUFFIXES.join(' | ')) };
     }
 
-    if (!/(^|\.)integrationsuite(-trial)?\./.test(hostname)) {
+    if (!/(^|\.)integrationsuite(-trial|-cpi[0-9]+)?\./.test(hostname)) {
       return { valid: false, error: tSub('validationUrlMustContain', 'integrationsuite') };
     }
 

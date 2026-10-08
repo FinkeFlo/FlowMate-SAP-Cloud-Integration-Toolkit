@@ -15,8 +15,10 @@ describe('validateCpiUrl', () => {
     expect(validateCpiUrl(`${VALID_URL}/shell/design`)).toEqual({ valid: true });
   });
 
-  it('accepts trial hosts', () => {
+  it('accepts trial, integrationsuite-cpiNNN and China hosts', () => {
     expect(validateCpiUrl('https://acme.integrationsuite-trial.cfapps.us10.hana.ondemand.com')).toEqual({ valid: true });
+    expect(validateCpiUrl('https://acme.integrationsuite-cpi033.cfapps.eu10-005.hana.ondemand.com')).toEqual({ valid: true });
+    expect(validateCpiUrl('https://acme.integrationsuite.cfapps.cn40.platform.sapcloud.cn')).toEqual({ valid: true });
   });
 
   it('rejects hosts that pass the substring pre-checks but fail the anchored check', () => {
@@ -37,11 +39,11 @@ describe('validateCpiUrl', () => {
   it('rejects hosts that only contain the SAP domain as a substring (suffix attack)', () => {
     const result = validateCpiUrl('https://acme.integrationsuite.cfapps.eu10.hana.ondemand.com.attacker.example');
     expect(result.valid).toBe(false);
-    expect(result.error).toBe('validationUrlMustContain:hana.ondemand.com');
+    expect(result.error).toBe('validationUrlMustContain:hana.ondemand.com | platform.sapcloud.cn');
   });
 
   it('rejects SAP hosts that are not Integration Suite UI hosts', () => {
-    const result = validateCpiUrl('https://acme-dev.it-cpi018.cfapps.eu10.hana.ondemand.com');
+    const result = validateCpiUrl('https://acme-dev.it-cpi001.cfapps.eu10.hana.ondemand.com');
     expect(result.valid).toBe(false);
     expect(result.error).toBe('validationUrlMustContain:integrationsuite');
   });
