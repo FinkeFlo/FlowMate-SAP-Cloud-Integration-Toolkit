@@ -331,7 +331,7 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
               <div class="flex items-center gap-1">
                 <button
                   class="btn btn-ghost btn-sm btn-square"
-                  title="Previous step (←)"
+                  title={t('tracePrevStep')}
                   disabled={!hasPrev}
                   onClick={() => hasPrev && onNavigate(allElements[currentIndex - 1]!)}
                 >
@@ -340,7 +340,7 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
                 <span class="px-1 font-mono text-[11px] text-base-content/50">{currentIndex + 1}/{allElements.length}</span>
                 <button
                   class="btn btn-ghost btn-sm btn-square"
-                  title="Next step"
+                  title={t('traceNextStep')}
                   disabled={!hasNext}
                   onClick={() => hasNext && onNavigate(allElements[currentIndex + 1]!)}
                 >

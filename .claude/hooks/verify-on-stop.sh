@@ -29,14 +29,8 @@ out=$(npm run -s lint 2>&1) || fail "npm run lint" "$out"
 if echo "$changed" | grep -qE '\.(ts|tsx)$'; then
   out=$(npx vitest run --silent 2>&1) || fail "npm run test" "$out"
 fi
-if echo "$changed" | grep -qE '^public/_locales/'; then
-  out=$(node -e '
-const fs = require("fs");
-const en = Object.keys(JSON.parse(fs.readFileSync("public/_locales/en/messages.json","utf8"))).sort();
-const de = Object.keys(JSON.parse(fs.readFileSync("public/_locales/de/messages.json","utf8"))).sort();
-const onlyEn = en.filter(k => !de.includes(k)); const onlyDe = de.filter(k => !en.includes(k));
-if (onlyEn.length || onlyDe.length) { console.log("Locale key mismatch. Only in en:", onlyEn, "Only in de:", onlyDe); process.exit(1); }
-' 2>&1) || fail "locale key parity (en/de)" "$out"
+if echo "$changed" | grep -qE '^(public/_locales/|features/|entrypoints/)'; then
+  out=$(npm run -s lint:i18n 2>&1) || fail "npm run lint:i18n" "$out"
 fi
 
 list="$CLAUDE_PROJECT_DIR/.claude/denylist.txt"

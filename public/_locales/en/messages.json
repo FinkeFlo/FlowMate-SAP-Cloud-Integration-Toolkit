@@ -62,12 +62,6 @@
   "noTenantsYet": {
     "message": "No tenants created"
   },
-  "deleteCustomerConfirm": {
-    "message": "Really delete customer?"
-  },
-  "deleteTenantConfirm": {
-    "message": "Really delete tenant?"
-  },
   "exportData": {
     "message": "Export Data"
   },
@@ -140,15 +134,6 @@
   "validationUrlFormat": {
     "message": "URL does not match expected format:\nhttps://*.integrationsuite.cfapps.*.hana.ondemand.com"
   },
-  "errorAdding": {
-    "message": "Error adding: $ERROR$",
-    "placeholders": {
-      "error": {
-        "content": "$1",
-        "example": "Network error"
-      }
-    }
-  },
   "errorSaving": {
     "message": "Error saving: $ERROR$",
     "placeholders": {
@@ -157,9 +142,6 @@
         "example": "Network error"
       }
     }
-  },
-  "errorBothFieldsRequired": {
-    "message": "Please fill in both fields"
   },
   "exportCancelled": {
     "message": "Export cancelled"
@@ -483,5 +465,342 @@
   },
   "prefsSaved": {
     "message": "Preferences saved"
+  },
+  "refresh": {
+    "message": "Refresh"
+  },
+  "loading": {
+    "message": "Loading..."
+  },
+  "done": {
+    "message": "Done"
+  },
+  "unknown": {
+    "message": "Unknown"
+  },
+  "selectItem": {
+    "message": "Select $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "logThrottleCheckingLevels": {
+    "message": "Checking current log levels"
+  },
+  "logThrottleLevelIsError": {
+    "message": "Log level set to ERROR"
+  },
+  "logThrottleSetError": {
+    "message": "Set log level to ERROR"
+  },
+  "logThrottleSilenced": {
+    "message": "Silenced \"$NAME$\" (log level: ERROR)",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "logThrottleSilenceFailed": {
+    "message": "Failed to silence \"$NAME$\"",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "logThrottleSilencedCount": {
+    "message": "Silenced $COUNT$ iFlow(s)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "logThrottleSilenceFailedCount": {
+    "message": "Failed to silence $COUNT$ iFlow(s)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "logThrottleSilencedPartial": {
+    "message": "Silenced $DONE$, $FAILED$ failed",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "2"
+      },
+      "failed": {
+        "content": "$2",
+        "example": "1"
+      }
+    }
+  },
+  "msgDetailCopyGuid": {
+    "message": "Copy GUID"
+  },
+  "msgDetailGuidCopied": {
+    "message": "GUID copied to clipboard"
+  },
+  "tracePrevStep": {
+    "message": "Previous step (←)"
+  },
+  "traceNextStep": {
+    "message": "Next step (→)"
+  },
+  "msgLogOpenMonitoring": {
+    "message": "Open in Monitoring"
+  },
+  "msgLogShowInlineTrace": {
+    "message": "Show inline trace"
+  },
+  "msgLogOpenTrace": {
+    "message": "Open trace"
+  },
+  "msgLogMessageLimit": {
+    "message": "Message limit"
+  },
+  "msgLogNoTraceRuns": {
+    "message": "No trace runs found for this message"
+  },
+  "msgLogTraceLoadFailed": {
+    "message": "Failed to load trace"
+  },
+  "traceEnabledToast": {
+    "message": "Trace enabled – log level set to TRACE"
+  },
+  "traceDisabledToast": {
+    "message": "Trace disabled – log level set to INFO"
+  },
+  "traceToggleFailed": {
+    "message": "Failed to toggle trace"
+  },
+  "traceOn": {
+    "message": "Trace ON"
+  },
+  "traceOff": {
+    "message": "Trace OFF"
+  },
+  "quickLinksDoneEditing": {
+    "message": "Done editing"
+  },
+  "quickLinksEditLayout": {
+    "message": "Edit layout"
+  },
+  "quickLinksDetecting": {
+    "message": "Detecting tenant..."
+  },
+  "quickLinksNoTenant": {
+    "message": "Open an SAP CPI page to see tenant links."
+  },
+  "exportDownloaded": {
+    "message": "Downloaded: $FILE$",
+    "placeholders": {
+      "file": {
+        "content": "$1",
+        "example": "acme-dev_2026-01-01_2026-01-31.csv"
+      }
+    }
+  },
+  "artifactNoneDeployable": {
+    "message": "No deployable artifacts selected"
+  },
+  "artifactNoneDeployed": {
+    "message": "No deployed artifacts selected"
+  },
+  "artifactDeployError": {
+    "message": "Error deploying $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "artifactUndeployError": {
+    "message": "Error undeploying $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "artifactDeployTriggered": {
+    "message": "Deployment triggered for $DONE$ of $TOTAL$ artifact(s)",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "2"
+      },
+      "total": {
+        "content": "$2",
+        "example": "3"
+      }
+    }
+  },
+  "artifactUndeployed": {
+    "message": "$DONE$ of $TOTAL$ artifact(s) undeployed",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "2"
+      },
+      "total": {
+        "content": "$2",
+        "example": "3"
+      }
+    }
+  },
+  "artifactCsrfFailed": {
+    "message": "Failed to fetch CSRF token"
+  },
+  "artifactFoundDeployed": {
+    "message": "Found $COUNT$ deployed artifact(s)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "artifactStatusFailed": {
+    "message": "Failed to fetch artifact status"
+  },
+  "artifactRuntimeVersion": {
+    "message": "Runtime version"
+  },
+  "artifactDesignTimeVersion": {
+    "message": "Design-time version"
+  },
+  "artifactVersionMismatch": {
+    "message": "Version mismatch – redeployment needed"
+  },
+  "artifactVersion": {
+    "message": "Version"
+  },
+  "artifactState": {
+    "message": "State"
+  },
+  "artifactDeployedBy": {
+    "message": "Deployed by"
+  },
+  "artifactDeployedOn": {
+    "message": "Deployed on"
+  },
+  "artifactNotDeployed": {
+    "message": "NOT DEPLOYED"
+  },
+  "artifactNotDeployedHint": {
+    "message": "This artifact is not deployed to the runtime."
+  },
+  "traceNoRuns": {
+    "message": "No trace runs found"
+  },
+  "traceNoSteps": {
+    "message": "No trace steps found"
+  },
+  "traceMapFailed": {
+    "message": "Could not map trace steps to the BPMN diagram"
+  },
+  "traceStepsHighlighted": {
+    "message": "Inline trace: $COUNT$ steps highlighted",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "traceInlineLoadFailed": {
+    "message": "Failed to load inline trace"
+  },
+  "msgLogAuto": {
+    "message": "Auto"
+  },
+  "customerAdded": {
+    "message": "Customer added"
+  },
+  "editTenant": {
+    "message": "Edit tenant"
+  },
+  "deleteTenant": {
+    "message": "Delete tenant"
+  },
+  "confirmDeleteCustomerTitle": {
+    "message": "Delete customer \"$NAME$\" and all its tenants?",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Acme Corp"
+      }
+    }
+  },
+  "confirmDeleteTenantTitle": {
+    "message": "Delete tenant \"$NAME$\"?",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Acme Corp"
+      }
+    }
+  },
+  "exportMode": {
+    "message": "Export mode"
+  },
+  "currentTenantOnly": {
+    "message": "Current tenant only"
+  },
+  "allTenantsFromCustomer": {
+    "message": "All tenants of the customer"
+  },
+  "export": {
+    "message": "Export"
+  },
+  "tenantCount": {
+    "message": "$COUNT$ tenant(s)",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "unknownError": {
+    "message": "Unknown error"
+  },
+  "exportDatesFailed": {
+    "message": "$TENANT$: $COUNT$ day(s) could not be fetched",
+    "placeholders": {
+      "tenant": {
+        "content": "$1",
+        "example": "DEV"
+      },
+      "count": {
+        "content": "$2",
+        "example": "3"
+      }
+    }
+  },
+  "exportTenantsDone": {
+    "message": "$COUNT$ tenant(s) exported",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "resizePanel": {
+    "message": "Drag to resize"
   }
 }

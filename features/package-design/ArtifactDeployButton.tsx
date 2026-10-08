@@ -77,7 +77,7 @@ export function ArtifactDeployButton({ artifactStatus }: ArtifactDeployButtonPro
     }
 
     if (toDeploy.length === 0) {
-      showToast('No deployable artifacts selected', 'warning');
+      showToast(t('artifactNoneDeployable'), 'warning');
       return;
     }
 
@@ -112,17 +112,17 @@ export function ArtifactDeployButton({ artifactStatus }: ArtifactDeployButtonPro
           devLog.info(LOG_TAG, `Successfully triggered deploy for ${displayName}`);
         } catch (error) {
           devLog.error(LOG_TAG, `Error deploying ${displayName}`, { error: String(error) });
-          showToast(`Error deploying ${displayName}: ${error}`, 'error');
+          showToast(`${tSub('artifactDeployError', displayName)}: ${error}`, 'error');
         }
       }
 
       showToast(
-        `${successCount} of ${toDeploy.length} artifact(s) deployment triggered`,
+        t('artifactDeployTriggered', [String(successCount), String(toDeploy.length)]),
         successCount > 0 ? 'success' : 'error'
       );
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to fetch CSRF token', { error: String(error) });
-      showToast(`Failed to fetch CSRF token: ${error}`, 'error');
+      showToast(`${t('artifactCsrfFailed')}: ${error}`, 'error');
     } finally {
       setRunning(false);
       artifactStatus.refresh();

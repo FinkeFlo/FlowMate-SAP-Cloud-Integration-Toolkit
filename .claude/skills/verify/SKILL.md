@@ -12,6 +12,7 @@ Run every check CI runs, in this order, and stop at the first failure only if la
 npm run compile       # TypeScript
 npm run lint          # ESLint
 npm run lint:design   # DESIGN.md tokens
+npm run lint:i18n     # en/de key parity, keys used in code exist, placeholders match
 npm run test          # Vitest
 npm run build         # Chrome production build
 ```
@@ -20,7 +21,6 @@ Then check the repository hygiene that CI cannot see:
 
 - `git status --short`: no stray files (`.output/`, `.dev-logs/`, `*.log`, `.claude/denylist.txt`).
 - `CHANGELOG.md` has an entry under `## [Unreleased]` for the current change and only one heading per section.
-- `public/_locales/en` and `de` have identical key sets when any locale changed.
 - `grep -rnE '(title|aria-label|placeholder|data-tip)="[A-Za-z]' features/` shows no new hard-coded UI strings.
 
 ## Report
@@ -32,6 +32,7 @@ Print one table, then a verdict. Quote the failing output verbatim for anything 
 | compile | ✅ / ❌ |
 | lint | ✅ / ❌ (n warnings) |
 | lint:design | ✅ / ❌ |
+| lint:i18n | ✅ / ❌ (n unused) |
 | test | ✅ n passed / ❌ |
 | build | ✅ / ❌ |
 | hygiene | ✅ / ❌ (what) |

@@ -3,6 +3,7 @@ import { LoaderCircle, ToggleRight } from 'lucide-preact';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
 import { extractIFlowId, fetchTraceState, setTraceLevel } from './trace-api';
+import { t } from '@/features/shared/i18n';
 
 const LOG_TAG = 'TraceToggle';
 const INITIAL_FETCH_DELAY_MS = 1500;
@@ -62,13 +63,13 @@ export function TraceToggleButton() {
         setTraceActive(newState);
         devLog.info(LOG_TAG, `Trace ${newState ? 'enabled' : 'disabled'} successfully`, { iflowId });
         showToast(
-          newState ? 'Trace enabled - log level set to TRACE' : 'Trace disabled - log level set to INFO',
+          newState ? t('traceEnabledToast') : t('traceDisabledToast'),
           newState ? 'success' : 'info',
         );
       }
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to toggle trace', { error: String(error), iflowId });
-      showToast(`Failed to toggle trace: ${error}`, 'error');
+      showToast(`${t('traceToggleFailed')}: ${error}`, 'error');
     } finally {
       if (mountedRef.current) setToggling(false);
     }
@@ -83,12 +84,12 @@ export function TraceToggleButton() {
       {toggling ? (
         <>
           <span class="animate-spin"><LoaderCircle size={16} /></span>
-          <span>Loading...</span>
+          <span>{t('loading')}</span>
         </>
       ) : (
         <>
           <ToggleRight size={16} />
-          <span>{traceActive ? 'Trace ON' : 'Trace OFF'}</span>
+          <span>{traceActive ? t('traceOn') : t('traceOff')}</span>
         </>
       )}
     </button>
