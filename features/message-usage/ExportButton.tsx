@@ -3,6 +3,7 @@ import { X, Download } from 'lucide-preact';
 import { t } from '@/features/shared/i18n';
 import { showToast } from '@/features/shared/toast';
 import { MSG_OPEN_TENANT_TABS, sendTypedMessage } from '@/features/shared/messages';
+import { toCpiOrigin } from '@/features/shared/cpi-url';
 import { ProgressBar } from './ProgressBar';
 import { DateRangeDialog, type ExportOptions } from './DateRangeDialog';
 
@@ -127,7 +128,7 @@ export function ExportButton() {
     const failedTenants: string[] = [];
 
     if (mountedRef.current) setProgressText(t('cancelExport') || 'Cancel');
-    const tenantUrls = customer.tenants.map(tenant => `${tenant.url}/shell/home`);
+    const tenantUrls = customer.tenants.map(tenant => `${toCpiOrigin(tenant.url) ?? tenant.url}/shell/home`);
     await ensureMultipleTenantSessions(tenantUrls);
 
     for (let i = 0; i < customer.tenants.length; i++) {

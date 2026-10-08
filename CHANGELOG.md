@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Security
+- **Trust-boundary validation for every URL that reaches `fetch`, `tabs.create` or `window.open`** (closes #32, #33, #34, #35). New pure module `features/shared/cpi-url.ts` with an anchored Integration Suite hostname check (`<sub>.integrationsuite(-trial).cfapps.<region>.hana.ondemand.com`, https only, no credentials). The background worker now ignores messages from other senders, reduces `baseUrl` to a validated origin before metering calls, and refuses to open tenant tabs for non-CPI URLs. The content script mounts only on an exact Integration Suite host instead of any hostname containing `integrationsuite`. Tenant URLs are validated in the storage layer (add/update) and invalid stored tenants are dropped on read. `extractHost`/`extractHostname` return `null` instead of the raw input on parse failure. The message-log "Open in Monitoring" link is only rendered for CPI URLs.
+
 ### Added
 - **Engineering baseline for humans and AI agents**: `AGENTS.md` (tool-neutral conventions, imported by `CLAUDE.md`), path-scoped rules in `.claude/rules/` (styling, messaging/SAP API, i18n, security, git workflow, testing), skills `/verify`, `/review`, `/new-feature`, `/release`, and read-only reviewer agents (`flowmate-reviewer`, `ux-reviewer`). Design spec: `docs/superpowers/specs/2026-10-08-engineering-baseline-design.md`.
 - **Enforcement hooks** (`.claude/hooks/`): ESLint `--fix` after every edit, type-check + lint + tests + en/de locale-key parity before a turn ends with changed sources, `CHANGELOG.md` required in every commit, and a local denylist scan for real customer/tenant names (`.claude/denylist.example.txt`).

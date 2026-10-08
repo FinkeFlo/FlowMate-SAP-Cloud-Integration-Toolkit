@@ -15,6 +15,15 @@ describe('validateCpiUrl', () => {
     expect(validateCpiUrl(`${VALID_URL}/shell/design`)).toEqual({ valid: true });
   });
 
+  it('accepts trial hosts', () => {
+    expect(validateCpiUrl('https://acme.integrationsuite-trial.cfapps.us10.hana.ondemand.com')).toEqual({ valid: true });
+  });
+
+  it('rejects hosts that pass the substring pre-checks but fail the anchored check', () => {
+    const result = validateCpiUrl('https://acme.integrationsuite.cfapps.eu10.hana.ondemand.com.evil.hana.ondemand.com');
+    expect(result).toEqual({ valid: false, error: 'validationUrlFormat' });
+  });
+
   it('rejects empty input', () => {
     expect(validateCpiUrl('')).toEqual({ valid: false, error: 'validationUrlRequired' });
     expect(validateCpiUrl('   ')).toEqual({ valid: false, error: 'validationUrlRequired' });
@@ -35,6 +44,11 @@ describe('validateCpiUrl', () => {
     const result = validateCpiUrl('https://acme-dev.it-cpi018.cfapps.eu10.hana.ondemand.com');
     expect(result.valid).toBe(false);
     expect(result.error).toBe('validationUrlMustContain:integrationsuite');
+  });
+
+  it('rejects URLs with embedded credentials', () => {
+    const result = validateCpiUrl('https://user:pw@acme-dev.integrationsuite.cfapps.eu10.hana.ondemand.com');
+    expect(result).toEqual({ valid: false, error: 'validationUrlFormat' });
   });
 
   it('rejects unparsable input', () => {

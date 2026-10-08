@@ -6,6 +6,7 @@
  * {@link STORAGE_KEY} key as a JSON-serializable {@link Settings} object.
  */
 import { browser } from 'wxt/browser';
+import { isCpiUrl } from '@/features/shared/cpi-url';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -51,7 +52,30 @@ const DEFAULT_SETTINGS: Settings = { customers: [] };
  */
 export async function getSettings(): Promise<Settings> {
   const result = await browser.storage.local.get(STORAGE_KEY) as StorageSchema;
-  return result[STORAGE_KEY] ?? DEFAULT_SETTINGS;
+  return sanitizeSettings(result[STORAGE_KEY] ?? DEFAULT_SETTINGS);
+}
+
+/**
+ * Storage is a trust boundary: drop tenants whose URL is not an https
+ * Integration Suite URL (manual storage edits, future imports). Fail closed.
+ */
+export function sanitizeSettings(settings: Settings): Settings {
+  let dropped = 0;
+  const customers = (settings.customers ?? []).map(customer => {
+    const tenants = (customer.tenants ?? []).filter(tenant => typeof tenant?.url === 'string' && isCpiUrl(tenant.url));
+    dropped += (customer.tenants?.length ?? 0) - tenants.length;
+    return { ...customer, tenants };
+  });
+  if (dropped > 0) {
+    console.warn(`FlowMate: dropped ${dropped} tenant(s) with an invalid URL from settings`);
+  }
+  return { customers };
+}
+
+function assertCpiUrl(url: string): void {
+  if (!isCpiUrl(url)) {
+    throw new Error('Invalid tenant URL: must be an https Integration Suite URL');
+  }
 }
 
 /**
@@ -108,6 +132,8 @@ export async function addTenant(customerId: string, name: string, url: string): 
     throw new Error('Customer not found');
   }
 
+  assertCpiUrl(url);
+
   const tenant: Tenant = {
     id: `tenant-${Date.now()}`,
     name,
@@ -137,6 +163,7 @@ export async function updateTenant(
 
   const tenant = customer.tenants.find(t => t.id === tenantId);
   if (tenant) {
+    if (updates.url !== undefined) assertCpiUrl(updates.url);
     Object.assign(tenant, updates);
     await saveSettings(settings);
   }

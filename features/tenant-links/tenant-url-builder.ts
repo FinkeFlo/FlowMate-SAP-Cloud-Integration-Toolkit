@@ -23,24 +23,25 @@ export function buildTenantUrl(hostUrl: string, linkPath: string): string {
 
 /**
  * Extract the host portion (protocol + hostname) from a full URL.
+ * Returns `null` when the input is not a parsable URL (fail closed — callers skip the link).
  */
-export function extractHost(fullUrl: string): string {
+export function extractHost(fullUrl: string): string | null {
   try {
     const url = new URL(fullUrl);
     return `${url.protocol}//${url.host}`;
   } catch {
-    return fullUrl;
+    return null;
   }
 }
 
 /**
  * Safely extract the hostname from a URL string.
- * Returns the raw input if parsing fails.
+ * Returns `null` when parsing fails (fail closed).
  */
-export function extractHostname(url: string): string {
+export function extractHostname(url: string): string | null {
   try {
     return new URL(url).hostname;
   } catch {
-    return url;
+    return null;
   }
 }

@@ -27,7 +27,7 @@ export function TenantLinksPanel() {
   return (
     <div>
       <SortableQuickLinks host={host} />
-      <p class="mt-1.5 truncate text-[11px] text-base-content/50">{extractHostname(host)}</p>
+      <p class="mt-1.5 truncate text-[11px] text-base-content/50">{extractHostname(host) ?? host}</p>
     </div>
   );
 }

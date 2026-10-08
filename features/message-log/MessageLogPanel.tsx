@@ -4,6 +4,7 @@ import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
 import { t } from '@/features/shared/i18n';
+import { isCpiUrl } from '@/features/shared/cpi-url';
 import { MPL_STATUS_COLORS } from '@/features/shared/constants';
 import { extractIFlowId } from '@/features/trace-mode/trace-api';
 import { fetchMessages, fetchRuns } from './MplApiClient';
@@ -130,7 +131,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
         >
           <Info size={16} />
         </button>
-        {msg.AlternateWebLink && (
+        {msg.AlternateWebLink && isCpiUrl(msg.AlternateWebLink) && (
           <button
             class="btn btn-ghost btn-xs btn-square"
             title="Open in Monitoring"

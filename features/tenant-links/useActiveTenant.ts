@@ -22,8 +22,11 @@ export function useActiveTenant(): ActiveTenantState {
         // Covers all CPI tenant types (Integration Suite, Neo, trial).
         // Check the hostname suffix (not a substring of the full URL) to
         // avoid bypasses like "https://evil.com/hana.ondemand.com".
-        if (tab?.url && extractHostname(tab.url).endsWith('.hana.ondemand.com')) {
-          setState({ host: extractHost(tab.url), loading: false });
+        const url = tab?.url ?? '';
+        const hostname = extractHostname(url);
+        const host = hostname?.endsWith('.hana.ondemand.com') ? extractHost(url) : null;
+        if (host?.startsWith('https://')) {
+          setState({ host, loading: false });
         } else {
           setState({ host: null, loading: false });
         }
