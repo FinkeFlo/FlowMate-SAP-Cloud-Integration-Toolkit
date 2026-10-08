@@ -47,6 +47,18 @@ jobs:
       - run: npm ci
       - run: npm run lint:design
 
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run test
+
   build:
     name: Build (${{ matrix.browser }})
     runs-on: ubuntu-latest
@@ -70,7 +82,7 @@ jobs:
   ci:
     name: CI
     if: always()
-    needs: [typecheck, lint, lint-design, build]
+    needs: [typecheck, lint, lint-design, test, build]
     runs-on: ubuntu-latest
     steps:
       - name: Check all required jobs succeeded

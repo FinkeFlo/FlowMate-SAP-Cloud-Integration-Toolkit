@@ -42,6 +42,13 @@ export default tseslint.config(
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
+      // Diagnostics go through features/shared/dev-logger.ts; console.warn/error stay allowed for real failures.
+      'no-console': ['error', { allow: ['warn', 'error'] }],
     },
+  },
+  {
+    // The dev logger is the console abstraction itself; the background worker has no devLog transport.
+    files: ['features/shared/dev-logger.ts', 'entrypoints/background.ts'],
+    rules: { 'no-console': 'off' },
   },
 );

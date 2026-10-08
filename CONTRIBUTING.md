@@ -8,7 +8,7 @@ If you are changing the docs or fixing a bug, feel free to fork and open a PR. I
 
 ## Getting Started
 
-To develop the extension locally, you need [Node.js 20+ (LTS)](https://nodejs.org/) and `npm`.
+To develop the extension locally, you need [Node.js 24 (LTS)](https://nodejs.org/) (see `.nvmrc`) and `npm`.
 
 ```sh
 git clone https://github.com/FinkeFlo/FlowMate-SAP-Cloud-Integration-Toolkit.git
@@ -95,6 +95,20 @@ When writing documentation, creating test cases, or providing placeholder data, 
 
 We follow standard [Semantic Versioning (SemVer)](https://semver.org/) driven by our Conventional Commits.
 
-To create a new release:
-1. Bump the version in `package.json` (WXT automatically syncs this to the `manifest.json` during build).
-2. Document the release using GitHub Releases.
+Releases are **tag-driven** — do not bump `package.json` by hand:
+
+1. Make sure `main` is green and `CHANGELOG.md` has entries under `## [Unreleased]`.
+2. `git tag vX.Y.Z && git push origin vX.Y.Z`
+3. `.github/workflows/release.yml` bumps `package.json`/`package-lock.json`, turns `[Unreleased]` into the
+   version heading, builds the Chrome and Firefox zips and publishes the GitHub Release with the changelog notes.
+
+---
+
+## Verification & AI agents
+
+`npm run verify` runs everything CI runs (type-check, ESLint, `DESIGN.md` lint, Vitest unit tests, production
+build). Unit tests live next to pure modules (`*.test.ts`, see `.claude/rules/testing.md`).
+
+Tool-neutral instructions for AI coding agents live in [`AGENTS.md`](./AGENTS.md); Claude Code additionally loads
+`CLAUDE.md`, `.claude/rules/`, skills (`/verify`, `/review`, `/new-feature`, `/release`) and hooks that enforce the
+changelog rule, lint-on-edit and a local denylist for real customer names (`.claude/denylist.example.txt`).

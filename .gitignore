@@ -26,3 +26,7 @@ web-ext.config.ts
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code (local, per-developer)
+.claude/settings.local.json
+.claude/denylist.txt

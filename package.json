@@ -6,6 +6,9 @@
   "author": "FK",
   "license": "GPL-3.0",
   "type": "module",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "dev": "wxt",
     "dev:firefox": "wxt -b firefox",
@@ -20,7 +23,10 @@
     "playwright:session:smoke": "FLOWMATE_PLAYWRIGHT_HEADLESS=true FLOWMATE_PLAYWRIGHT_KEEP_OPEN=false FLOWMATE_PLAYWRIGHT_WAIT_MS=3000 node scripts/playwright-session.mjs",
     "postinstall": "wxt prepare",
     "release": "release-it",
-    "release:dry": "release-it --dry-run"
+    "release:dry": "release-it --dry-run",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "verify": "npm run compile && npm run lint && npm run lint:design && npm run test && npm run build"
   },
   "devDependencies": {
     "@google/design.md": "^0.4.0",
@@ -37,6 +43,7 @@
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.65.0",
+    "vitest": "^5.0.3",
     "wxt": "^0.21.4"
   },
   "dependencies": {

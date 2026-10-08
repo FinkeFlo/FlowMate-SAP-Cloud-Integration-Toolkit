@@ -1,0 +1,8 @@
+# Copy this file to .claude/denylist.txt (gitignored) and list the real customer names, project code names
+# and tenant host fragments that must never appear in this repository. One term per line, case-insensitive.
+# The hooks (.claude/hooks/check-denylist.sh, verify-on-stop.sh) block edits and turns that contain a term.
+#
+# Examples (replace with your real terms):
+# globex
+# initech-prod-integration
+# it-cpi999
