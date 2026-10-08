@@ -47,6 +47,11 @@ docs/                 Design specs (docs/superpowers/specs/) and other documenta
   `entrypoints/content.ts`. Native `title` tooltips are unreliable inside the shadow tree; use daisyUI `tooltip`.
 - **SPA navigation.** SAP CPI is a single-page app. Detect page changes with `features/shared/navigation.ts` and
   render feature UI conditionally through the `usePageType` hook, never via `load`/`DOMContentLoaded`.
+- **SAP CPI hosts.** The extension only runs on Integration Suite UI hosts
+  (`<sub>.integrationsuite[-trial|-cpiNNN].cfapps.<region>[-NNN].hana.ondemand.com`).
+  `features/shared/cpi-url.ts` is the single trust-boundary check; the manifest patterns in
+  `config/sap-cpi-urls.ts` are derived from it. Verified hosts, sources and unsupported variants:
+  `docs/sap-cpi-hosts.md`.
 - **Dev logging.** `features/shared/dev-logger.ts` streams structured logs to `.dev-logs/` in dev builds only.
   `.dev-logs/` may contain real tenant data — never read it into an agent context or commit it.
 

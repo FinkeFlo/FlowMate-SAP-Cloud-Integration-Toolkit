@@ -1,14 +1,17 @@
+import { isCpiUiHostname } from '@/features/shared/cpi-url';
+
 /**
- * Determine whether a host URL is an Integration Suite tenant.
- * Integration Suite URLs contain 'integrationsuite' (or 'integrationsuite-trial').
- * Neo/Classic tenants need the '/itspaces' prefix.
+ * Determine whether a host URL is an Integration Suite tenant (shared anchored
+ * host check from features/shared/cpi-url.ts). Neo/Classic tenants need the
+ * '/itspaces' prefix.
  *
- * Note: Similar logic exists in features/shared/navigation.ts (getCpiBaseUrl).
- * That function uses window.location (content script only).
- * This function accepts any URL string (works from popup context).
+ * Note: features/shared/navigation.ts (getCpiBaseUrl) applies the same check to
+ * window.location (content script only); this function accepts any URL string
+ * (works from popup context).
  */
 export function isIntegrationSuite(hostUrl: string): boolean {
-  return /\.integrationsuite(-trial)?\./.test(hostUrl);
+  const hostname = extractHostname(hostUrl);
+  return hostname !== null && isCpiUiHostname(hostname);
 }
 
 /**

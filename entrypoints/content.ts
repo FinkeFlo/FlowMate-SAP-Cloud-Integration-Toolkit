@@ -5,7 +5,7 @@ import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 import '@/assets/flowmate-theme.css';
 
 export default defineContentScript({
-  matches: SAP_CPI_URL_PATTERNS as unknown as string[],
+  matches: [...SAP_CPI_URL_PATTERNS],
   runAt: 'document_end',
   allFrames: true,
   // All CSS (Tailwind + daisyUI utilities + component .css files) is bundled

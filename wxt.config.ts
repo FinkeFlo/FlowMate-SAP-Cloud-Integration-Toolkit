@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { mkdirSync, appendFileSync, writeFileSync, readdirSync, statSync, unlinkSync, writeFile } from 'node:fs';
 import { join } from 'node:path';
 import type { Plugin } from 'vite';
+import { SAP_CPI_URL_PATTERNS } from './config/sap-cpi-urls';
 
 const DEV_LOG_PORT = 3001;
 const LOG_DIR = '.dev-logs';
@@ -119,7 +120,9 @@ export default defineConfig({
       description: isDev ? 'FlowMate development build' : '__MSG_extDescription__',
       default_locale: 'en',
       permissions: ['storage', 'tabs'],
-      host_permissions: ['*://*.hana.ondemand.com/*'],
+      // https-only, one pattern per BTP domain suffix; see config/sap-cpi-urls.ts
+      // for why this is broader than the runtime host regex.
+      host_permissions: [...SAP_CPI_URL_PATTERNS],
       browser_specific_settings: {
         gecko: {
           id: 'flowmate@fkube.local',

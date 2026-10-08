@@ -15,8 +15,9 @@ describe('validateCpiUrl', () => {
     expect(validateCpiUrl(`${VALID_URL}/shell/design`)).toEqual({ valid: true });
   });
 
-  it('accepts trial hosts', () => {
+  it('accepts trial and integrationsuite-cpiNNN hosts', () => {
     expect(validateCpiUrl('https://acme.integrationsuite-trial.cfapps.us10.hana.ondemand.com')).toEqual({ valid: true });
+    expect(validateCpiUrl('https://acme.integrationsuite-cpi033.cfapps.eu10-005.hana.ondemand.com')).toEqual({ valid: true });
   });
 
   it('rejects hosts that pass the substring pre-checks but fail the anchored check', () => {
@@ -41,7 +42,7 @@ describe('validateCpiUrl', () => {
   });
 
   it('rejects SAP hosts that are not Integration Suite UI hosts', () => {
-    const result = validateCpiUrl('https://acme-dev.it-cpi018.cfapps.eu10.hana.ondemand.com');
+    const result = validateCpiUrl('https://acme-dev.it-cpi001.cfapps.eu10.hana.ondemand.com');
     expect(result.valid).toBe(false);
     expect(result.error).toBe('validationUrlMustContain:integrationsuite');
   });

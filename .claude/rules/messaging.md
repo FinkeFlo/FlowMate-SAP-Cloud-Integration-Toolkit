@@ -30,8 +30,12 @@ paths:
 
 ## SAP CPI specifics
 
-- Integration Suite UI hosts look like `<sub>.integrationsuite(-trial)?.cfapps.<region>.hana.ondemand.com`;
-  Neo/Classic tenants need the `/itspaces` prefix (`getCpiBaseUrl`). Do not hard-code tenant hosts anywhere.
+- Integration Suite UI hosts look like
+  `<sub>.integrationsuite[-trial|-cpiNNN].cfapps.<region>[-NNN].hana.ondemand.com` (China regions on
+  `platform.sapcloud.cn` are unverified and not matched yet). `isCpiUiHostname`/`toCpiOrigin` in `features/shared/cpi-url.ts`
+  is the only host check; the verified table with sources is `docs/sap-cpi-hosts.md`. Neo/Classic tenants
+  (`-tmn.hci.`) and standalone CF Cloud Integration (`it-cpiNNN`, `/itspaces`) are unsupported. Do not hard-code
+  tenant hosts anywhere.
 - OData (`/api/v1/...`): escape `'` in filter values, use `$format=json`, respect `__next` paging for large sets.
   Deploy/undeploy calls (`DeployIntegrationDesigntimeArtifact`, runtime artifact DELETE) are destructive on the
   tenant: always confirm in the UI first and log the artifact id via `devLog`.
