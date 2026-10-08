@@ -3,6 +3,7 @@
  */
 
 import { t, tSub } from '@/features/shared/i18n';
+import { isCpiUiHostname } from '@/features/shared/cpi-url';
 
 /**
  * Validate SAP CPI URL
@@ -31,7 +32,7 @@ export function validateCpiUrl(url: string): { valid: boolean; error?: string } 
       return { valid: false, error: tSub('validationUrlMustContain', 'hana.ondemand.com') };
     }
 
-    if (!/(^|\.)integrationsuite\./.test(hostname)) {
+    if (!/(^|\.)integrationsuite(-trial)?\./.test(hostname)) {
       return { valid: false, error: tSub('validationUrlMustContain', 'integrationsuite') };
     }
 
@@ -39,9 +40,8 @@ export function validateCpiUrl(url: string): { valid: boolean; error?: string } 
       return { valid: false, error: tSub('validationUrlMustContain', 'cfapps') };
     }
 
-    // Check pattern with regex
-    const pattern = /^https:\/\/[a-zA-Z0-9-]+\.integrationsuite\.cfapps\.[a-zA-Z0-9-]+\.hana\.ondemand\.com.*$/;
-    if (!pattern.test(url)) {
+    // Full anchored host check (shared with the background trust boundary).
+    if (!isCpiUiHostname(hostname) || urlObj.username || urlObj.password) {
       return { 
         valid: false, 
         error: t('validationUrlFormat')

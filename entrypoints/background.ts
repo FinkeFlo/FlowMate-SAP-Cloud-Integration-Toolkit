@@ -7,6 +7,7 @@ import {
   type ExtensionMessage,
 } from '@/features/shared/messages';
 import type { DayData } from '@/features/shared/api-client';
+import { isCpiUrl, toCpiOrigin } from '@/features/shared/cpi-url';
 
 const FETCH_TIMEOUT_MS = 30_000;
 
@@ -18,7 +19,12 @@ interface DateRangeApiResponse {
 export default defineBackground(() => {
   console.log('FlowMate Background Service Started', { id: browser.runtime.id });
 
-  browser.runtime.onMessage.addListener((message: ExtensionMessage, _sender, sendResponse) => {
+  browser.runtime.onMessage.addListener((message: ExtensionMessage, sender, sendResponse) => {
+    // Trust boundary: only our own extension pages/content scripts may talk to the worker.
+    if (sender.id !== browser.runtime.id) {
+      return false;
+    }
+
     switch (message.type) {
       case MSG_FETCH_DATE_RANGE:
         handleFetchDateRange(message.data, sendResponse);
@@ -43,6 +49,15 @@ export default defineBackground(() => {
   });
 });
 
+/** `baseUrl` comes from a content script and is untrusted: reduce it to a validated https CPI origin. */
+function requireCpiOrigin(baseUrl: string): string {
+  const origin = toCpiOrigin(baseUrl);
+  if (!origin) {
+    throw new Error('Refusing request: baseUrl is not an https Integration Suite URL');
+  }
+  return origin;
+}
+
 function fetchWithTimeout(url: string, init?: RequestInit): Promise<Response> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
@@ -55,12 +70,13 @@ async function handleFetchDateRange(
   sendResponse: (response: ApiResponse<string[]>) => void,
 ) {
   try {
+    const origin = requireCpiOrigin(data.baseUrl);
     const params = new URLSearchParams({
       startDate: data.startDate,
       endDate: data.endDate,
       runtimeLocationId: 'cloudintegration',
     });
-    const url = `${data.baseUrl}/rest/api/v1/metering/usage/date-range?${params}`;
+    const url = `${origin}/rest/api/v1/metering/usage/date-range?${params}`;
 
     const response = await fetchWithTimeout(url, {
       credentials: 'include',
@@ -85,12 +101,13 @@ async function handleFetchSpecificDate(
   sendResponse: (response: ApiResponse<DayData>) => void,
 ) {
   try {
+    const origin = requireCpiOrigin(data.baseUrl);
     const params = new URLSearchParams({
       date: data.date,
       download: 'false',
       runtimeLocationId: 'cloudintegration',
     });
-    const url = `${data.baseUrl}/rest/api/v1/metering/usage/specific-date?${params}`;
+    const url = `${origin}/rest/api/v1/metering/usage/specific-date?${params}`;
 
     const response = await fetchWithTimeout(url, {
       credentials: 'include',
@@ -117,6 +134,10 @@ async function handleFetchSpecificDate(
 
 async function handleOpenTenantTabs(urls: string[], sendResponse: (response: ApiResponse<void>) => void) {
   try {
+    const invalid = urls.filter(url => !isCpiUrl(url));
+    if (invalid.length > 0) {
+      throw new Error(`Refusing to open ${invalid.length} non-CPI URL(s)`);
+    }
     const tabs = await Promise.all(
       urls.map(url => browser.tabs.create({ url, active: false })),
     );

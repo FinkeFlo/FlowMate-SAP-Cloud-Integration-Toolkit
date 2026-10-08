@@ -36,9 +36,9 @@ describe('extractHost / extractHostname', () => {
     expect(extractHostname(`${IS_HOST}/shell`)).toBe('acme-dev.integrationsuite.cfapps.eu10.hana.ondemand.com');
   });
 
-  it('currently returns the raw input when parsing fails (fail-open, tracked as a security issue)', () => {
-    // Documents present behaviour so a future fail-closed change updates this test deliberately.
-    expect(extractHost('not a url')).toBe('not a url');
-    expect(extractHostname('not a url')).toBe('not a url');
+  it('returns null when parsing fails (fail closed, audit S6)', () => {
+    expect(extractHost('not a url')).toBeNull();
+    expect(extractHostname('not a url')).toBeNull();
+    expect(extractHost('')).toBeNull();
   });
 });

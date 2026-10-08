@@ -1,4 +1,5 @@
 import { SAP_CPI_URL_PATTERNS } from '@/config/sap-cpi-urls';
+import { isCpiUiHostname } from '@/features/shared/cpi-url';
 import { render, h } from 'preact';
 import type { ContentScriptContext } from 'wxt/utils/content-script-context';
 import '@/assets/flowmate-theme.css';
@@ -18,8 +19,9 @@ export default defineContentScript({
 });
 
 async function initFlowMate(ctx: ContentScriptContext) {
-  // Only initialize on top frame in SAP CPI
-  if (window !== window.top || !window.location.hostname.includes('integrationsuite')) {
+  // Only initialize on the top frame of an Integration Suite UI host (anchored
+  // hostname match — a substring check could be satisfied by look-alike hosts).
+  if (window !== window.top || window.location.protocol !== 'https:' || !isCpiUiHostname(window.location.hostname)) {
     return;
   }
 
