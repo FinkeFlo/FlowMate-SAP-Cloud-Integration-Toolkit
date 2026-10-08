@@ -393,5 +393,8 @@
   },
   "hideToolbar": {
     "message": "Symbolleiste ausblenden"
+  },
+  "resizeToolbar": {
+    "message": "Ziehen zum Anpassen der Breite"
   }
 }

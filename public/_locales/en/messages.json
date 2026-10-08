@@ -393,5 +393,8 @@
   },
   "hideToolbar": {
     "message": "Hide toolbar"
+  },
+  "resizeToolbar": {
+    "message": "Drag to resize"
   }
 }

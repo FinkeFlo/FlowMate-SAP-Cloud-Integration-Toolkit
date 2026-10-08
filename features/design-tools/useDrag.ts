@@ -2,6 +2,19 @@ import { useRef, useCallback, useEffect } from 'preact/hooks';
 
 const DRAG_THRESHOLD = 5;
 const POSITION_STORAGE_KEY = 'flowmate-design-toolbar-position';
+export const WIDTH_STORAGE_KEY = 'flowmate-design-toolbar-width';
+export const DEFAULT_WIDTH = 420;
+export const MIN_WIDTH = 280;
+export const MAX_WIDTH = 720;
+
+export function getSavedWidth(): number {
+  try {
+    const saved = localStorage.getItem(WIDTH_STORAGE_KEY);
+    const parsed = saved ? Number(saved) : NaN;
+    if (Number.isFinite(parsed) && parsed >= MIN_WIDTH && parsed <= MAX_WIDTH) return parsed;
+  } catch { /* ignore */ }
+  return DEFAULT_WIDTH;
+}
 
 interface Position {
   x: number;
