@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+- **All remaining hard-coded UI strings are translated** (closes #37): tooltips, `aria-label`s, placeholders, toasts and status badges in the message log, message details, trace step navigation, Top Logger panel, trace toggle, inline trace, package artifacts (deploy/undeploy/status badge), quick links, popup and settings forms now use `t()` with keys in both `en` and `de` (about 55 new keys).
+
 ### Added
 - **Configurable message-log auto-refresh interval** (closes #14): the Options page has a new "Preferences" card with a 5/10/15/30/60 s selector (default now 10 s, previously a fixed 30 s). Stored in `browser.storage.sync` via the new `features/shared/preferences.ts`; the message log panel picks up changes live and shows the current interval in the "Auto" button tooltip.
 - **Engineering baseline for humans and AI agents**: `AGENTS.md` (tool-neutral conventions, imported by `CLAUDE.md`), path-scoped rules in `.claude/rules/` (styling, messaging/SAP API, i18n, security, git workflow, testing), skills `/verify`, `/review`, `/new-feature`, `/release`, and read-only reviewer agents (`flowmate-reviewer`, `ux-reviewer`). Design spec: `docs/superpowers/specs/2026-10-08-engineering-baseline-design.md`.

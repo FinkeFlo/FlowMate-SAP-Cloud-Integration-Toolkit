@@ -95,7 +95,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
       const baseUrl = getCpiBaseUrl();
       const runs = await fetchRuns(baseUrl, msg.MessageGuid);
       if (runs.length === 0) {
-        showToast('No trace runs found for this message', 'warning');
+        showToast(t('msgLogNoTraceRuns'), 'warning');
         return;
       }
       const runId = runs[0]!.Id;
@@ -104,7 +104,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
       devLog.info(LOG_TAG, 'Opened trace', { messageGuid: msg.MessageGuid, runId });
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to open trace', { error: String(error) });
-      showToast(`Failed to load trace: ${error}`, 'error');
+      showToast(`${t('msgLogTraceLoadFailed')}: ${error}`, 'error');
     }
   }
 
@@ -126,7 +126,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
       <div class="flex gap-1">
         <button
           class="btn btn-ghost btn-xs btn-square"
-          title="Message Details"
+          title={t('msgLogDetails')}
           onClick={(e) => { e.stopPropagation(); onShowDetail(msg.MessageGuid); }}
         >
           <Info size={16} />
@@ -134,7 +134,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
         {msg.AlternateWebLink && isCpiUrl(msg.AlternateWebLink) && (
           <button
             class="btn btn-ghost btn-xs btn-square"
-            title="Open in Monitoring"
+            title={t('msgLogOpenMonitoring')}
             onClick={(e) => { e.stopPropagation(); window.open(msg.AlternateWebLink, '_blank'); }}
           >
             <ExternalLink size={16} />
@@ -144,14 +144,14 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
           <>
             <button
               class={`btn btn-xs btn-square ${activeInlineTrace === msg.MessageGuid ? 'btn-success' : 'btn-ghost'}`}
-              title="Show Inline Trace"
+              title={t('msgLogShowInlineTrace')}
               onClick={(e) => { e.stopPropagation(); onStartInlineTrace?.(msg.MessageGuid); }}
             >
               <Layers size={16} />
             </button>
             <button
               class="btn btn-ghost btn-xs btn-square"
-              title="Open Trace"
+              title={t('msgLogOpenTrace')}
               onClick={(e) => { e.stopPropagation(); openTrace(); }}
             >
               <Activity size={16} />
@@ -304,7 +304,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
           <div class="flex items-center gap-2 border-b border-base-300 px-3 py-2">
             <button
               class="btn btn-ghost btn-xs btn-square"
-              title="Refresh"
+              title={t('refresh')}
               onClick={(e) => { e.stopPropagation(); refresh(); }}
             >
               <RefreshCw size={16} />
@@ -315,7 +315,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
               title={tSub('msgLogAutoRefresh', String(refreshSec))}
               onClick={(e) => { e.stopPropagation(); setAutoRefresh(v => !v); }}
             >
-              Auto
+              {t('msgLogAuto')}
             </button>
 
             {FILTER_CATEGORIES.map(cat => (
@@ -329,7 +329,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
 
             <select
               class="select select-bordered select-xs w-14 min-w-0"
-              title="Message limit"
+              title={t('msgLogMessageLimit')}
               value={messageLimit}
               onChange={handleLimitChange}
               onClick={(e) => e.stopPropagation()}

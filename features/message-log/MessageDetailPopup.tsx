@@ -273,7 +273,7 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
   function copyGuid() {
     if (detail) {
       navigator.clipboard.writeText(detail.MessageGuid);
-      showToast('GUID copied to clipboard', 'success');
+      showToast(t('msgDetailGuidCopied'), 'success');
     }
   }
 
@@ -331,7 +331,7 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
             </div>
             <div class="flex min-w-0 items-center gap-2">
               <span class="truncate font-mono text-[11px] text-base-content/50">{detail!.MessageGuid}</span>
-              <button class="btn btn-ghost btn-sm btn-square" title="Copy GUID" onClick={copyGuid}>
+              <button class="btn btn-ghost btn-sm btn-square" title={t('msgDetailCopyGuid')} onClick={copyGuid}>
                 <Copy size={16} />
               </button>
               <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}>

@@ -483,5 +483,269 @@
   },
   "prefsSaved": {
     "message": "Einstellungen gespeichert"
+  },
+  "refresh": {
+    "message": "Aktualisieren"
+  },
+  "loading": {
+    "message": "Lädt …"
+  },
+  "done": {
+    "message": "Fertig"
+  },
+  "unknown": {
+    "message": "Unbekannt"
+  },
+  "selectItem": {
+    "message": "$NAME$ auswählen",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "logThrottleCheckingLevels": {
+    "message": "Aktuelle Log-Level werden geprüft"
+  },
+  "logThrottleLevelIsError": {
+    "message": "Log-Level ist auf ERROR gesetzt"
+  },
+  "logThrottleSetError": {
+    "message": "Log-Level auf ERROR setzen"
+  },
+  "logThrottleSilenced": {
+    "message": "„$NAME$“ stummgeschaltet (Log-Level: ERROR)",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "logThrottleSilenceFailed": {
+    "message": "„$NAME$“ konnte nicht stummgeschaltet werden",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "logThrottleSilencedCount": {
+    "message": "$COUNT$ iFlow(s) stummgeschaltet",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "logThrottleSilenceFailedCount": {
+    "message": "$COUNT$ iFlow(s) konnten nicht stummgeschaltet werden",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "logThrottleSilencedPartial": {
+    "message": "$DONE$ stummgeschaltet, $FAILED$ fehlgeschlagen",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "2"
+      },
+      "failed": {
+        "content": "$2",
+        "example": "1"
+      }
+    }
+  },
+  "msgDetailCopyGuid": {
+    "message": "GUID kopieren"
+  },
+  "msgDetailGuidCopied": {
+    "message": "GUID in die Zwischenablage kopiert"
+  },
+  "tracePrevStep": {
+    "message": "Vorheriger Schritt (←)"
+  },
+  "traceNextStep": {
+    "message": "Nächster Schritt (→)"
+  },
+  "msgLogDetails": {
+    "message": "Nachrichtendetails"
+  },
+  "msgLogOpenMonitoring": {
+    "message": "Im Monitoring öffnen"
+  },
+  "msgLogShowInlineTrace": {
+    "message": "Inline-Trace anzeigen"
+  },
+  "msgLogOpenTrace": {
+    "message": "Trace öffnen"
+  },
+  "msgLogMessageLimit": {
+    "message": "Maximale Anzahl Nachrichten"
+  },
+  "msgLogNoTraceRuns": {
+    "message": "Keine Trace-Läufe für diese Nachricht gefunden"
+  },
+  "msgLogTraceLoadFailed": {
+    "message": "Trace konnte nicht geladen werden"
+  },
+  "traceEnabledToast": {
+    "message": "Trace aktiviert – Log-Level auf TRACE gesetzt"
+  },
+  "traceDisabledToast": {
+    "message": "Trace deaktiviert – Log-Level auf INFO gesetzt"
+  },
+  "traceToggleFailed": {
+    "message": "Trace konnte nicht umgeschaltet werden"
+  },
+  "traceOn": {
+    "message": "Trace AN"
+  },
+  "traceOff": {
+    "message": "Trace AUS"
+  },
+  "quickLinksDoneEditing": {
+    "message": "Bearbeitung beenden"
+  },
+  "quickLinksEditLayout": {
+    "message": "Anordnung bearbeiten"
+  },
+  "quickLinksDetecting": {
+    "message": "Tenant wird erkannt …"
+  },
+  "quickLinksNoTenant": {
+    "message": "Öffnen Sie eine SAP-CPI-Seite, um Tenant-Links zu sehen."
+  },
+  "exportDownloaded": {
+    "message": "Heruntergeladen: $FILE$",
+    "placeholders": {
+      "file": {
+        "content": "$1",
+        "example": "acme-dev_2026-01-01_2026-01-31.csv"
+      }
+    }
+  },
+  "artifactNoneDeployable": {
+    "message": "Keine deploybaren Artefakte ausgewählt"
+  },
+  "artifactNoneDeployed": {
+    "message": "Keine deployten Artefakte ausgewählt"
+  },
+  "artifactDeployError": {
+    "message": "Fehler beim Deployen von $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "artifactUndeployError": {
+    "message": "Fehler beim Undeployen von $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "OrderToCash"
+      }
+    }
+  },
+  "artifactDeployTriggered": {
+    "message": "Deployment für $DONE$ von $TOTAL$ Artefakt(en) ausgelöst",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "2"
+      },
+      "total": {
+        "content": "$2",
+        "example": "3"
+      }
+    }
+  },
+  "artifactUndeployed": {
+    "message": "$DONE$ von $TOTAL$ Artefakt(en) undeployt",
+    "placeholders": {
+      "done": {
+        "content": "$1",
+        "example": "2"
+      },
+      "total": {
+        "content": "$2",
+        "example": "3"
+      }
+    }
+  },
+  "artifactCsrfFailed": {
+    "message": "CSRF-Token konnte nicht geladen werden"
+  },
+  "artifactFoundDeployed": {
+    "message": "$COUNT$ deployte Artefakte gefunden",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "artifactStatusFailed": {
+    "message": "Artefakt-Status konnte nicht geladen werden"
+  },
+  "artifactRuntimeVersion": {
+    "message": "Runtime-Version"
+  },
+  "artifactDesignTimeVersion": {
+    "message": "Design-Time-Version"
+  },
+  "artifactVersionMismatch": {
+    "message": "Versionsunterschied – erneutes Deployment nötig"
+  },
+  "artifactVersion": {
+    "message": "Version"
+  },
+  "artifactState": {
+    "message": "Status"
+  },
+  "artifactDeployedBy": {
+    "message": "Deployt von"
+  },
+  "artifactDeployedOn": {
+    "message": "Deployt am"
+  },
+  "artifactNotDeployed": {
+    "message": "NICHT DEPLOYT"
+  },
+  "artifactNotDeployedHint": {
+    "message": "Dieses Artefakt ist nicht auf der Runtime deployt."
+  },
+  "traceNoRuns": {
+    "message": "Keine Trace-Läufe gefunden"
+  },
+  "traceNoSteps": {
+    "message": "Keine Trace-Schritte gefunden"
+  },
+  "traceMapFailed": {
+    "message": "Trace-Schritte konnten dem BPMN-Diagramm nicht zugeordnet werden"
+  },
+  "traceStepsHighlighted": {
+    "message": "Inline-Trace: $COUNT$ Schritte hervorgehoben",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "traceInlineLoadFailed": {
+    "message": "Inline-Trace konnte nicht geladen werden"
+  },
+  "msgLogAuto": {
+    "message": "Auto"
   }
 }

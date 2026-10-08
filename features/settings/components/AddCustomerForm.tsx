@@ -44,7 +44,7 @@ export function AddCustomerForm({ onSave, onCancel }: AddCustomerFormProps) {
           ref={inputRef}
           type="text"
           class={`input input-bordered w-full ${error ? 'input-error' : ''}`}
-          placeholder="e.g. Acme, Contoso, Globex..."
+          placeholder={t('customerNamePlaceholder')}
           value={name}
           onInput={e => setName((e.target as HTMLInputElement).value)}
           onKeyDown={e => e.key === 'Enter' && handleSave()}

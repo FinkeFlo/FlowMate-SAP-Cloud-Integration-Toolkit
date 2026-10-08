@@ -111,13 +111,13 @@ export function LogThrottlePanel() {
           next.add(symbolicName);
           return next;
         });
-        showToast(`Silenced "${symbolicName}" (log level: ERROR)`, 'success');
+        showToast(tSub('logThrottleSilenced', symbolicName), 'success');
         devLog.info(LOG_TAG, 'Throttled iFlow', { symbolicName });
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       devLog.error(LOG_TAG, 'Failed to throttle iFlow', { symbolicName, error: message });
-      showToast(`Failed to silence "${symbolicName}": ${message}`, 'error');
+      showToast(`${tSub('logThrottleSilenceFailed', symbolicName)}: ${message}`, 'error');
     } finally {
       if (mountedRef.current) setThrottlingNow(null);
     }
@@ -167,11 +167,11 @@ export function LogThrottlePanel() {
       setSelectedSet(new Set());
       setBulkRunning(false);
       if (failures === 0) {
-        showToast(`Silenced ${newlyThrottled.size} iFlow${newlyThrottled.size > 1 ? 's' : ''}`, 'success');
+        showToast(tSub('logThrottleSilencedCount', String(newlyThrottled.size)), 'success');
       } else if (newlyThrottled.size === 0) {
-        showToast(`Failed to silence ${failures} iFlow${failures > 1 ? 's' : ''}`, 'error');
+        showToast(tSub('logThrottleSilenceFailedCount', String(failures)), 'error');
       } else {
-        showToast(`Silenced ${newlyThrottled.size}, ${failures} failed`, 'warning');
+        showToast(t('logThrottleSilencedPartial', [String(newlyThrottled.size), String(failures)]), 'warning');
       }
       devLog.info(LOG_TAG, 'Bulk silence done', { silenced: newlyThrottled.size, failures });
     }
@@ -222,7 +222,7 @@ export function LogThrottlePanel() {
       <header class="flex items-center gap-2 border-b border-base-300 pb-2">
         <span class="font-semibold tracking-wide">{t('logThrottleTopLoggers')}</span>
         {levelsLoading && (
-          <span class="ml-auto animate-spin text-base-content/50" title="Checking current log levels">
+          <span class="ml-auto animate-spin text-base-content/50" title={t('logThrottleCheckingLevels')}>
             <LoaderCircle size={12} />
           </span>
         )}
@@ -230,7 +230,7 @@ export function LogThrottlePanel() {
           class="btn btn-ghost btn-xs btn-square"
           onClick={load}
           disabled={loading}
-          title="Refresh"
+          title={t('refresh')}
         >
           {loading ? (
             <span class="animate-spin"><LoaderCircle size={14} /></span>
@@ -323,7 +323,7 @@ export function LogThrottlePanel() {
                     checked={selectedSet.has(row.symbolicName)}
                     onChange={() => toggleSelected(row.symbolicName)}
                     disabled={isBusy}
-                    aria-label={`Select ${row.symbolicName}`}
+                    aria-label={tSub('selectItem', row.symbolicName)}
                   />
                 )}
                 <span class="tooltip tooltip-bottom flex-1 overflow-hidden text-left" data-tip={row.symbolicName}>
@@ -333,7 +333,7 @@ export function LogThrottlePanel() {
                   {formatCount(row.count)}
                 </span>
                 {throttled ? (
-                  <span class="badge badge-success badge-outline badge-sm gap-1" title="Log level set to ERROR">
+                  <span class="badge badge-success badge-outline badge-sm gap-1" title={t('logThrottleLevelIsError')}>
                     <Check size={12} /> ERROR
                   </span>
                 ) : (
@@ -341,7 +341,7 @@ export function LogThrottlePanel() {
                     class="btn btn-primary btn-soft btn-xs gap-1"
                     onClick={() => handleThrottle(row.symbolicName)}
                     disabled={throttlingNow === row.symbolicName}
-                    title="Set log level to ERROR"
+                    title={t('logThrottleSetError')}
                   >
                     {throttlingNow === row.symbolicName ? (
                       <span class="animate-spin"><LoaderCircle size={14} /></span>

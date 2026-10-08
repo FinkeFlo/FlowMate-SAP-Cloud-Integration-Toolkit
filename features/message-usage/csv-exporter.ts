@@ -4,6 +4,7 @@
 
 import type { DayData } from '@/features/shared/api-client';
 import { showToast } from '@/features/shared/toast';
+import { tSub } from '@/features/shared/i18n';
 
 interface AggregatedData {
   tenantId: string;
@@ -129,7 +130,7 @@ export class CSVExporter {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
 
-    showToast(`Downloaded: ${filename}`, 'success');
+    showToast(tSub('exportDownloaded', filename), 'success');
   }
 
   export(dayData: DayData[], startDate: string, endDate: string, filePrefix?: string, tenantId?: string): void {

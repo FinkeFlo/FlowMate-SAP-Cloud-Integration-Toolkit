@@ -2,6 +2,7 @@ import { devLog } from '@/features/shared/dev-logger';
 import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { fetchCpiText, fetchCpiJson, fetchCsrfToken as fetchCsrfTokenShared } from '@/features/shared/fetch-client';
 import { showToast } from '@/features/shared/toast';
+import { t, tSub } from '@/features/shared/i18n';
 import {
   SAP_CMD_LIST_ARTIFACTS,
   SAP_RUNTIME_LOCATION_ID,
@@ -98,11 +99,11 @@ export class ArtifactStatus {
         this.fetchDeployedArtifacts(),
         this.fetchDesigntimeArtifacts(packageId),
       ]);
-      showToast(`Found ${this.deployedArtifactsMap.size} deployed artifacts`, 'success');
+      showToast(tSub('artifactFoundDeployed', String(this.deployedArtifactsMap.size)), 'success');
       this.waitForTable();
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to fetch deployed artifacts', { error: String(error) });
-      showToast(`Failed to fetch artifact status: ${error}`, 'error');
+      showToast(`${t('artifactStatusFailed')}: ${error}`, 'error');
       this.currentPackageId = null;
     } finally {
       this.isFetching = false;
@@ -445,9 +446,22 @@ export class ArtifactStatus {
     statusBadge.textContent = `${icon} ${status.deployState} | ${versionText} | ${date}`;
 
     if (hasMismatch) {
-      statusBadge.title = `Runtime Version: ${runtimeVersion}\nDesign-Time Version: ${designTimeVersion}\nVersion mismatch - redeployment needed\n\nState: ${status.semanticState}\nDeployed by: ${status.deployedBy || 'Unknown'}\nDeployed on: ${status.deployedOn || 'Unknown'}`;
+      statusBadge.title = [
+        `${t('artifactRuntimeVersion')}: ${runtimeVersion}`,
+        `${t('artifactDesignTimeVersion')}: ${designTimeVersion}`,
+        t('artifactVersionMismatch'),
+        '',
+        `${t('artifactState')}: ${status.semanticState}`,
+        `${t('artifactDeployedBy')}: ${status.deployedBy || t('unknown')}`,
+        `${t('artifactDeployedOn')}: ${status.deployedOn || t('unknown')}`,
+      ].join('\n');
     } else {
-      statusBadge.title = `Version: ${status.version}\nState: ${status.semanticState}\nDeployed by: ${status.deployedBy || 'Unknown'}\nDeployed on: ${status.deployedOn || 'Unknown'}`;
+      statusBadge.title = [
+        `${t('artifactVersion')}: ${status.version}`,
+        `${t('artifactState')}: ${status.semanticState}`,
+        `${t('artifactDeployedBy')}: ${status.deployedBy || t('unknown')}`,
+        `${t('artifactDeployedOn')}: ${status.deployedOn || t('unknown')}`,
+      ].join('\n');
     }
 
     this.insertBadgeAfter(targetElement, statusBadge);
@@ -474,8 +488,8 @@ export class ArtifactStatus {
       cursor: help;
     `;
 
-    statusBadge.textContent = 'NOT DEPLOYED';
-    statusBadge.title = 'This artifact is not deployed to the runtime.';
+    statusBadge.textContent = t('artifactNotDeployed');
+    statusBadge.title = t('artifactNotDeployedHint');
 
     this.insertBadgeAfter(targetElement, statusBadge);
   }

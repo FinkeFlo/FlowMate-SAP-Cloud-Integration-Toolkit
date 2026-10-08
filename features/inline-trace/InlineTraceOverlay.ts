@@ -12,6 +12,7 @@ import { parseODataDate } from '@/features/message-log/mpl-types';
 import { fetchRuns } from '@/features/message-log/MplApiClient';
 import { fetchRunSteps } from './InlineTraceApiClient';
 import type { InlineTraceElement, PerformanceTier, RunStep } from './inline-trace-types';
+import { t, tSub } from '@/features/shared/i18n';
 
 const LOG_TAG = 'InlineTraceOverlay';
 const TRACE_CLICKABLE_CLASS = 'cursor-pointer';
@@ -54,7 +55,7 @@ export class InlineTraceOverlay {
     try {
       const runs = await fetchRuns(baseUrl, messageGuid);
       if (runs.length === 0) {
-        showToast('No trace runs found', 'warning');
+        showToast(t('traceNoRuns'), 'warning');
         return false;
       }
 
@@ -71,7 +72,7 @@ export class InlineTraceOverlay {
 
       const rawSteps = await fetchRunSteps(baseUrl, runId);
       if (rawSteps.length === 0) {
-        showToast('No trace steps found', 'warning');
+        showToast(t('traceNoSteps'), 'warning');
         return false;
       }
 
@@ -108,17 +109,17 @@ export class InlineTraceOverlay {
       devLog.info(LOG_TAG, `Applied overlay to ${appliedCount}/${this.elements.length} steps`);
 
       if (appliedCount === 0) {
-        showToast('Could not map trace steps to BPMN diagram', 'warning');
+        showToast(t('traceMapFailed'), 'warning');
         return false;
       }
 
       this.installMutationObserver();
 
-      showToast(`Inline trace: ${appliedCount} steps highlighted`, 'success');
+      showToast(tSub('traceStepsHighlighted', String(appliedCount)), 'success');
       return true;
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to show inline trace', { error: String(error) });
-      showToast(`Failed to load inline trace: ${error}`, 'error');
+      showToast(`${t('traceInlineLoadFailed')}: ${error}`, 'error');
       return false;
     }
   }

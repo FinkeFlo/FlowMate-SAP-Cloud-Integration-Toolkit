@@ -73,7 +73,7 @@ export function TenantItem({ customerId, tenant, onRefresh }: TenantItemProps) {
                 class={`input input-bordered input-sm w-full ${urlError ? 'input-error' : ''}`}
                 value={editUrl}
                 onInput={e => setEditUrl((e.target as HTMLInputElement).value)}
-                placeholder="URL"
+                placeholder={t('tenantUrl')}
               />
               {urlError && <span class="text-xs text-error">{urlError}</span>}
             </div>

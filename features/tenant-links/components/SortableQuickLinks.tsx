@@ -107,10 +107,10 @@ const COLOR_TO_BTN_CLASS: Record<NonNullable<TenantLink['color']>, string> = {
                 return !prev;
               });
             }}
-            title={editMode ? 'Done editing' : 'Edit layout'}
+            title={editMode ? t('quickLinksDoneEditing') : t('quickLinksEditLayout')}
           >
             {editMode ? <Check size={12} /> : <Pencil size={12} />}
-            {editMode ? 'Done' : 'Edit'}
+            {editMode ? t('done') : t('edit')}
           </button>
         </div>
 
