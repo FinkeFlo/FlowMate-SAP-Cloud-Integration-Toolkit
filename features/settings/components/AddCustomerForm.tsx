@@ -36,10 +36,10 @@ export function AddCustomerForm({ onSave, onCancel }: AddCustomerFormProps) {
   }
 
   return (
-    <div class="card card-border mb-6 border-warning/40 bg-warning/10 p-6">
-      <h3 class="mb-4 font-semibold text-warning-content">{t('addNewCustomer')}</h3>
+    <div class="card mb-6 bg-base-200 p-5">
+      <h3 class="mb-3 font-bold">{t('addNewCustomer')}</h3>
       <div class="mb-4">
-        <label class="mb-2 block font-semibold">{t('customerName') || 'Customer Name'}:</label>
+        <label class="mb-1.5 block text-sm font-semibold">{t('customerName') || 'Customer Name'}:</label>
         <input
           ref={inputRef}
           type="text"

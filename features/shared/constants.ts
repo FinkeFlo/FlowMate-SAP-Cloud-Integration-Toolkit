@@ -84,18 +84,3 @@ export const STATUS_BADGE_CLASS = 'cpi-helper-status-badge';
 
 /** Data attribute marking rows already processed by ArtifactStatus. */
 export const STATUS_CHECKED_ATTR = 'data-cpi-status-checked';
-
-// ---------------------------------------------------------------------------
-// MPL Status Colors (shared between MessageLogPanel and MessageDetailPopup)
-// ---------------------------------------------------------------------------
-
-/** Color map for MPL status values. */
-export const MPL_STATUS_COLORS: Record<string, string> = {
-  COMPLETED: '#10b981',
-  FAILED: '#ef4444',
-  PROCESSING: '#f59e0b',
-  ESCALATED: '#f59e0b',
-  RETRY: '#f59e0b',
-  CANCELLED: '#6b7280',
-  ABANDONED: '#6b7280',
-};

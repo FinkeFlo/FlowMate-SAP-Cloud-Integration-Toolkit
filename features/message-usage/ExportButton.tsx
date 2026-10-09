@@ -192,7 +192,7 @@ export function ExportButton() {
           <>
             <button
               type="button"
-              class="btn btn-error gap-2 shadow-lg"
+              class="btn btn-error btn-soft gap-2 shadow-float"
               onClick={cancelExport}
             >
               <X size={16} />
@@ -203,7 +203,7 @@ export function ExportButton() {
         ) : (
           <button
             type="button"
-            class="btn btn-primary gap-2 shadow-lg"
+            class="btn btn-primary gap-2 shadow-float"
             onClick={() => setShowDialog(true)}
           >
             <Download size={16} />

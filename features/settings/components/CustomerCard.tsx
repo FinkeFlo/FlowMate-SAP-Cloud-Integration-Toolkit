@@ -53,26 +53,29 @@ export function CustomerCard({ customer, onRefresh }: CustomerCardProps) {
   }
 
   return (
-    <div class="card card-border mb-6 border-base-300 bg-base-200 p-6">
-      <div class="mb-4 flex items-center justify-between">
-        <div class="flex-1">
+    <div class="card card-border border-base-300 bg-base-100">
+      <div class="flex items-center justify-between gap-3 border-b border-base-300 py-3 pr-3 pl-4">
+        <div class="flex min-w-0 flex-1 items-center gap-2">
           {editing ? (
-            <>
+            <div class="flex w-full max-w-sm flex-col">
               <input
                 ref={inputRef}
                 type="text"
-                class={`input input-bordered input-lg max-w-sm font-semibold text-primary ${nameError ? 'input-error' : ''}`}
+                class={`input input-bordered max-w-sm font-semibold ${nameError ? 'input-error' : ''}`}
                 value={editName}
                 onInput={e => setEditName((e.target as HTMLInputElement).value)}
                 onKeyDown={e => e.key === 'Enter' && handleSaveEdit()}
               />
               {nameError && <span class="mt-1 block text-xs text-error">{nameError}</span>}
-            </>
+            </div>
           ) : (
-            <h3 class="text-xl font-semibold text-primary">{customer.name}</h3>
+            <>
+              <h3 class="truncate text-lg font-bold tracking-tight">{customer.name}</h3>
+              <span class="badge badge-ghost badge-sm font-mono">{customer.tenants.length}</span>
+            </>
           )}
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex shrink-0 items-center gap-1">
           {editing ? (
             <>
               <button type="button" class="btn btn-primary btn-sm" onClick={handleSaveEdit}>
@@ -86,17 +89,21 @@ export function CustomerCard({ customer, onRefresh }: CustomerCardProps) {
             <>
               <button
                 type="button"
-                class="btn btn-secondary btn-sm"
+                class="btn btn-ghost btn-sm btn-square"
+                title={t('edit')}
+                aria-label={t('edit')}
                 onClick={() => setEditing(true)}
               >
-                <Pencil size={16} /> {t('edit') || 'Edit'}
+                <Pencil size={16} />
               </button>
               <button
                 type="button"
-                class="btn btn-error btn-sm"
+                class="btn btn-ghost btn-sm btn-square"
+                title={t('delete')}
+                aria-label={t('delete')}
                 onClick={() => setConfirmDelete(true)}
               >
-                <Trash2 size={16} /> {t('delete') || 'Delete'}
+                <Trash2 size={16} />
               </button>
             </>
           )}
@@ -104,16 +111,18 @@ export function CustomerCard({ customer, onRefresh }: CustomerCardProps) {
       </div>
 
       {showAddTenant && (
-        <AddTenantForm
-          customerId={customer.id}
-          onSave={handleTenantAdded}
-          onCancel={() => setShowAddTenant(false)}
-        />
+        <div class="px-4 pt-3">
+          <AddTenantForm
+            customerId={customer.id}
+            onSave={handleTenantAdded}
+            onCancel={() => setShowAddTenant(false)}
+          />
+        </div>
       )}
 
-      <div class="my-2 flex flex-col gap-2">
+      <div class="flex flex-col divide-y divide-base-300">
         {customer.tenants.length === 0 ? (
-          <p class="py-4 text-center italic text-base-content/50">{t('noTenantsYet')}</p>
+          <p class="py-6 text-center text-sm text-muted">{t('noTenantsYet')}</p>
         ) : (
           customer.tenants.map(tenant => (
             <TenantItem
@@ -127,13 +136,15 @@ export function CustomerCard({ customer, onRefresh }: CustomerCardProps) {
       </div>
 
       {!showAddTenant && (
-        <button
-          type="button"
-          class="btn btn-secondary btn-sm w-fit"
-          onClick={() => setShowAddTenant(true)}
-        >
-          <Plus size={16} /> {t('addTenant') || 'Add Tenant'}
-        </button>
+        <div class="border-t border-base-300 px-4 py-3">
+          <button
+            type="button"
+            class="btn btn-soft btn-primary btn-xs"
+            onClick={() => setShowAddTenant(true)}
+          >
+            <Plus size={14} /> {t('addTenant') || 'Add Tenant'}
+          </button>
+        </div>
       )}
 
       {confirmDelete && (

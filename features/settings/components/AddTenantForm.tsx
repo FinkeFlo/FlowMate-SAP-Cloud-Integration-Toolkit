@@ -41,10 +41,10 @@ export function AddTenantForm({ customerId, onSave, onCancel }: AddTenantFormPro
   }
 
   return (
-    <div class="card card-border mb-4 border-info/40 bg-info/10 p-4">
+    <div class="card mb-3 bg-base-200 p-4">
       <div class="flex flex-wrap items-end gap-4">
         <div class="flex min-w-[150px] flex-col gap-1">
-          <label class="text-xs font-semibold text-base-content/70">{t('tenantName') || 'Tenant Name'}:</label>
+          <label class="text-xs font-semibold">{t('tenantName') || 'Tenant Name'}:</label>
           <input
             ref={nameRef}
             type="text"
@@ -56,7 +56,7 @@ export function AddTenantForm({ customerId, onSave, onCancel }: AddTenantFormPro
           {nameError && <span class="text-xs text-error">{nameError}</span>}
         </div>
         <div class="flex min-w-[150px] flex-1 flex-col gap-1">
-          <label class="text-xs font-semibold text-base-content/70">{t('tenantUrl')}:</label>
+          <label class="text-xs font-semibold">{t('tenantUrl')}:</label>
           <input
             type="url"
             class={`input input-bordered input-sm w-full ${urlError ? 'input-error' : ''}`}

@@ -34,46 +34,49 @@ export interface CodeViewerProps {
 
 const detectLanguage = detectPayloadLanguage;
 
-// Light theme matching the `flowmate` daisyUI theme (base-200 background,
-// base-content text) instead of CodeMirror's bundled `oneDark` — the whole
-// extension UI is light-only (see assets/flowmate-theme.css), so a dark
-// code block looked out of place next to the rest of the panel.
+// Light theme bound to the `flowmate` theme tokens (base-200 background,
+// base-content text, the code-* syntax colors from assets/flowmate-theme.css)
+// instead of CodeMirror's bundled `oneDark`. CSS variables work here because
+// CodeMirror renders inside our Shadow Root, where the theme is defined.
 const lightEditorTheme = EditorView.theme({
   '&': {
-    backgroundColor: '#f5f5f5',
-    color: '#24292f',
+    backgroundColor: 'var(--color-base-200)',
+    color: 'var(--color-base-content)',
   },
   '.cm-content': {
-    caretColor: '#24292f',
+    caretColor: 'var(--color-base-content)',
   },
   '.cm-gutters': {
-    backgroundColor: '#f5f5f5',
-    color: '#8c959f',
+    backgroundColor: 'var(--color-base-200)',
+    color: 'var(--color-muted)',
     border: 'none',
   },
   '.cm-activeLine': {
-    backgroundColor: 'rgba(0, 112, 242, 0.06)',
+    backgroundColor: 'color-mix(in oklab, var(--color-primary) 6%, transparent)',
   },
   '.cm-activeLineGutter': {
-    backgroundColor: 'rgba(0, 112, 242, 0.06)',
+    backgroundColor: 'color-mix(in oklab, var(--color-primary) 6%, transparent)',
   },
   '.cm-selectionMatch': {
-    backgroundColor: 'rgba(0, 112, 242, 0.15)',
+    backgroundColor: 'color-mix(in oklab, var(--color-primary) 15%, transparent)',
   },
 });
 
+// JSON keys and XML tags `code-key`; strings and attribute values `code-string`;
+// numbers and attribute names `code-number`; true/false/null and keywords
+// `code-literal`. All reach 4.5:1 on base-200.
 const lightHighlightStyle = HighlightStyle.define([
-  { tag: tags.propertyName, color: '#0070f2' },
-  { tag: tags.string, color: '#15803d' },
-  { tag: tags.number, color: '#b45309' },
-  { tag: tags.bool, color: '#0a6ed1' },
-  { tag: tags.null, color: '#0a6ed1' },
-  { tag: tags.keyword, color: '#0a6ed1' },
-  { tag: tags.tagName, color: '#0070f2' },
-  { tag: tags.attributeName, color: '#b45309' },
-  { tag: tags.attributeValue, color: '#15803d' },
-  { tag: tags.comment, color: '#8c959f', fontStyle: 'italic' },
-  { tag: tags.punctuation, color: '#57606a' },
+  { tag: tags.propertyName, color: 'var(--color-code-key)' },
+  { tag: tags.string, color: 'var(--color-code-string)' },
+  { tag: tags.number, color: 'var(--color-code-number)' },
+  { tag: tags.bool, color: 'var(--color-code-literal)' },
+  { tag: tags.null, color: 'var(--color-code-literal)' },
+  { tag: tags.keyword, color: 'var(--color-code-literal)' },
+  { tag: tags.tagName, color: 'var(--color-code-key)' },
+  { tag: tags.attributeName, color: 'var(--color-code-number)' },
+  { tag: tags.attributeValue, color: 'var(--color-code-string)' },
+  { tag: tags.comment, color: 'var(--color-code-comment)', fontStyle: 'italic' },
+  { tag: tags.punctuation, color: 'var(--color-code-punct)' },
 ]);
 
 function getLanguageExtension(lang: 'xml' | 'json' | 'text') {
@@ -148,8 +151,10 @@ export function CodeViewer({
         EditorView.theme({
           '&': {
             maxHeight,
-            fontSize: '13px',
-            fontFamily: "'SF Mono', 'Fira Code', 'Consolas', monospace",
+            fontSize: '12px',
+            fontFamily: 'var(--font-mono)',
+            // Payloads show their characters as they are: no `<!--` or `->` arrows.
+            fontVariantLigatures: 'none',
           },
           '.cm-scroller': {
             overflow: 'auto',
@@ -241,14 +246,7 @@ export function CodeViewer({
               {t('codeViewerDownload')}
             </button>
           </div>
-          <div
-            ref={containerRef}
-            style={{
-              borderRadius: '6px',
-              overflow: 'hidden',
-              border: '1px solid var(--color-base-300, #e0e0e0)',
-            }}
-          />
+          <div ref={containerRef} class="overflow-hidden rounded-field border border-base-300" />
         </>
       )}
     </div>

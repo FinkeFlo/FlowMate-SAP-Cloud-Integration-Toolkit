@@ -102,16 +102,16 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
     });
   }
 
-  const sectionLabelClass = 'mb-2 block text-xs font-semibold uppercase tracking-wide text-base-content/60';
+  const sectionLabelClass = 'mb-2 block text-[11px] font-bold uppercase tracking-[0.07em] text-muted';
 
   return (
     <div class="modal modal-open" onClick={handleOverlayClick}>
-      <div class="modal-box max-w-xl" onClick={(e) => e.stopPropagation()}>
+      <div class="modal-box max-w-xl border border-base-300 shadow-modal" onClick={(e) => e.stopPropagation()}>
         <div class="mb-6 flex items-center gap-3">
           <div class="rounded-full bg-primary/10 p-2 text-primary">
             <Download size={20} />
           </div>
-          <h2 class="text-lg font-semibold text-primary">
+          <h2 class="text-lg font-bold tracking-tight">
             {t('exportMessageUsage') || 'Export Message Usage Data'}
           </h2>
         </div>
@@ -194,21 +194,21 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
             <div class="flex flex-wrap gap-2">
               <button
                 type="button"
-                class="btn btn-outline btn-sm"
+                class="btn btn-outline btn-sm border-base-300"
                 onClick={() => setQuickRange(1, false)}
               >
                 {t('lastMonth') || 'Last Month'}
               </button>
               <button
                 type="button"
-                class="btn btn-outline btn-sm"
+                class="btn btn-outline btn-sm border-base-300"
                 onClick={() => setQuickRange(0, true)}
               >
                 {t('currentMonth') || 'Current Month'}
               </button>
               <button
                 type="button"
-                class="btn btn-outline btn-sm"
+                class="btn btn-outline btn-sm border-base-300"
                 onClick={() => setQuickRange(3, false)}
               >
                 {t('last3Months') || 'Last 3 Months'}

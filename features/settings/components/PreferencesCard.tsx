@@ -31,9 +31,9 @@ export function PreferencesCard() {
   }
 
   return (
-    <div class="card mb-8 bg-base-100 p-8 shadow">
-      <div class="mb-6 border-b-2 border-base-200 pb-4">
-        <h2 class="text-xl font-semibold">{t('prefsTitle')}</h2>
+    <div class="card card-border mb-6 border-base-300 bg-base-100 p-6">
+      <div class="mb-4">
+        <h2 class="text-lg font-bold tracking-tight">{t('prefsTitle')}</h2>
       </div>
       <div class="flex flex-wrap items-center gap-3">
         <label class="text-sm font-semibold" for="prefs-message-log-refresh">{t('prefsMessageLogRefresh')}</label>
@@ -47,7 +47,7 @@ export function PreferencesCard() {
             <option key={v} value={v}>{v} s</option>
           ))}
         </select>
-        <span class="text-xs text-base-content/60">{t('prefsMessageLogRefreshHint')}</span>
+        <span class="text-xs text-muted">{t('prefsMessageLogRefreshHint')}</span>
       </div>
     </div>
   );

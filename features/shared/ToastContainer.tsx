@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from 'preact/hooks';
+import { Check, X, TriangleAlert, Info } from 'lucide-preact';
+import { TONE_DISC_CLASS, type StatusTone } from '@/features/shared/status-tone';
 
 type ToastType = 'success' | 'error' | 'warning' | 'info';
 
@@ -9,11 +11,13 @@ interface ToastItem {
   leaving: boolean;
 }
 
-const TYPE_CONFIG: Record<ToastType, { alertClass: string; icon: string }> = {
-  success: { alertClass: 'alert-success', icon: '\u2714' },
-  error: { alertClass: 'alert-error', icon: '\u2716' },
-  warning: { alertClass: 'alert-warning', icon: '\u26A0' },
-  info: { alertClass: 'alert-info', icon: '\u2139' },
+// Toasts are FlowMate reporting back, so they use the ink chrome (neutral);
+// the status disc carries color and icon, the sentence carries the meaning.
+const TYPE_CONFIG: Record<ToastType, { tone: StatusTone; Icon: typeof Check; role: 'status' | 'alert' }> = {
+  success: { tone: 'success', Icon: Check, role: 'status' },
+  error: { tone: 'error', Icon: X, role: 'alert' },
+  warning: { tone: 'warning', Icon: TriangleAlert, role: 'alert' },
+  info: { tone: 'info', Icon: Info, role: 'status' },
 };
 
 const AUTO_DISMISS_MS = 4000;
@@ -47,14 +51,17 @@ export function ToastContainer() {
   return (
     <div class="toast toast-end toast-bottom z-[10000000] flex flex-col-reverse gap-2">
       {toasts.map(toast => {
-        const config = TYPE_CONFIG[toast.type];
+        const { tone, Icon, role } = TYPE_CONFIG[toast.type];
         return (
           <div
             key={toast.id}
-            class={`alert ${config.alertClass} max-w-[400px] shadow-lg transition-all duration-200 ${toast.leaving ? 'translate-x-5 opacity-0' : 'translate-x-0 opacity-100'}`}
+            role={role}
+            class={`alert max-w-[400px] gap-2.5 rounded-box border-0 bg-neutral py-2.5 pr-4 pl-2.5 text-neutral-content shadow-float transition-all duration-200 ${toast.leaving ? 'translate-x-5 opacity-0' : 'translate-x-0 opacity-100'}`}
           >
-            <span class="text-base leading-none">{config.icon}</span>
-            <span class="break-words text-sm">{toast.message}</span>
+            <span class={`flex size-[22px] shrink-0 items-center justify-center rounded-full ${TONE_DISC_CLASS[tone]}`}>
+              <Icon size={13} strokeWidth={3} />
+            </span>
+            <span class="break-words text-[13px] leading-[18px]">{toast.message}</span>
           </div>
         );
       })}

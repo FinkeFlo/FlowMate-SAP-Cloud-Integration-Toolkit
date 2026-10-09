@@ -7,6 +7,7 @@ import { ToastContainer } from '@/features/shared/ToastContainer';
 import { CustomerCard } from './CustomerCard';
 import { AddCustomerForm } from './AddCustomerForm';
 import { PreferencesCard } from './PreferencesCard';
+import { FlowMateLogo } from '@/features/shared/FlowMateLogo';
 
 export function SettingsApp() {
   const [settings, setSettings] = useState<Settings | null>(null);
@@ -30,28 +31,31 @@ export function SettingsApp() {
 
   if (!settings) {
     return (
-      <div class="flex min-h-[200px] items-center justify-center text-base-content/60">
+      <div class="flex min-h-[200px] items-center justify-center text-muted">
         {t('loading') || 'Loading...'}
       </div>
     );
   }
 
   return (
-    <div class="mx-auto max-w-5xl">
-      <header class="card mb-8 bg-base-100 p-8 shadow">
-        <h1 class="text-2xl font-bold text-primary">{t('settingsTitle') || 'FlowMate Settings'}</h1>
-        <p class="text-base-content/60">{t('manageYourTenants')}</p>
+    <div class="mx-auto max-w-3xl px-4 py-10">
+      <header class="mb-8 flex items-center gap-4">
+        <FlowMateLogo size={44} />
+        <div>
+          <h1 class="text-[32px] font-extrabold leading-9 tracking-[-0.03em]">{t('settingsTitle') || 'FlowMate Settings'}</h1>
+          <p class="text-sm text-muted">{t('manageYourTenants')}</p>
+        </div>
       </header>
 
       <PreferencesCard />
 
-      <div class="card bg-base-100 p-8 shadow">
-        <div class="mb-8 flex items-center justify-between border-b-2 border-base-200 pb-4">
-          <h2 class="text-xl font-semibold">{t('customersAndTenants') || 'Customers & Tenants'}</h2>
+      <div class="card card-border border-base-300 bg-base-100 p-6">
+        <div class="mb-5 flex items-center justify-between">
+          <h2 class="text-lg font-bold tracking-tight">{t('customersAndTenants') || 'Customers & Tenants'}</h2>
           {!showAddForm && (
             <button
               type="button"
-              class="btn btn-primary"
+              class="btn btn-primary btn-sm"
               onClick={() => setShowAddForm(true)}
             >
               <Plus size={16} /> {t('addCustomer') || 'Add Customer'}
@@ -66,9 +70,9 @@ export function SettingsApp() {
           />
         )}
 
-        <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-4">
           {settings.customers.length === 0 ? (
-            <p class="py-8 text-center italic text-base-content/50">
+            <p class="py-8 text-center text-sm text-muted">
               {t('noCustomersYet')}
             </p>
           ) : (

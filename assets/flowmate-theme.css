@@ -9,6 +9,25 @@
      SAP page falls back to SAP's own "72". */
   --font-sans: Onest, '72', '72full', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Secondary text (`text-muted`): 4.5:1 on base-100 and base-200, unlike
+     base-content with opacity. */
+  --color-muted: #56676b;
+  /* Outlines of inputs, selects and checkboxes: 3:1 on base-100 and base-200. */
+  --color-border: #7d8d91;
+
+  /* Code viewer syntax colors, all 4.5:1 on base-200. */
+  --color-code-key: #0a5a65;
+  --color-code-string: #3b7a1c;
+  --color-code-number: #a3460f;
+  --color-code-literal: #6b3fa0;
+  --color-code-comment: #5f6f73;
+  --color-code-punct: #56676b;
+
+  /* Elevation: only things that float over SAP cast a shadow. */
+  --shadow-float: 0 1px 2px #0e1d2014, 0 12px 32px -8px #0e1d2038;
+  --shadow-dock: 0 -12px 32px -12px #0e1d202e;
+  --shadow-modal: 0 24px 64px -12px #0e1d2059;
 }
 
 /*
@@ -68,6 +87,12 @@
   --radius-box: 0.875rem;
 
   --border: 1px;
+
+  /* Flat: no gradient depth or noise. Required by daisyUI v5 themes — without
+     --depth, button borders resolve to currentColor (dark outlines on
+     secondary buttons). */
+  --depth: 0;
+  --noise: 0;
 }
 
 /*
@@ -83,4 +108,19 @@
 .badge,
 .toggle {
   --radius-selector: 9999px;
+}
+
+.tabs-box {
+  --radius-field: 9999px;
+}
+
+/*
+ * daisyUI outlines controls with 20 % of base-content (about 1.6:1). Use the
+ * `border` color instead so outlines reach 3:1; focused, checked and colored
+ * states keep daisyUI's own --input-color.
+ */
+.input:not(:focus, :focus-within, .input-error),
+.select:not(:focus, :focus-within, .select-error),
+.checkbox:not(:checked, :indeterminate) {
+  --input-color: var(--color-border);
 }

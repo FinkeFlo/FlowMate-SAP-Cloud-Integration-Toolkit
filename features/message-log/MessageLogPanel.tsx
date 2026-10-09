@@ -6,11 +6,12 @@ import { devLog } from '@/features/shared/dev-logger';
 import { t, tSub } from '@/features/shared/i18n';
 import { getPreferences, onPreferencesChange, DEFAULT_PREFERENCES } from '@/features/shared/preferences';
 import { isCpiUrl } from '@/features/shared/cpi-url';
-import { MPL_STATUS_COLORS } from '@/features/shared/constants';
+import { mplStatusTone, TONE_DISC_CLASS, type StatusTone } from '@/features/shared/status-tone';
+import { EmptyState } from '@/features/shared/EmptyState';
 import { extractIFlowId } from '@/features/trace-mode/trace-api';
 import { fetchMessages, fetchRuns } from './MplApiClient';
 import { parseODataDate } from './mpl-types';
-import type { MessageProcessingLog, MplStatus } from './mpl-types';
+import type { MessageProcessingLog } from './mpl-types';
 
 const LOG_TAG = 'MessageLog';
 const INITIAL_FETCH_DELAY_MS = 2000;
@@ -28,16 +29,10 @@ const STATUS_TO_FILTER: Record<string, FilterCategory> = {
   ABANDONED: 'processing',
 };
 
-const FILTER_DOT_CLASS: Record<FilterCategory, string> = {
-  success: 'bg-success',
-  error: 'bg-error',
-  processing: 'bg-warning',
-};
-
-const FILTER_BORDER_CLASS: Record<FilterCategory, string> = {
-  success: 'border-success/30',
-  error: 'border-error/30',
-  processing: 'border-warning/30',
+const FILTER_TONE: Record<FilterCategory, StatusTone> = {
+  success: 'success',
+  error: 'error',
+  processing: 'warning',
 };
 
 const FILTER_LABELS: Record<FilterCategory, string> = {
@@ -63,12 +58,9 @@ const STATUS_ICON: Record<string, typeof Check> = {
   ESCALATED: Clock,
   RETRY: Clock,
   CANCELLED: Ban,
+  DISCARDED: Ban,
   ABANDONED: Ban,
 };
-
-function getStatusColor(status: MplStatus): string {
-  return MPL_STATUS_COLORS[status] ?? '#6b7280';
-}
 
 function formatTime(date: Date): string {
   return date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -86,9 +78,10 @@ interface MessageRowProps {
 }
 
 function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }: MessageRowProps) {
-  const color = getStatusColor(msg.Status);
+  const tone = mplStatusTone(msg.Status);
   const StatusIcon = STATUS_ICON[msg.Status];
   const endDate = parseODataDate(msg.LogEnd);
+  const inlineTraceShown = activeInlineTrace === msg.MessageGuid;
 
   async function openTrace() {
     try {
@@ -109,21 +102,19 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
   }
 
   return (
-    <div class="group flex cursor-default items-center gap-2 border-b border-base-300/40 px-3 py-2 hover:bg-base-200/60" style={{ borderLeft: `3px solid ${color}` }}>
-      <div class="w-1.5 shrink-0" />
+    <div class={`group flex cursor-default items-center gap-2.5 px-3 py-1.5 ${inlineTraceShown ? 'bg-primary/10' : 'hover:bg-base-200'}`}>
       <span
         title={msg.Status}
-        class="flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full text-white"
-        style={{ background: color, boxShadow: `0 0 6px ${color}80` }}
+        class={`flex size-4 shrink-0 items-center justify-center rounded-full ${TONE_DISC_CLASS[tone]}`}
       >
-        {StatusIcon && <StatusIcon size={9} strokeWidth={3} />}
+        {StatusIcon && <StatusIcon size={10} strokeWidth={3.2} />}
       </span>
-      <span class="font-mono text-xs text-base-content/80">{formatTime(endDate)}</span>
-      <span class="rounded bg-base-200 px-1.5 py-0.5 font-mono text-[10px] font-bold text-base-content/60">
+      <span class="font-mono text-xs font-medium">{formatTime(endDate)}</span>
+      <span class="rounded-[4px] bg-base-200 px-1.5 py-px font-mono text-[11px] font-bold text-muted">
         {msg.LogLevel.charAt(0)}
       </span>
       <div class="flex-1" />
-      <div class="flex gap-1">
+      <div class="flex gap-0.5">
         <button
           class="btn btn-ghost btn-xs btn-square"
           title={t('msgDetailMessageDetail')}
@@ -143,7 +134,8 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
         {msg.LogLevel === 'TRACE' && (
           <>
             <button
-              class={`btn btn-xs btn-square ${activeInlineTrace === msg.MessageGuid ? 'btn-success' : 'btn-ghost'}`}
+              class={`btn btn-xs btn-square ${inlineTraceShown ? 'btn-primary' : 'btn-ghost'}`}
+              aria-pressed={inlineTraceShown}
               title={t('msgLogShowInlineTrace')}
               onClick={(e) => { e.stopPropagation(); onStartInlineTrace?.(msg.MessageGuid); }}
             >
@@ -163,16 +155,19 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
   );
 }
 
-function FilterDot({ category, active, onClick }: { category: FilterCategory; active: boolean; onClick: () => void }) {
+// A filter chip: the status disc names the category, the ink fill (and
+// aria-pressed) says the filter is on.
+function FilterChip({ category, active, onClick }: { category: FilterCategory; active: boolean; onClick: () => void }) {
   const Icon = FILTER_ICON[category];
   return (
     <button
-      class={`btn btn-circle btn-xs h-6 min-h-0 w-6 p-0 ${active ? FILTER_BORDER_CLASS[category] : 'border-base-300 opacity-40'}`}
+      class={`btn btn-xs h-6 min-h-0 px-1.5 ${active ? 'btn-neutral' : 'btn-outline border-base-300'}`}
       title={FILTER_LABELS[category]}
+      aria-pressed={active}
       onClick={(e) => { e.stopPropagation(); onClick(); }}
     >
-      <span class={`flex h-3.5 w-3.5 items-center justify-center rounded-full text-white ${FILTER_DOT_CLASS[category]}`}>
-        <Icon size={9} strokeWidth={3} />
+      <span class={`flex size-3.5 items-center justify-center rounded-full ${TONE_DISC_CLASS[FILTER_TONE[category]]}`}>
+        <Icon size={9} strokeWidth={3.2} />
       </span>
     </button>
   );
@@ -294,32 +289,42 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
 
   return (
     <div class="relative w-full">
-      <button class="btn btn-primary btn-sm w-full justify-start gap-2" onClick={(e) => { e.stopPropagation(); togglePanel(); }}>
+      <button
+        class={`btn btn-ghost btn-sm w-full justify-start gap-2 ${panelOpen ? 'bg-base-200' : ''}`}
+        aria-expanded={panelOpen}
+        onClick={(e) => { e.stopPropagation(); togglePanel(); }}
+      >
         <Activity size={16} />
         <span>{t('msgLogMessages')}</span>
+        {messages.length > 0 && (
+          <span class="badge badge-ghost badge-sm ml-auto font-mono">{messages.length}</span>
+        )}
       </button>
 
       {panelOpen && (
-        <div class="absolute top-[calc(100%+6px)] right-0 z-[10000] w-[370px] overflow-hidden rounded-box border border-base-300 bg-base-100 shadow-xl" onPointerDown={(e) => e.stopPropagation()}>
-          <div class="flex items-center gap-2 border-b border-base-300 px-3 py-2">
+        <div class="absolute top-[calc(100%+6px)] right-0 z-[10000] w-96 overflow-hidden rounded-box border border-base-300 bg-base-100 shadow-float" onPointerDown={(e) => e.stopPropagation()}>
+          <div class="flex items-center gap-1.5 border-b border-base-300 px-2 py-2">
             <button
               class="btn btn-ghost btn-xs btn-square"
               title={t('refresh')}
               onClick={(e) => { e.stopPropagation(); refresh(); }}
             >
-              <RefreshCw size={16} />
+              <RefreshCw size={14} />
             </button>
 
+            {/* The spark dot is the live indicator: it pulses while auto-refresh runs. */}
             <button
-              class={`btn btn-xs ${autoRefresh ? 'btn-primary' : 'btn-ghost'}`}
+              class={`btn btn-xs h-6 min-h-0 gap-1.5 ${autoRefresh ? 'btn-neutral' : 'btn-outline border-base-300'}`}
               title={tSub('msgLogAutoRefresh', String(refreshSec))}
+              aria-pressed={autoRefresh}
               onClick={(e) => { e.stopPropagation(); setAutoRefresh(v => !v); }}
             >
+              {autoRefresh && <span class="size-2 rounded-full bg-accent motion-safe:animate-pulse" />}
               {t('msgLogAuto')}
             </button>
 
             {FILTER_CATEGORIES.map(cat => (
-              <FilterDot
+              <FilterChip
                 key={cat}
                 category={cat}
                 active={activeFilters.has(cat)}
@@ -340,26 +345,19 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
             </select>
 
             <div class="flex-1" />
-            <span class="font-mono text-[11px] text-base-content/50">{lastRefresh}</span>
+            <span class="font-mono text-[11px] text-muted">{lastRefresh}</span>
           </div>
 
-          <div class="max-h-[300px] overflow-y-auto py-1">
+          <div class="max-h-[300px] overflow-y-auto pb-1">
             {messages.length === 0 ? (
-              <div class="flex flex-col items-center gap-2 px-4 py-8 text-center text-xs text-base-content/50">
-                <Activity size={24} class="opacity-50" />
-                <span>{t('msgLogNoMessages')}</span>
-              </div>
+              <EmptyState title={t('msgLogNoMessages')} />
             ) : filtered.length === 0 ? (
-              <div class="flex flex-col items-center gap-2 px-4 py-8 text-center text-xs text-base-content/50">
-                <Activity size={24} class="opacity-50" />
-                <span>{t('msgLogNoMatching')}</span>
-              </div>
+              <EmptyState title={t('msgLogNoMatching')} />
             ) : (
               Array.from(groups.entries()).map(([dateKey, msgs]) => (
                 <div key={dateKey}>
-                  <div class="flex items-center gap-2 px-3 py-2">
-                    <div class="h-px flex-1 bg-base-300" />
-                    <span class="text-[10px] font-semibold tracking-wide text-base-content/40">{dateKey}</span>
+                  <div class="flex items-center gap-2 px-3 pt-2.5 pb-1 text-[11px] font-bold uppercase tracking-[0.07em] text-muted">
+                    <span>{dateKey}</span>
                     <div class="h-px flex-1 bg-base-300" />
                   </div>
                   {msgs.map(msg => (

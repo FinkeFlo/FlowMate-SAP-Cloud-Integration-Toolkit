@@ -25,6 +25,14 @@ colors:
   warning-content: "#ffffff"
   error: "#c8322b"
   error-content: "#ffffff"
+  muted: "#56676b"
+  border: "#7d8d91"
+  code-key: "#0a5a65"
+  code-string: "#3b7a1c"
+  code-number: "#a3460f"
+  code-literal: "#6b3fa0"
+  code-comment: "#5f6f73"
+  code-punct: "#56676b"
 typography:
   body-md:
     fontFamily: "Onest, '72', '72full', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
@@ -85,6 +93,37 @@ components:
     backgroundColor: "{colors.base-100}"
     textColor: "{colors.base-content}"
     rounded: "{rounded.field}"
+  input-outline:
+    backgroundColor: "{colors.border}"
+  caption:
+    backgroundColor: "{colors.base-100}"
+    textColor: "{colors.muted}"
+  toolbar-handle:
+    backgroundColor: "{colors.neutral}"
+    textColor: "{colors.neutral-content}"
+    rounded: "{rounded.pill}"
+  toast:
+    backgroundColor: "{colors.neutral}"
+    textColor: "{colors.neutral-content}"
+    rounded: "{rounded.box}"
+  code-key:
+    backgroundColor: "{colors.base-200}"
+    textColor: "{colors.code-key}"
+  code-string:
+    backgroundColor: "{colors.base-200}"
+    textColor: "{colors.code-string}"
+  code-number:
+    backgroundColor: "{colors.base-200}"
+    textColor: "{colors.code-number}"
+  code-literal:
+    backgroundColor: "{colors.base-200}"
+    textColor: "{colors.code-literal}"
+  code-comment:
+    backgroundColor: "{colors.base-200}"
+    textColor: "{colors.code-comment}"
+  code-punct:
+    backgroundColor: "{colors.base-200}"
+    textColor: "{colors.code-punct}"
 ---
 
 ## Overview
@@ -122,8 +161,17 @@ file: `assets/flowmate-theme.css`. There is exactly **one** active theme,
   also carries a word or an icon. A slow trace step is a warning, never an error.
 - **Base-100/200/300 (`#ffffff` / `#f3f6f6` / `#dfe6e7`):** surface, sunken
   surface (code, tracks, hovered rows) and hairlines.
+- **Muted (`#56676b`, `text-muted`):** secondary text — hints, metadata,
+  timestamps, section labels. Never fade `base-content` with opacity instead.
+- **Border (`#7d8d91`):** outlines of inputs, selects and checkboxes (3:1); the
+  theme file applies it through daisyUI's `--input-color`.
+- **Code colors (`code-*`):** syntax highlighting in `CodeViewer.tsx`, read as
+  CSS variables by CodeMirror inside the Shadow Root.
+- Status colors for messages come from `features/shared/status-tone.ts`
+  (COMPLETED success, FAILED error, RETRY/ESCALATED warning, PROCESSING info,
+  CANCELLED/DISCARDED/ABANDONED neutral) — use its class maps, not hex values.
 - Text colors reach 4.5:1 on `base-100` and `base-200`, status colors also on
-  their soft tints. Don't fade text with opacity below `/70`.
+  their soft tints.
 
 ## Typography
 
@@ -143,24 +191,39 @@ Capsules you press, rectangles that hold:
 - `--radius-box: 0.875rem` for cards, modals, alerts, the toolbar and popovers.
 - `--radius-field: 0.5rem` for inputs, selects and tooltips.
 - `--radius-selector: 0.25rem` for checkboxes.
-- Buttons, badges and toggles are full capsules: the theme file scopes the
-  radius variables on `.btn`, `.badge` and `.toggle` to `9999px`, so no
-  per-component class is needed.
+- Buttons, badges, toggles and segmented tabs (`tabs-box`) are full capsules:
+  the theme file scopes the radius variables on `.btn`, `.badge`, `.toggle` and
+  `.tabs-box` to `9999px`, so no per-component class is needed.
+- Flat: `--depth: 0` and `--noise: 0`. Only things that float over SAP cast a
+  shadow — `shadow-float` (toolbar, popovers, toasts), `shadow-dock` (dock
+  panel), `shadow-modal` (dialogs); content at rest uses `base-300` hairlines.
 
 ## Logo
 
 The mark is an F drawn as a route with the spark as the message. Files:
 `public/icon.svg` (app icon), `public/icon/*.png` (browser icons; 16 and 32 px
 use a heavier small optical size), `assets/logo.svg` (lockup with the
-wordmark). The toolbar draws the small optical size inline with theme colors
-(`fill-primary`, `stroke-primary-content`, `fill-accent`). Never recolor the
+wordmark). `features/shared/FlowMateLogo.tsx` draws it inline with theme colors
+(`fill-primary`, `stroke-primary-content`, `fill-accent`) — the regular
+drawing from 24 px, the heavier small one below. Never recolor the
 spark or use the logo on SAP blue.
 
 ## Components
 
 - **Buttons:** Use `btn-soft` variants (e.g. `btn-primary btn-soft`, `btn-error
   btn-soft`) by default for a flat, subtle-until-hover feel. Reserve solid
-  fills for the single most important action on a page.
+  fills for the single most important action on a page (Deploy, Add customer).
+  Toggles show their state with `aria-pressed` and a fill; busy buttons use
+  `aria-busy` and stay readable.
+- **Toolbar:** the floating toolbar's header is an ink capsule (`btn-neutral`)
+  with the logo; minimized, only that capsule remains.
+- **Status:** messages are status discs (`TONE_DISC_CLASS`) with a glyph, never
+  a colored left border or a glow; filters are capsules whose ink fill means
+  "on". The live dot (`bg-accent`, pulsing) marks auto-refresh.
+- **Toasts:** ink cards (`bg-neutral`) with a status disc and a Lucide icon.
+- **Tabs:** segmented `tabs tabs-box` in dock-panel headers.
+- **Empty states:** `features/shared/EmptyState.tsx` (the logo's route with an
+  empty stop).
 - **Cards:** `card card-border`, using `base-100`/`base-300` for background and
   border.
 - **Modals/Dialogs:** daisyUI `modal modal-open` / `modal-box` / `modal-action`
@@ -182,6 +245,9 @@ spark or use the logo on SAP blue.
 - The inline-trace step colors are painted on SAP's SVG outside the Shadow
   Root, so they are hex values in `features/inline-trace/step-colors.ts`; keep
   them in sync with the theme.
+- The deployment badges that `ArtifactStatus.ts` injects into SAP's own
+  package table keep SAP's semantic colors on purpose: they live inside an SAP
+  control and should read as part of it.
 - **Shadow DOM caveat:** the content-script overlay renders inside a Shadow
   Root for style isolation from the SAP host page. daisyUI/Tailwind apply
   theme variables via `:root`/`[data-theme=...]`, and `:root` never matches

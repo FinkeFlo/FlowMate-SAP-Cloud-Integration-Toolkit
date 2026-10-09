@@ -76,10 +76,13 @@ export function TraceToggleButton() {
   }
 
   return (
+    // Soft by default; the pressed state turns success. While the level is being
+    // changed the button stays readable (aria-busy) and ignores further clicks.
     <button
-      class={`btn btn-sm w-full justify-start gap-2 ${traceActive ? 'btn-success' : 'btn-primary'}`}
+      class={`btn btn-soft btn-sm w-full justify-start gap-2 ${traceActive ? 'btn-success' : 'btn-primary'}`}
+      aria-pressed={traceActive}
+      aria-busy={toggling}
       onClick={handleToggle}
-      disabled={toggling}
     >
       {toggling ? (
         <>

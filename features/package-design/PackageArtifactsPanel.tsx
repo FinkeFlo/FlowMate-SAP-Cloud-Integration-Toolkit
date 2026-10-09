@@ -10,7 +10,7 @@ interface PackageArtifactsPanelProps {
 
 function SectionLabel({ label }: { label: string }) {
   return (
-    <span class="px-1 text-[10px] font-semibold uppercase tracking-wide opacity-40 select-none">
+    <span class="px-1 text-[11px] font-bold uppercase tracking-[0.07em] text-muted select-none">
       {label}
     </span>
   );
