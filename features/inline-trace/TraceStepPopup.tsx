@@ -60,8 +60,9 @@ function getDurationTier(ms: number, avgMs: number): PerformanceTier | null {
   return ms > avgMs ? 'above-avg' : 'below-avg';
 }
 
+// A slow step is not a failed one: no tier uses the error color (see step-colors.ts).
 const TIER_BADGE_CLASS: Record<PerformanceTier, string> = {
-  max: 'badge-error',
+  max: 'badge-warning',
   'above-avg': 'badge-warning',
   avg: 'badge-success',
   'below-avg': 'badge-info',

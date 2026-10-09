@@ -12,23 +12,11 @@ import { parseODataDate } from '@/features/message-log/mpl-types';
 import { fetchRuns } from '@/features/message-log/MplApiClient';
 import { fetchRunSteps } from './InlineTraceApiClient';
 import type { InlineTraceElement, PerformanceTier, RunStep } from './inline-trace-types';
+import { resolveStepColor, STEP_COLORS } from './step-colors';
 import { t, tSub } from '@/features/shared/i18n';
 
 const LOG_TAG = 'InlineTraceOverlay';
 const TRACE_CLICKABLE_CLASS = 'cursor-pointer';
-
-// Hardcoded hex values (not `var(--color-*)`) — these are applied directly to
-// SVG elements on the SAP host page, *outside* our Shadow Root. daisyUI's CSS
-// custom properties only exist inside the Shadow Root (`data-theme="flowmate"`),
-// so `var(--color-success)` etc. would be invalid there and the SVG `fill`
-// would fall back to its initial value (black), painting the shapes solid
-// black. Keep these in sync with the `flowmate` theme in assets/flowmate-theme.css.
-const COLOR_SUCCESS = '#15803d';
-const COLOR_ERROR = '#d32f2f';
-const COLOR_PRIMARY = '#0070f2';
-const COLOR_INFO = '#0a6ed1';
-const COLOR_WARNING = '#b45309';
-const COLOR_ACCENT = '#0070f2';
 
 type StepClickHandler = (element: InlineTraceElement, allElements: InlineTraceElement[]) => void;
 
@@ -85,7 +73,7 @@ export class InlineTraceOverlay {
         const mapping = this.mapStepToSvgElement(el);
         if (!mapping) continue;
 
-        const color = this.resolveStepColor(el, perfMap.get(el.stepId));
+        const color = resolveStepColor(el.error, perfMap.get(el.stepId));
         const cached: SvgMapping = {
           ...mapping,
           originalStyle: mapping.target.getAttribute('style'),
@@ -160,7 +148,7 @@ export class InlineTraceOverlay {
 
     const mapping = this.svgMappingCache.get(stepId);
     if (mapping) {
-      this.applyStepColor(mapping.target, COLOR_PRIMARY);
+      this.applyStepColor(mapping.target, STEP_COLORS.selected);
     }
   }
 
@@ -183,24 +171,6 @@ export class InlineTraceOverlay {
 
   private parseODataTimestamp(dateStr: string): number {
     return parseODataDate(dateStr).getTime();
-  }
-
-  private resolveStepColor(element: InlineTraceElement, tier?: PerformanceTier): string {
-    if (element.error) return COLOR_ERROR;
-    if (!tier) return COLOR_SUCCESS;
-
-    switch (tier) {
-      case 'max':
-        return COLOR_ERROR;
-      case 'min':
-        return COLOR_INFO;
-      case 'avg':
-        return COLOR_SUCCESS;
-      case 'above-avg':
-        return COLOR_WARNING;
-      case 'below-avg':
-        return COLOR_ACCENT;
-    }
   }
 
   private applyStepColor(target: Element, color: string): void {

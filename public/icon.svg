@@ -1,4 +1,1 @@
-<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
-  <rect width="128" height="128" rx="22" fill="#0070F2"/>
-  <path d="M 32 24 H 100 V 40 H 48 V 56 H 88 V 72 H 48 V 104 H 32 Z" fill="white"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="FlowMate"><title>FlowMate</title><g transform="translate(0 0) scale(1)"><rect width="48" height="48" rx="11" fill="#0a5a65"/><g transform="translate(24.4 24) scale(.84) translate(-24 -24)"><g fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 39V18a8 8 0 0 1 8-8h11"/><path d="M15 32a8 8 0 0 1 8-8h1"/></g><circle cx="32.5" cy="24" r="4.5" fill="#ff7a59"/></g></g></svg>
