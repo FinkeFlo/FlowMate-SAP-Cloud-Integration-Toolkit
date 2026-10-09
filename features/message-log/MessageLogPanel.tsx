@@ -8,6 +8,7 @@ import { getPreferences, onPreferencesChange, DEFAULT_PREFERENCES } from '@/feat
 import { isCpiUrl } from '@/features/shared/cpi-url';
 import { mplStatusTone, TONE_DISC_CLASS, type StatusTone } from '@/features/shared/status-tone';
 import { EmptyState } from '@/features/shared/EmptyState';
+import { formatDate, formatTime } from '@/features/shared/time-format';
 import { extractIFlowId } from '@/features/trace-mode/trace-api';
 import { fetchMessages, fetchRuns } from './MplApiClient';
 import { parseODataDate } from './mpl-types';
@@ -35,10 +36,10 @@ const FILTER_TONE: Record<FilterCategory, StatusTone> = {
   processing: 'warning',
 };
 
-const FILTER_LABELS: Record<FilterCategory, string> = {
-  success: 'Filter: Completed',
-  error: 'Filter: Failed',
-  processing: 'Filter: Processing / Escalated / Retry',
+const FILTER_LABEL: Record<FilterCategory, () => string> = {
+  success: () => t('msgLogFilterCompleted'),
+  error: () => t('msgLogFilterFailed'),
+  processing: () => t('msgLogFilterOther'),
 };
 
 // Icons double up the color coding so filters stay distinguishable for
@@ -61,14 +62,6 @@ const STATUS_ICON: Record<string, typeof Check> = {
   DISCARDED: Ban,
   ABANDONED: Ban,
 };
-
-function formatTime(date: Date): string {
-  return date.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-}
-
-function formatDateKey(date: Date): string {
-  return date.toISOString().slice(0, 10);
-}
 
 interface MessageRowProps {
   msg: MessageProcessingLog;
@@ -159,10 +152,12 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
 // aria-pressed) says the filter is on.
 function FilterChip({ category, active, onClick }: { category: FilterCategory; active: boolean; onClick: () => void }) {
   const Icon = FILTER_ICON[category];
+  const label = FILTER_LABEL[category]();
   return (
     <button
       class={`btn btn-xs h-6 min-h-0 px-1.5 ${active ? 'btn-neutral' : 'btn-outline border-base-300'}`}
-      title={FILTER_LABELS[category]}
+      title={label}
+      aria-label={label}
       aria-pressed={active}
       onClick={(e) => { e.stopPropagation(); onClick(); }}
     >
@@ -282,7 +277,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
 
   const groups = new Map<string, MessageProcessingLog[]>();
   for (const msg of filtered) {
-    const key = formatDateKey(parseODataDate(msg.LogEnd));
+    const key = formatDate(parseODataDate(msg.LogEnd));
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key)!.push(msg);
   }
@@ -350,9 +345,9 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
 
           <div class="max-h-[300px] overflow-y-auto pb-1">
             {messages.length === 0 ? (
-              <EmptyState title={t('msgLogNoMessages')} />
+              <EmptyState title={t('msgLogNoMessages')}>{t('msgLogNoMessagesHint')}</EmptyState>
             ) : filtered.length === 0 ? (
-              <EmptyState title={t('msgLogNoMatching')} />
+              <EmptyState title={t('msgLogNoMatching')}>{t('msgLogNoMatchingHint')}</EmptyState>
             ) : (
               Array.from(groups.entries()).map(([dateKey, msgs]) => (
                 <div key={dateKey}>

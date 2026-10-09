@@ -32,7 +32,7 @@ export function SettingsApp() {
   if (!settings) {
     return (
       <div class="flex min-h-[200px] items-center justify-center text-muted">
-        {t('loading') || 'Loading...'}
+        {t('loading')}
       </div>
     );
   }
@@ -42,7 +42,7 @@ export function SettingsApp() {
       <header class="mb-8 flex items-center gap-4">
         <FlowMateLogo size={44} />
         <div>
-          <h1 class="text-[32px] font-extrabold leading-9 tracking-[-0.03em]">{t('settingsTitle') || 'FlowMate Settings'}</h1>
+          <h1 class="text-[32px] font-extrabold leading-9 tracking-[-0.03em]">{t('settingsTitle')}</h1>
           <p class="text-sm text-muted">{t('manageYourTenants')}</p>
         </div>
       </header>
@@ -51,14 +51,14 @@ export function SettingsApp() {
 
       <div class="card card-border border-base-300 bg-base-100 p-6">
         <div class="mb-5 flex items-center justify-between">
-          <h2 class="text-lg font-bold tracking-tight">{t('customersAndTenants') || 'Customers & Tenants'}</h2>
+          <h2 class="text-lg font-bold tracking-tight">{t('customersAndTenants')}</h2>
           {!showAddForm && (
             <button
               type="button"
               class="btn btn-primary btn-sm"
               onClick={() => setShowAddForm(true)}
             >
-              <Plus size={16} /> {t('addCustomer') || 'Add Customer'}
+              <Plus size={16} /> {t('addCustomer')}
             </button>
           )}
         </div>

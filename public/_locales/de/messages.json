@@ -12,10 +12,10 @@
     "message": "Einstellungen öffnen"
   },
   "manageYourTenants": {
-    "message": "Verwalten Sie Ihre SAP Cloud Integration Tenants"
+    "message": "Verwalte deine SAP Cloud Integration Tenants"
   },
   "customersAndTenants": {
-    "message": "Kunden & Tenants"
+    "message": "Kunden und Tenants"
   },
   "addCustomer": {
     "message": "Kunde hinzufügen"
@@ -27,22 +27,22 @@
     "message": "Kundenname"
   },
   "customerNamePlaceholder": {
-    "message": "z.B. Acme, Contoso, Globex..."
+    "message": "z. B. Acme, Contoso, Globex"
   },
   "addNewCustomer": {
     "message": "Neuen Kunden hinzufügen"
   },
   "tenantName": {
-    "message": "Tenant Name"
+    "message": "Tenant-Name"
   },
   "tenantNamePlaceholder": {
-    "message": "z.B. DEV, TEST, PROD"
+    "message": "z. B. DEV, TEST, PROD"
   },
   "tenantUrl": {
     "message": "URL"
   },
   "tenantUrlPlaceholder": {
-    "message": "https://dev-tenant.integrationsuite..."
+    "message": "https://dev-tenant.integrationsuite…"
   },
   "save": {
     "message": "Speichern"
@@ -57,10 +57,10 @@
     "message": "Löschen"
   },
   "noCustomersYet": {
-    "message": "Noch keine Kunden angelegt. Klicken Sie auf \"Kunde hinzufügen\"."
+    "message": "Noch keine Kunden. Lege einen mit „Kunde hinzufügen“ an."
   },
   "noTenantsYet": {
-    "message": "Keine Tenants angelegt"
+    "message": "Noch keine Tenants"
   },
   "exportData": {
     "message": "Daten exportieren"
@@ -86,33 +86,6 @@
   "last3Months": {
     "message": "Letzte 3 Monate"
   },
-  "validationNameRequired": {
-    "message": "$TYPE$-Name darf nicht leer sein",
-    "placeholders": {
-      "type": {
-        "content": "$1",
-        "example": "Kunden"
-      }
-    }
-  },
-  "validationNameTooShort": {
-    "message": "$TYPE$-Name muss mindestens 2 Zeichen lang sein",
-    "placeholders": {
-      "type": {
-        "content": "$1",
-        "example": "Kunden"
-      }
-    }
-  },
-  "validationNameTooLong": {
-    "message": "$TYPE$-Name darf maximal 50 Zeichen lang sein",
-    "placeholders": {
-      "type": {
-        "content": "$1",
-        "example": "Kunden"
-      }
-    }
-  },
   "validationUrlRequired": {
     "message": "URL darf nicht leer sein"
   },
@@ -123,7 +96,7 @@
     "message": "Ungültige URL"
   },
   "validationUrlMustContain": {
-    "message": "URL muss \"$PART$\" enthalten",
+    "message": "URL muss „$PART$“ enthalten",
     "placeholders": {
       "part": {
         "content": "$1",
@@ -135,7 +108,7 @@
     "message": "URL entspricht nicht dem erwarteten Format:\nhttps://*.integrationsuite.cfapps.*.hana.ondemand.com"
   },
   "errorSaving": {
-    "message": "Fehler beim Speichern: $ERROR$",
+    "message": "Speichern fehlgeschlagen: $ERROR$",
     "placeholders": {
       "error": {
         "content": "$1",
@@ -147,19 +120,29 @@
     "message": "Export abgebrochen"
   },
   "exportFailed": {
-    "message": "Export fehlgeschlagen"
+    "message": "Export fehlgeschlagen: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
   },
   "noTenantsForCustomer": {
     "message": "Keine Tenants für diesen Kunden gefunden"
   },
   "exportIncompleteDates": {
-    "message": "Einige Tage konnten nicht abgerufen werden"
+    "message": "Einige Tage konnten nicht abgerufen werden: $DATES$",
+    "placeholders": {
+      "dates": {
+        "content": "$1"
+      }
+    }
   },
   "cancelExport": {
     "message": "Abbrechen"
   },
   "selectBothDates": {
-    "message": "Bitte wählen Sie beide Daten aus"
+    "message": "Wähle beide Daten aus"
   },
   "startBeforeEnd": {
     "message": "Startdatum muss vor dem Enddatum liegen"
@@ -168,25 +151,25 @@
     "message": "Kunde auswählen"
   },
   "traceLoadingProperties": {
-    "message": "Lade Eigenschaften..."
+    "message": "Eigenschaften werden geladen…"
   },
   "traceNoExchangeProperties": {
     "message": "Keine Exchange-Eigenschaften"
   },
   "traceLoadingHeaders": {
-    "message": "Lade Header..."
+    "message": "Header werden geladen…"
   },
   "traceNoMessageHeaders": {
     "message": "Keine Message-Header"
   },
   "traceLoadingBody": {
-    "message": "Lade Body..."
+    "message": "Body wird geladen…"
   },
   "traceNoBodyContent": {
     "message": "Kein Body-Inhalt"
   },
   "traceLoadingLog": {
-    "message": "Lade Log..."
+    "message": "Log wird geladen…"
   },
   "traceNoLogProperties": {
     "message": "Keine Log-Eigenschaften"
@@ -222,7 +205,7 @@
     "message": "ChildCount"
   },
   "traceStep": {
-    "message": "Trace Schritt"
+    "message": "Trace-Schritt"
   },
   "traceProperties": {
     "message": "Eigenschaften"
@@ -252,7 +235,7 @@
     "message": "Herunterladen"
   },
   "codeViewerTooLarge": {
-    "message": "Payload zu groß zur Anzeige ($SIZE$). Bitte herunterladen.",
+    "message": "Payload zu groß für die Anzeige ($SIZE$). Nutze stattdessen den Download.",
     "placeholders": {
       "size": {
         "content": "$1"
@@ -268,7 +251,7 @@
     }
   },
   "logThrottleTopLoggers": {
-    "message": "Top Logger (Heute)"
+    "message": "Top-Logger (heute)"
   },
   "logThrottleHighlightAbove": {
     "message": "Hervorheben ab:"
@@ -297,7 +280,7 @@
     }
   },
   "logThrottleClear": {
-    "message": "Leeren"
+    "message": "Aufheben"
   },
   "msgDetailPayload": {
     "message": "Payload"
@@ -309,7 +292,7 @@
     "message": "Keine Persist-Schritte gefunden"
   },
   "msgDetailLoading": {
-    "message": "Wird geladen..."
+    "message": "Wird geladen…"
   },
   "msgDetailError": {
     "message": "Fehler"
@@ -341,19 +324,19 @@
     "message": "Keine übereinstimmenden Nachrichten"
   },
   "artifactRefreshLoading": {
-    "message": "Wird geladen..."
+    "message": "Wird geladen…"
   },
   "artifactRefreshStatus": {
     "message": "Status aktualisieren"
   },
   "artifactUndeploying": {
-    "message": "Wird undeployt..."
+    "message": "Wird undeployt…"
   },
   "artifactUndeploy": {
     "message": "Undeploy"
   },
   "artifactDeploying": {
-    "message": "Wird deployt..."
+    "message": "Wird deployt…"
   },
   "artifactDeploy": {
     "message": "Deploy"
@@ -455,7 +438,7 @@
     }
   },
   "prefsTitle": {
-    "message": "Einstellungen"
+    "message": "Voreinstellungen"
   },
   "prefsMessageLogRefresh": {
     "message": "Aktualisierungsintervall des Message-Logs"
@@ -470,7 +453,7 @@
     "message": "Aktualisieren"
   },
   "loading": {
-    "message": "Wird geladen..."
+    "message": "Wird geladen…"
   },
   "done": {
     "message": "Fertig"
@@ -488,7 +471,7 @@
     }
   },
   "logThrottleCheckingLevels": {
-    "message": "Aktuelle Log-Level werden geprüft"
+    "message": "Aktuelle Log-Level werden geprüft…"
   },
   "logThrottleLevelIsError": {
     "message": "Log-Level ist auf ERROR gesetzt"
@@ -585,10 +568,10 @@
     "message": "Trace konnte nicht umgeschaltet werden"
   },
   "traceOn": {
-    "message": "Trace AN"
+    "message": "Trace an"
   },
   "traceOff": {
-    "message": "Trace AUS"
+    "message": "Trace aus"
   },
   "quickLinksDoneEditing": {
     "message": "Bearbeitung beenden"
@@ -597,10 +580,10 @@
     "message": "Anordnung bearbeiten"
   },
   "quickLinksDetecting": {
-    "message": "Tenant wird erkannt..."
+    "message": "Tenant wird erkannt…"
   },
   "quickLinksNoTenant": {
-    "message": "Öffnen Sie eine SAP-CPI-Seite, um Tenant-Links zu sehen."
+    "message": "Öffne eine SAP-CPI-Seite, um Tenant-Links zu sehen."
   },
   "exportDownloaded": {
     "message": "Heruntergeladen: $FILE$",
@@ -698,7 +681,7 @@
     "message": "Deployt am"
   },
   "artifactNotDeployed": {
-    "message": "NICHT DEPLOYT"
+    "message": "Nicht deployt"
   },
   "artifactNotDeployedHint": {
     "message": "Dieses Artefakt ist nicht auf der Runtime deployt."
@@ -802,5 +785,65 @@
   },
   "resizePanel": {
     "message": "Ziehen zum Anpassen der Höhe"
+  },
+  "validationCustomerNameRequired": {
+    "message": "Kundenname darf nicht leer sein"
+  },
+  "validationCustomerNameTooShort": {
+    "message": "Kundenname muss mindestens 2 Zeichen lang sein"
+  },
+  "validationCustomerNameTooLong": {
+    "message": "Kundenname darf höchstens 50 Zeichen lang sein"
+  },
+  "validationTenantNameRequired": {
+    "message": "Tenant-Name darf nicht leer sein"
+  },
+  "validationTenantNameTooShort": {
+    "message": "Tenant-Name muss mindestens 2 Zeichen lang sein"
+  },
+  "validationTenantNameTooLong": {
+    "message": "Tenant-Name darf höchstens 50 Zeichen lang sein"
+  },
+  "close": {
+    "message": "Schließen"
+  },
+  "msgLogFilterCompleted": {
+    "message": "Abgeschlossene anzeigen"
+  },
+  "msgLogFilterFailed": {
+    "message": "Fehlgeschlagene anzeigen"
+  },
+  "msgLogFilterOther": {
+    "message": "Andere Status anzeigen (Processing, Retry, Escalated, …)"
+  },
+  "msgLogNoMessagesHint": {
+    "message": "Nachrichten erscheinen hier, sobald dieser iFlow eine verarbeitet."
+  },
+  "msgLogNoMatchingHint": {
+    "message": "Aktiviere einen weiteren Status-Filter, um mehr zu sehen."
+  },
+  "msgDetailGeneral": {
+    "message": "Allgemein"
+  },
+  "msgDetailTiming": {
+    "message": "Zeiten"
+  },
+  "msgDetailStatus": {
+    "message": "Status"
+  },
+  "msgDetailCustomHeaders": {
+    "message": "Custom Header"
+  },
+  "msgDetailStart": {
+    "message": "Start"
+  },
+  "msgDetailEnd": {
+    "message": "Ende"
+  },
+  "msgDetailDuration": {
+    "message": "Dauer"
+  },
+  "msgDetailEmptyPayload": {
+    "message": "Payload ist leer"
   }
 }

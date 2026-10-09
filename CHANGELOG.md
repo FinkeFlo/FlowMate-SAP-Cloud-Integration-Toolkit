@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CodeQL security analysis workflow (`.github/workflows/codeql.yml`).
 
 ### Changed
+- **New visual identity, copy**: German texts always say "du" (no more "Sie"), English labels use sentence case ("Add customer", "Refresh status"), and status words are no longer in capitals ("Not deployed", "Trace on"). Loading texts use the ellipsis character, quotes are typographic (“…”, „…“), durations have a space before the unit ("850 ms", "1.2 s"), and dates and times in the message log and detail panels are ISO and 24 h (new `features/shared/time-format.ts`, tested). Empty message-log states say when they fill. The last hard-coded labels are translated: message log filter tooltips, message detail sections, the empty payload text and the options page title. The unused English fallbacks after `t()` are removed. `DESIGN.md` gains a Writing section.
 - **New visual identity, components**:
   - **Toolbar**: the floating toolbar has an ink handle with the logo and minimizes to a compact capsule. Trace is a soft toggle with `aria-pressed`. Messages is a quiet row with a message count.
   - **Message log**: shows status discs with icons instead of colored left borders and glows. Filter chips have an ink "on" fill, auto-refresh pulses a spark dot, day separators are overline labels, and empty states use the logo route.
@@ -63,6 +64,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Migrated remaining components (Message Log, Message Detail popup, Inline Trace overlay/popup, Export button, Date Range dialog, Toast notifications, Log Throttle panel, Trace toggle button) to daisyUI, removing all their hand-rolled CSS files.
 
 ### Fixed
+- The German name validation showed an English word ("Customer-Name darf nicht leer sein"). Customer and tenant names now have their own messages ("Kundenname …", "Tenant-Name …").
+- Saving preferences could fail with a toast that read "Error saving: : …": the error was appended instead of filling the message's placeholder. Export errors now use placeholders too.
+- The message log grouped messages by their UTC day, so a message shortly after midnight showed under the previous day's separator. Separators now use the local day, like the times below them.
+- The close buttons of the message and trace detail panels had no accessible name; they now have a translated label, as do the filter chips and the step navigation.
 - Secondary buttons such as Cancel, Edit and Add tenant had dark outlines. The theme did not define daisyUI's `--depth`, so button borders fell back to the text color. The theme now sets `--depth: 0` and `--noise: 0`, which gives a flat look.
 - The overlay on SAP pages rendered in the browser's default serif font. WXT resets the shadow host with `all: initial`, so no font was inherited and the theme's font stack never applied. The overlay container now sets `font-sans`, so on SAP pages it shows SAP's "72".
 - **All remaining hard-coded UI strings are translated** (closes #37): tooltips, `aria-label`s, placeholders, toasts and status badges in the message log, message details, trace step navigation, Top Logger panel, trace toggle, inline trace, package artifacts (deploy/undeploy/status badge), quick links, popup and settings forms now use `t()` with keys in both `en` and `de` (about 75 new keys); keys that were referenced in code but missing from the locales (settings forms, export dialog) are added, and confirm texts are single keys with placeholders instead of concatenated fragments.

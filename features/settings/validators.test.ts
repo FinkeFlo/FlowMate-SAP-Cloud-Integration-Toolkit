@@ -62,12 +62,22 @@ describe('validateName', () => {
     expect(validateName('Acme Corp')).toEqual({ valid: true });
   });
 
-  it('rejects empty and too-short names with the type in the message', () => {
-    expect(validateName('', 'Tenant')).toEqual({ valid: false, error: 'validationNameRequired:Tenant' });
-    expect(validateName('A')).toEqual({ valid: false, error: 'validationNameTooShort:Customer' });
+  it('rejects empty and too-short names with a message for that object', () => {
+    expect(validateName('', 'Tenant')).toEqual({ valid: false, error: 'validationTenantNameRequired' });
+    expect(validateName('A')).toEqual({ valid: false, error: 'validationCustomerNameTooShort' });
   });
 
   it('rejects names longer than 50 characters', () => {
-    expect(validateName('x'.repeat(51))).toEqual({ valid: false, error: 'validationNameTooLong:Customer' });
+    expect(validateName('x'.repeat(51))).toEqual({ valid: false, error: 'validationCustomerNameTooLong' });
+    expect(validateName('x'.repeat(51), 'Tenant')).toEqual({ valid: false, error: 'validationTenantNameTooLong' });
+  });
+
+  it('never splices the English type word into a translated message', () => {
+    // Regression: the German UI showed "Customer-Name darf nicht leer sein".
+    for (const type of ['Customer', 'Tenant'] as const) {
+      for (const input of ['', 'A', 'x'.repeat(51)]) {
+        expect(validateName(input, type).error).not.toContain(`:${type}`);
+      }
+    }
   });
 });

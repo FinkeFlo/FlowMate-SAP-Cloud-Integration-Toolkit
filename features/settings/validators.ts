@@ -59,16 +59,20 @@ export function validateCpiUrl(url: string): { valid: boolean; error?: string } 
  * Validate customer/tenant name
  */
 export function validateName(name: string, type: 'Customer' | 'Tenant' = 'Customer'): { valid: boolean; error?: string } {
+  // One key per object: German compounds the noun ("Kundenname"), so the
+  // type must not be spliced into a shared sentence as an English word.
+  const customer = type === 'Customer';
+
   if (!name || !name.trim()) {
-    return { valid: false, error: tSub('validationNameRequired', type) };
+    return { valid: false, error: customer ? t('validationCustomerNameRequired') : t('validationTenantNameRequired') };
   }
 
   if (name.trim().length < 2) {
-    return { valid: false, error: tSub('validationNameTooShort', type) };
+    return { valid: false, error: customer ? t('validationCustomerNameTooShort') : t('validationTenantNameTooShort') };
   }
 
   if (name.length > 50) {
-    return { valid: false, error: tSub('validationNameTooLong', type) };
+    return { valid: false, error: customer ? t('validationCustomerNameTooLong') : t('validationTenantNameTooLong') };
   }
 
   return { valid: true };

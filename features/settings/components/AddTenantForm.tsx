@@ -44,7 +44,7 @@ export function AddTenantForm({ customerId, onSave, onCancel }: AddTenantFormPro
     <div class="card mb-3 bg-base-200 p-4">
       <div class="flex flex-wrap items-end gap-4">
         <div class="flex min-w-[150px] flex-col gap-1">
-          <label class="text-xs font-semibold">{t('tenantName') || 'Tenant Name'}:</label>
+          <label class="text-xs font-semibold">{t('tenantName')}:</label>
           <input
             ref={nameRef}
             type="text"
@@ -72,7 +72,7 @@ export function AddTenantForm({ customerId, onSave, onCancel }: AddTenantFormPro
             class="btn btn-primary btn-sm"
             onClick={handleSave}
             disabled={saving}
-            title={t('save') || 'Save'}
+            title={t('save')}
           >
             <Check size={16} />
           </button>
@@ -80,7 +80,7 @@ export function AddTenantForm({ customerId, onSave, onCancel }: AddTenantFormPro
             type="button"
             class="btn btn-secondary btn-sm"
             onClick={onCancel}
-            title={t('cancel') || 'Cancel'}
+            title={t('cancel')}
           >
             <X size={16} />
           </button>

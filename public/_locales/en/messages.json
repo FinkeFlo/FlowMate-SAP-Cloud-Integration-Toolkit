@@ -9,31 +9,31 @@
     "message": "Settings"
   },
   "openSettings": {
-    "message": "Open Settings"
+    "message": "Open settings"
   },
   "manageYourTenants": {
-    "message": "Manage your SAP Cloud Integration Tenants"
+    "message": "Manage your SAP Cloud Integration tenants"
   },
   "customersAndTenants": {
-    "message": "Customers & Tenants"
+    "message": "Customers and tenants"
   },
   "addCustomer": {
-    "message": "Add Customer"
+    "message": "Add customer"
   },
   "addTenant": {
-    "message": "Add Tenant"
+    "message": "Add tenant"
   },
   "customerName": {
-    "message": "Customer Name"
+    "message": "Customer name"
   },
   "customerNamePlaceholder": {
-    "message": "e.g. Acme, Contoso, Globex..."
+    "message": "e.g. Acme, Contoso, Globex"
   },
   "addNewCustomer": {
-    "message": "Add New Customer"
+    "message": "Add new customer"
   },
   "tenantName": {
-    "message": "Tenant Name"
+    "message": "Tenant name"
   },
   "tenantNamePlaceholder": {
     "message": "e.g. DEV, TEST, PROD"
@@ -42,7 +42,7 @@
     "message": "URL"
   },
   "tenantUrlPlaceholder": {
-    "message": "https://dev-tenant.integrationsuite..."
+    "message": "https://dev-tenant.integrationsuite…"
   },
   "save": {
     "message": "Save"
@@ -57,61 +57,34 @@
     "message": "Delete"
   },
   "noCustomersYet": {
-    "message": "No customers created yet. Click \"Add Customer\"."
+    "message": "No customers yet. Add one with “Add customer”."
   },
   "noTenantsYet": {
-    "message": "No tenants created"
+    "message": "No tenants yet"
   },
   "exportData": {
-    "message": "Export Data"
+    "message": "Export data"
   },
   "exportMessageUsage": {
-    "message": "Export Message Usage Data"
+    "message": "Export Message Usage"
   },
   "startDate": {
-    "message": "Start Date"
+    "message": "Start date"
   },
   "endDate": {
-    "message": "End Date"
+    "message": "End date"
   },
   "quickSelect": {
-    "message": "Quick Select"
+    "message": "Quick select"
   },
   "lastMonth": {
-    "message": "Last Month"
+    "message": "Last month"
   },
   "currentMonth": {
-    "message": "Current Month"
+    "message": "Current month"
   },
   "last3Months": {
-    "message": "Last 3 Months"
-  },
-  "validationNameRequired": {
-    "message": "$TYPE$ name cannot be empty",
-    "placeholders": {
-      "type": {
-        "content": "$1",
-        "example": "Customer"
-      }
-    }
-  },
-  "validationNameTooShort": {
-    "message": "$TYPE$ name must be at least 2 characters",
-    "placeholders": {
-      "type": {
-        "content": "$1",
-        "example": "Customer"
-      }
-    }
-  },
-  "validationNameTooLong": {
-    "message": "$TYPE$ name must be at most 50 characters",
-    "placeholders": {
-      "type": {
-        "content": "$1",
-        "example": "Customer"
-      }
-    }
+    "message": "Last 3 months"
   },
   "validationUrlRequired": {
     "message": "URL cannot be empty"
@@ -123,7 +96,7 @@
     "message": "Invalid URL"
   },
   "validationUrlMustContain": {
-    "message": "URL must contain \"$PART$\"",
+    "message": "URL must contain “$PART$”",
     "placeholders": {
       "part": {
         "content": "$1",
@@ -135,7 +108,7 @@
     "message": "URL does not match expected format:\nhttps://*.integrationsuite.cfapps.*.hana.ondemand.com"
   },
   "errorSaving": {
-    "message": "Error saving: $ERROR$",
+    "message": "Failed to save: $ERROR$",
     "placeholders": {
       "error": {
         "content": "$1",
@@ -147,46 +120,56 @@
     "message": "Export cancelled"
   },
   "exportFailed": {
-    "message": "Export failed"
+    "message": "Export failed: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
   },
   "noTenantsForCustomer": {
     "message": "No tenants found for this customer"
   },
   "exportIncompleteDates": {
-    "message": "Could not fetch some dates"
+    "message": "Could not fetch some days: $DATES$",
+    "placeholders": {
+      "dates": {
+        "content": "$1"
+      }
+    }
   },
   "cancelExport": {
     "message": "Cancel"
   },
   "selectBothDates": {
-    "message": "Please select both dates"
+    "message": "Select both dates"
   },
   "startBeforeEnd": {
     "message": "Start date must be before end date"
   },
   "selectCustomer": {
-    "message": "Select Customer"
+    "message": "Select customer"
   },
   "traceLoadingProperties": {
-    "message": "Loading properties..."
+    "message": "Loading properties…"
   },
   "traceNoExchangeProperties": {
     "message": "No exchange properties"
   },
   "traceLoadingHeaders": {
-    "message": "Loading headers..."
+    "message": "Loading headers…"
   },
   "traceNoMessageHeaders": {
     "message": "No message headers"
   },
   "traceLoadingBody": {
-    "message": "Loading body..."
+    "message": "Loading body…"
   },
   "traceNoBodyContent": {
     "message": "No body content"
   },
   "traceLoadingLog": {
-    "message": "Loading log..."
+    "message": "Loading log…"
   },
   "traceNoLogProperties": {
     "message": "No log properties"
@@ -222,7 +205,7 @@
     "message": "ChildCount"
   },
   "traceStep": {
-    "message": "Trace Step"
+    "message": "Trace step"
   },
   "traceProperties": {
     "message": "Properties"
@@ -309,13 +292,13 @@
     "message": "No persist steps found"
   },
   "msgDetailLoading": {
-    "message": "Loading..."
+    "message": "Loading…"
   },
   "msgDetailError": {
     "message": "Error"
   },
   "msgDetailMessageDetail": {
-    "message": "Message Detail"
+    "message": "Message detail"
   },
   "msgDetailFailedToLoad": {
     "message": "Failed to load: $ERROR$",
@@ -341,19 +324,19 @@
     "message": "No matching messages"
   },
   "artifactRefreshLoading": {
-    "message": "Loading..."
+    "message": "Loading…"
   },
   "artifactRefreshStatus": {
-    "message": "Refresh Status"
+    "message": "Refresh status"
   },
   "artifactUndeploying": {
-    "message": "Undeploying..."
+    "message": "Undeploying…"
   },
   "artifactUndeploy": {
     "message": "Undeploy"
   },
   "artifactDeploying": {
-    "message": "Deploying..."
+    "message": "Deploying…"
   },
   "artifactDeploy": {
     "message": "Deploy"
@@ -365,10 +348,10 @@
     "message": "Deployment"
   },
   "quickLinksTitle": {
-    "message": "Quick Links"
+    "message": "Quick links"
   },
   "quickLinksMore": {
-    "message": "More Links"
+    "message": "More links"
   },
   "showToolbar": {
     "message": "Show toolbar"
@@ -398,7 +381,7 @@
     }
   },
   "confirmSilenceOneTitle": {
-    "message": "Set log level of \"$NAME$\" to ERROR?",
+    "message": "Set log level of “$NAME$” to ERROR?",
     "placeholders": {
       "name": {
         "content": "$1",
@@ -428,7 +411,7 @@
     }
   },
   "confirmDeployOneTitle": {
-    "message": "Deploy \"$NAME$\"?",
+    "message": "Deploy “$NAME$”?",
     "placeholders": {
       "name": {
         "content": "$1",
@@ -437,7 +420,7 @@
     }
   },
   "confirmUndeployOneTitle": {
-    "message": "Undeploy \"$NAME$\"?",
+    "message": "Undeploy “$NAME$”?",
     "placeholders": {
       "name": {
         "content": "$1",
@@ -461,7 +444,7 @@
     "message": "Message log auto-refresh interval"
   },
   "prefsMessageLogRefreshHint": {
-    "message": "Used by the \"Auto\" button in the message log panel. Shorter intervals mean more API calls on the tenant."
+    "message": "Used by the “Auto” button in the message log. Shorter intervals mean more API calls on the tenant."
   },
   "prefsSaved": {
     "message": "Preferences saved"
@@ -470,7 +453,7 @@
     "message": "Refresh"
   },
   "loading": {
-    "message": "Loading..."
+    "message": "Loading…"
   },
   "done": {
     "message": "Done"
@@ -488,7 +471,7 @@
     }
   },
   "logThrottleCheckingLevels": {
-    "message": "Checking current log levels"
+    "message": "Checking current log levels…"
   },
   "logThrottleLevelIsError": {
     "message": "Log level set to ERROR"
@@ -497,7 +480,7 @@
     "message": "Set log level to ERROR"
   },
   "logThrottleSilenced": {
-    "message": "Silenced \"$NAME$\" (log level: ERROR)",
+    "message": "Silenced “$NAME$” (log level: ERROR)",
     "placeholders": {
       "name": {
         "content": "$1",
@@ -506,7 +489,7 @@
     }
   },
   "logThrottleSilenceFailed": {
-    "message": "Failed to silence \"$NAME$\"",
+    "message": "Failed to silence “$NAME$”",
     "placeholders": {
       "name": {
         "content": "$1",
@@ -585,10 +568,10 @@
     "message": "Failed to toggle trace"
   },
   "traceOn": {
-    "message": "Trace ON"
+    "message": "Trace on"
   },
   "traceOff": {
-    "message": "Trace OFF"
+    "message": "Trace off"
   },
   "quickLinksDoneEditing": {
     "message": "Done editing"
@@ -597,7 +580,7 @@
     "message": "Edit layout"
   },
   "quickLinksDetecting": {
-    "message": "Detecting tenant..."
+    "message": "Detecting tenant…"
   },
   "quickLinksNoTenant": {
     "message": "Open an SAP CPI page to see tenant links."
@@ -698,7 +681,7 @@
     "message": "Deployed on"
   },
   "artifactNotDeployed": {
-    "message": "NOT DEPLOYED"
+    "message": "Not deployed"
   },
   "artifactNotDeployedHint": {
     "message": "This artifact is not deployed to the runtime."
@@ -737,7 +720,7 @@
     "message": "Delete tenant"
   },
   "confirmDeleteCustomerTitle": {
-    "message": "Delete customer \"$NAME$\" and all its tenants?",
+    "message": "Delete customer “$NAME$” and all its tenants?",
     "placeholders": {
       "name": {
         "content": "$1",
@@ -746,7 +729,7 @@
     }
   },
   "confirmDeleteTenantTitle": {
-    "message": "Delete tenant \"$NAME$\"?",
+    "message": "Delete tenant “$NAME$”?",
     "placeholders": {
       "name": {
         "content": "$1",
@@ -802,5 +785,65 @@
   },
   "resizePanel": {
     "message": "Drag to resize"
+  },
+  "validationCustomerNameRequired": {
+    "message": "Customer name cannot be empty"
+  },
+  "validationCustomerNameTooShort": {
+    "message": "Customer name must be at least 2 characters"
+  },
+  "validationCustomerNameTooLong": {
+    "message": "Customer name must be at most 50 characters"
+  },
+  "validationTenantNameRequired": {
+    "message": "Tenant name cannot be empty"
+  },
+  "validationTenantNameTooShort": {
+    "message": "Tenant name must be at least 2 characters"
+  },
+  "validationTenantNameTooLong": {
+    "message": "Tenant name must be at most 50 characters"
+  },
+  "close": {
+    "message": "Close"
+  },
+  "msgLogFilterCompleted": {
+    "message": "Show completed"
+  },
+  "msgLogFilterFailed": {
+    "message": "Show failed"
+  },
+  "msgLogFilterOther": {
+    "message": "Show other statuses (processing, retry, escalated, …)"
+  },
+  "msgLogNoMessagesHint": {
+    "message": "Messages appear here as soon as this iFlow processes one."
+  },
+  "msgLogNoMatchingHint": {
+    "message": "Turn on another status filter to see more."
+  },
+  "msgDetailGeneral": {
+    "message": "General"
+  },
+  "msgDetailTiming": {
+    "message": "Timing"
+  },
+  "msgDetailStatus": {
+    "message": "Status"
+  },
+  "msgDetailCustomHeaders": {
+    "message": "Custom headers"
+  },
+  "msgDetailStart": {
+    "message": "Start"
+  },
+  "msgDetailEnd": {
+    "message": "End"
+  },
+  "msgDetailDuration": {
+    "message": "Duration"
+  },
+  "msgDetailEmptyPayload": {
+    "message": "Empty payload"
   }
 }

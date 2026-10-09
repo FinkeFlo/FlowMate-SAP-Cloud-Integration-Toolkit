@@ -6,6 +6,7 @@ import { devLog } from '@/features/shared/dev-logger';
 import { mplStatusTone, TONE_BADGE_CLASS, TONE_DISC_CLASS } from '@/features/shared/status-tone';
 import { DockPanel } from '@/features/shared/DockPanel';
 import { CodeViewer } from '@/features/shared/CodeViewer';
+import { formatDateTime, formatDuration } from '@/features/shared/time-format';
 import {
   fetchMessageDetail,
   fetchMessageStoreEntries,
@@ -17,41 +18,29 @@ import type { MessageProcessingLogDetail, MessageStoreEntry, MessageStorePropert
 
 const LOG_TAG = 'MessageDetail';
 
-function formatDateTime(date: Date): string {
-  return date.toLocaleString('de-DE', {
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', second: '2-digit',
-  });
-}
-
-function formatDuration(startStr: string, endStr: string): string {
-  const start = parseODataDate(startStr);
-  const end = parseODataDate(endStr);
-  const diffMs = end.getTime() - start.getTime();
-  if (diffMs < 1000) return `${diffMs}ms`;
-  if (diffMs < 60_000) return `${(diffMs / 1000).toFixed(1)}s`;
-  const mins = Math.floor(diffMs / 60_000);
-  const secs = Math.floor((diffMs % 60_000) / 1000);
-  return `${mins}m ${secs}s`;
+function formatElapsed(startStr: string, endStr: string): string {
+  return formatDuration(parseODataDate(endStr).getTime() - parseODataDate(startStr).getTime());
 }
 
 function InfoTable({ detail }: { detail: MessageProcessingLogDetail }) {
-  type Row = { label: string; value: string; section?: boolean };
+  // Field labels are SAP's OData property names (technical, not translated);
+  // section headings and plain-word labels go through i18n.
+  type Row = { label: string; value: string; section?: boolean; status?: boolean };
 
   const rows: Row[] = [
-    { label: 'General', value: '', section: true },
+    { label: t('msgDetailGeneral'), value: '', section: true },
     { label: 'MessageGuid', value: detail.MessageGuid },
     { label: 'CorrelationId', value: detail.CorrelationId || '-' },
     { label: 'ApplicationMessageId', value: detail.ApplicationMessageId || '-' },
     { label: 'Sender', value: detail.Sender || '-' },
     { label: 'Receiver', value: detail.Receiver || '-' },
     { label: 'IntegrationFlow', value: detail.IntegrationFlowName || '-' },
-    { label: 'Timing', value: '', section: true },
-    { label: 'Start', value: detail.LogStart ? formatDateTime(parseODataDate(detail.LogStart)) : '-' },
-    { label: 'End', value: detail.LogEnd ? formatDateTime(parseODataDate(detail.LogEnd)) : '-' },
-    { label: 'Duration', value: detail.LogStart && detail.LogEnd ? formatDuration(detail.LogStart, detail.LogEnd) : '-' },
-    { label: 'Status', value: '', section: true },
-    { label: 'Status', value: detail.Status },
+    { label: t('msgDetailTiming'), value: '', section: true },
+    { label: t('msgDetailStart'), value: detail.LogStart ? formatDateTime(parseODataDate(detail.LogStart)) : '-' },
+    { label: t('msgDetailEnd'), value: detail.LogEnd ? formatDateTime(parseODataDate(detail.LogEnd)) : '-' },
+    { label: t('msgDetailDuration'), value: detail.LogStart && detail.LogEnd ? formatElapsed(detail.LogStart, detail.LogEnd) : '-' },
+    { label: t('msgDetailStatus'), value: '', section: true },
+    { label: 'Status', value: detail.Status, status: true },
     { label: 'LogLevel', value: detail.LogLevel || '-' },
     { label: 'CustomStatus', value: detail.CustomStatus || '-' },
     { label: 'TransactionId', value: detail.TransactionId || '-' },
@@ -59,7 +48,7 @@ function InfoTable({ detail }: { detail: MessageProcessingLogDetail }) {
 
   const customHeaders = detail.CustomHeaderProperties?.results ?? [];
   if (customHeaders.length > 0) {
-    rows.push({ label: 'Custom Headers', value: '', section: true });
+    rows.push({ label: t('msgDetailCustomHeaders'), value: '', section: true });
     for (const h of customHeaders) {
       rows.push({ label: h.Name, value: h.Value });
     }
@@ -79,12 +68,11 @@ function InfoTable({ detail }: { detail: MessageProcessingLogDetail }) {
                 </tr>
               );
             }
-            const isStatus = row.label === 'Status';
             return (
               <tr key={i} class="border-base-300/40">
                 <td class="w-44 whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{row.label}</td>
                 <td class="break-all py-2 font-mono text-xs text-base-content">
-                  {isStatus ? (
+                  {row.status ? (
                     <span class="inline-flex items-center gap-2">
                       <span class={`size-2 rounded-full ${TONE_DISC_CLASS[mplStatusTone(row.value)]}`} />
                       {row.value}
@@ -147,7 +135,7 @@ function EntryContent({ entryId, baseUrl }: EntryContentProps) {
     <div class="space-y-4 py-1">
       <div>
         <div class="mb-2 text-[11px] font-bold uppercase tracking-[0.07em] text-muted">{t('msgDetailPayload')}</div>
-        {payload ? <CodeViewer content={payload} maxHeight="400px" /> : <div class="py-2 text-sm text-muted">(empty)</div>}
+        {payload ? <CodeViewer content={payload} maxHeight="400px" /> : <div class="py-2 text-sm text-muted">{t('msgDetailEmptyPayload')}</div>}
       </div>
       {properties && properties.length > 0 && (
         <div>
@@ -285,7 +273,7 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
               <span class="animate-spin"><LoaderCircle size={16} /></span>
               {t('msgDetailLoading')}
             </span>
-            <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}><X size={16} /></button>
+            <button class="btn btn-ghost btn-sm btn-square" title={t('close')} aria-label={t('close')} onClick={onClose}><X size={16} /></button>
           </div>
         }
       >
@@ -303,7 +291,7 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
         header={
           <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
             <span class="text-sm font-semibold text-base-content">{t('msgDetailError')}</span>
-            <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}><X size={16} /></button>
+            <button class="btn btn-ghost btn-sm btn-square" title={t('close')} aria-label={t('close')} onClick={onClose}><X size={16} /></button>
           </div>
         }
       >
@@ -327,10 +315,10 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
             </div>
             <div class="flex min-w-0 items-center gap-1">
               <span class="truncate font-mono text-xs text-muted">{detail!.MessageGuid}</span>
-              <button class="btn btn-ghost btn-sm btn-square" title={t('msgDetailCopyGuid')} onClick={copyGuid}>
+              <button class="btn btn-ghost btn-sm btn-square" title={t('msgDetailCopyGuid')} aria-label={t('msgDetailCopyGuid')} onClick={copyGuid}>
                 <Copy size={16} />
               </button>
-              <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}>
+              <button class="btn btn-ghost btn-sm btn-square" title={t('close')} aria-label={t('close')} onClick={onClose}>
                 <X size={16} />
               </button>
             </div>

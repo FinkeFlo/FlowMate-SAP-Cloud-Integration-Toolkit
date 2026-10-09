@@ -39,7 +39,7 @@ export function AddCustomerForm({ onSave, onCancel }: AddCustomerFormProps) {
     <div class="card mb-6 bg-base-200 p-5">
       <h3 class="mb-3 font-bold">{t('addNewCustomer')}</h3>
       <div class="mb-4">
-        <label class="mb-1.5 block text-sm font-semibold">{t('customerName') || 'Customer Name'}:</label>
+        <label class="mb-1.5 block text-sm font-semibold">{t('customerName')}:</label>
         <input
           ref={inputRef}
           type="text"
@@ -53,10 +53,10 @@ export function AddCustomerForm({ onSave, onCancel }: AddCustomerFormProps) {
       </div>
       <div class="flex gap-2">
         <button type="button" class="btn btn-primary" onClick={handleSave} disabled={saving}>
-          <Check size={16} /> {t('save') || 'Save'}
+          <Check size={16} /> {t('save')}
         </button>
         <button type="button" class="btn btn-secondary" onClick={onCancel}>
-          <X size={16} /> {t('cancel') || 'Cancel'}
+          <X size={16} /> {t('cancel')}
         </button>
       </div>
     </div>

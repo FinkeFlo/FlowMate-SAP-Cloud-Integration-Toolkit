@@ -84,15 +84,15 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
 
   function handleSubmit() {
     if (!startDate || !endDate) {
-      showToast(t('selectBothDates') || 'Please select both dates', 'warning');
+      showToast(t('selectBothDates'), 'warning');
       return;
     }
     if (startDate > endDate) {
-      showToast(t('startBeforeEnd') || 'Start date must be before end date', 'warning');
+      showToast(t('startBeforeEnd'), 'warning');
       return;
     }
     if (exportMode === 'customer' && !customerId) {
-      showToast(t('selectCustomer') || 'Please select a customer', 'warning');
+      showToast(t('selectCustomer'), 'warning');
       return;
     }
     onExport({
@@ -112,7 +112,7 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
             <Download size={20} />
           </div>
           <h2 class="text-lg font-bold tracking-tight">
-            {t('exportMessageUsage') || 'Export Message Usage Data'}
+            {t('exportMessageUsage')}
           </h2>
         </div>
 
@@ -150,13 +150,13 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
 
           {exportMode === 'customer' && (
             <div>
-              <label class={sectionLabelClass}>{t('selectCustomer') || 'Select Customer'}</label>
+              <label class={sectionLabelClass}>{t('selectCustomer')}</label>
               <select
                 class="select select-bordered w-full"
                 value={customerId}
                 onChange={(e) => setCustomerId((e.target as HTMLSelectElement).value)}
               >
-                <option value="">-- {t('selectCustomer') || 'Select Customer'} --</option>
+                <option value="">{t('selectCustomer')}</option>
                 {customers.map(c => (
                   <option key={c.id} value={c.id}>
                     {c.name} ({tSub('tenantCount', String(c.tenants.length))})
@@ -169,7 +169,7 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
           <div>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <label class={sectionLabelClass}>{t('startDate') || 'Start Date'}</label>
+                <label class={sectionLabelClass}>{t('startDate')}</label>
                 <input
                   type="date"
                   class="input input-bordered w-full"
@@ -178,7 +178,7 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
                 />
               </div>
               <div>
-                <label class={sectionLabelClass}>{t('endDate') || 'End Date'}</label>
+                <label class={sectionLabelClass}>{t('endDate')}</label>
                 <input
                   type="date"
                   class="input input-bordered w-full"
@@ -190,28 +190,28 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
           </div>
 
           <div>
-            <label class={sectionLabelClass}>{t('quickSelect') || 'Quick Select'}</label>
+            <label class={sectionLabelClass}>{t('quickSelect')}</label>
             <div class="flex flex-wrap gap-2">
               <button
                 type="button"
                 class="btn btn-outline btn-sm border-base-300"
                 onClick={() => setQuickRange(1, false)}
               >
-                {t('lastMonth') || 'Last Month'}
+                {t('lastMonth')}
               </button>
               <button
                 type="button"
                 class="btn btn-outline btn-sm border-base-300"
                 onClick={() => setQuickRange(0, true)}
               >
-                {t('currentMonth') || 'Current Month'}
+                {t('currentMonth')}
               </button>
               <button
                 type="button"
                 class="btn btn-outline btn-sm border-base-300"
                 onClick={() => setQuickRange(3, false)}
               >
-                {t('last3Months') || 'Last 3 Months'}
+                {t('last3Months')}
               </button>
             </div>
           </div>
@@ -219,7 +219,7 @@ export function DateRangeDialog({ onExport, onCancel }: DateRangeDialogProps) {
 
         <div class="modal-action mt-6">
           <button type="button" class="btn btn-secondary" onClick={onCancel}>
-            {t('cancel') || 'Cancel'}
+            {t('cancel')}
           </button>
           <button type="button" class="btn btn-primary" onClick={handleSubmit}>
             {t('export')}

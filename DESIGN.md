@@ -237,6 +237,30 @@ spark or use the logo on SAP blue.
   tabs go in the `header` prop (pinned, never scrolls); tab content goes in
   `children` (scrollable). See `TraceStepPopup.tsx`, `MessageDetailPopup.tsx`.
 
+## Writing
+
+FlowMate talks like a colleague who knows CPI: short, factual, specific. Every
+string exists in `en` and `de` (`t()`, see `.claude/rules/i18n.md`).
+
+- **German: always "du"**, lowercase ("Verwalte deine Tenants", "Wähle beide
+  Daten aus"). Buttons and labels stay infinitive ("Kunde hinzufügen").
+- **English: sentence case** ("Refresh status", "Add tenant"). SAP's own names
+  keep SAP's spelling: Integration Content, Message Usage, iFlow.
+- **CPI terms stay** in both languages: iFlow, Tenant, Trace, Payload,
+  Log-Level, Deploy/Undeploy.
+- **Buttons** start with the verb and say what happens; a confirm button
+  repeats the verb of its dialog title. No OK, Yes or "Are you sure?".
+- **Toasts** state the outcome; an error says what failed ("Failed to save: …").
+  Details go into placeholders (`tSub`), never glued onto a translated fragment.
+- **Empty states** say what is empty and when it fills: an `EmptyState` title
+  plus one sentence.
+- **Typography:** the ellipsis character ("Loading…"), the en dash for
+  clauses, “…” in English and „…“ in German, a space before units ("850 ms",
+  "30 s"). Dates are ISO ("2026-10-09") and times 24 h, both from
+  `features/shared/time-format.ts`.
+- **Status words** are words, not capitals: "Not deployed", "Trace on".
+  Uppercase only comes from the overline style.
+
 ## Notes for AI agents / contributors
 
 - The single source of truth for actual CSS values is

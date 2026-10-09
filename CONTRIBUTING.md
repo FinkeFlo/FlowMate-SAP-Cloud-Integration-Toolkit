@@ -44,7 +44,7 @@ The extension is built on top of the [WXT framework](https://wxt.dev/).
    To ensure the codebase is accessible to international developers, **all code, variables, inline comments (`//`), block comments (`/* */`), and commit messages must be strictly in English**.
    
 2. **Localization (i18n)**
-   Do not use hardcoded text strings in UI components. All user-facing strings must be defined in the localization dictionaries (`public/_locales/en/messages.json` & `de/messages.json`). Reference them in code using the `t('key')` function exported from `features/shared/i18n.ts`.
+   Do not use hardcoded text strings in UI components. All user-facing strings must be defined in the localization dictionaries (`public/_locales/en/messages.json` & `de/messages.json`). Reference them in code using the `t('key')` function exported from `features/shared/i18n.ts`. Wording follows the Writing section of `DESIGN.md` (German always "du", English sentence case).
 
 3. **UI Framework**
    The UI is built using **Preact** (TSX), **Tailwind CSS v4**, and **daisyUI v5**. This is the single, mandatory styling stack across the entire extension (content-script overlay, Options page, Popup) — do not introduce other CSS frameworks or hand-rolled component CSS files.
