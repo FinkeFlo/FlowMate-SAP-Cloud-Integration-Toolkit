@@ -76,7 +76,7 @@ function TracePropertyTable({ data }: { data: TraceProperty[] }) {
         <tbody>
           {data.map((p, i) => (
             <tr key={i} class="border-base-300/40">
-              <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{p.Name}</td>
+              <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{p.Name}</td>
               <td class="break-all py-2 font-mono text-xs text-base-content">{p.Value}</td>
             </tr>
           ))}
@@ -93,7 +93,7 @@ interface TraceTabProps {
 
 function LoadingState({ label }: { label: string }) {
   return (
-    <div class="flex items-center justify-center gap-2 py-6 text-sm text-base-content/60">
+    <div class="flex items-center justify-center gap-2 py-6 text-sm text-muted">
       <span class="animate-spin"><LoaderCircle size={16} /></span>
       {label}
     </div>
@@ -101,11 +101,11 @@ function LoadingState({ label }: { label: string }) {
 }
 
 function ErrorState({ error }: { error: string }) {
-  return <div class="alert alert-error text-sm">{tSub('traceFailedToLoad', error)}</div>;
+  return <div class="alert alert-error alert-soft text-sm">{tSub('traceFailedToLoad', error)}</div>;
 }
 
 function EmptyState({ label }: { label: string }) {
-  return <div class="py-6 text-center text-sm text-base-content/50">{label}</div>;
+  return <div class="py-6 text-center text-sm text-muted">{label}</div>;
 }
 
 function PropertiesTab({ traceId, baseUrl }: TraceTabProps) {
@@ -220,43 +220,43 @@ function InfoTab({ element, avgDurationMs }: { element: InlineTraceElement; avgD
       <table class="table table-sm w-full">
         <tbody>
           <tr>
-            <td colSpan={2} class="bg-base-200/60 px-0 py-3 text-[11px] font-bold uppercase tracking-wide text-base-content/50">{t('traceTiming')}</td>
+            <td colSpan={2} class="px-0 pt-4 pb-1.5 text-[11px] font-bold uppercase tracking-[0.07em] text-muted">{t('traceTiming')}</td>
           </tr>
           <tr class="border-base-300/40">
-            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceStart')}</td>
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{t('traceStart')}</td>
             <td class="break-all py-2 font-mono text-xs text-base-content">{formatDateTime(element.stepStart)}</td>
           </tr>
           <tr class="border-base-300/40">
-            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceStop')}</td>
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{t('traceStop')}</td>
             <td class="break-all py-2 font-mono text-xs text-base-content">{formatDateTime(element.stepStop)}</td>
           </tr>
           <tr class="border-base-300/40">
-            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceDuration')}</td>
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{t('traceDuration')}</td>
             <td class="break-all py-2 font-mono text-xs text-base-content">
-              <span class={`badge badge-sm ${badgeClass}`}>{formatDuration(element.durationMs)}</span>
+              <span class={`badge badge-soft badge-sm font-mono ${badgeClass}`}>{formatDuration(element.durationMs)}</span>
             </td>
           </tr>
           <tr>
-            <td colSpan={2} class="bg-base-200/60 px-0 py-3 text-[11px] font-bold uppercase tracking-wide text-base-content/50">{t('traceIdentifiers')}</td>
+            <td colSpan={2} class="px-0 pt-4 pb-1.5 text-[11px] font-bold uppercase tracking-[0.07em] text-muted">{t('traceIdentifiers')}</td>
           </tr>
           <tr class="border-base-300/40">
-            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceStepId')}</td>
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{t('traceStepId')}</td>
             <td class="break-all py-2 font-mono text-xs text-base-content">{element.stepId}</td>
           </tr>
           <tr class="border-base-300/40">
-            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceModelStepId')}</td>
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{t('traceModelStepId')}</td>
             <td class="break-all py-2 font-mono text-xs text-base-content">{element.modelStepId}</td>
           </tr>
           <tr class="border-base-300/40">
-            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceRunId')}</td>
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{t('traceRunId')}</td>
             <td class="break-all py-2 font-mono text-xs text-base-content">{element.runId}</td>
           </tr>
           <tr class="border-base-300/40">
-            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceBranchId')}</td>
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{t('traceBranchId')}</td>
             <td class="break-all py-2 font-mono text-xs text-base-content">{element.branchId}</td>
           </tr>
           <tr class="border-base-300/40">
-            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{t('traceChildCount')}</td>
+            <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{t('traceChildCount')}</td>
             <td class="break-all py-2 font-mono text-xs text-base-content">{element.childCount}</td>
           </tr>
         </tbody>
@@ -322,11 +322,11 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
     <DockPanel
       header={
         <>
-          <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
+          <div class="flex items-center justify-between gap-4 px-4 pt-1 pb-2">
             <div class="flex min-w-0 items-center gap-2">
-              <span class={`h-2.5 w-2.5 shrink-0 rounded-full ${element.error ? 'bg-error' : 'bg-success'}`} />
-              <span class="text-sm font-semibold text-base-content">{t('traceStep')}</span>
-              <span class="truncate font-mono text-[11px] text-base-content/50">{element.modelStepId}</span>
+              <span class={`size-2.5 shrink-0 rounded-full ${element.error ? 'bg-error' : 'bg-success'}`} />
+              <span class="text-sm font-bold text-base-content">{t('traceStep')}</span>
+              <span class="truncate font-mono text-xs text-muted">{element.modelStepId}</span>
             </div>
             <div class="flex items-center gap-2">
               <div class="flex items-center gap-1">
@@ -338,7 +338,7 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
                 >
                   <ChevronLeft size={16} />
                 </button>
-                <span class="px-1 font-mono text-[11px] text-base-content/50">{currentIndex + 1}/{allElements.length}</span>
+                <span class="px-1 font-mono text-xs text-muted">{currentIndex + 1}/{allElements.length}</span>
                 <button
                   class="btn btn-ghost btn-sm btn-square"
                   title={t('traceNextStep')}
@@ -354,16 +354,20 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
             </div>
           </div>
 
-          <div class="tabs tabs-border border-b border-base-300 px-4 pt-2">
-            {tabs.filter(tab => tab.show).map(tab => (
-              <button
-                key={tab.id}
-                class={`tab ${activeTab === tab.id ? 'tab-active text-primary' : ''}`}
-                onClick={() => setActiveTab(tab.id)}
-              >
-                {tab.label}
-              </button>
-            ))}
+          <div class="border-b border-base-300 px-4 pb-3">
+            <div role="tablist" class="tabs tabs-box tabs-sm w-fit">
+              {tabs.filter(tab => tab.show).map(tab => (
+                <button
+                  key={tab.id}
+                  role="tab"
+                  aria-selected={activeTab === tab.id}
+                  class={`tab ${activeTab === tab.id ? 'tab-active' : ''}`}
+                  onClick={() => setActiveTab(tab.id)}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
         </>
       }
@@ -386,7 +390,7 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
         </div>
         {element.error && (
           <div style={{ display: activeTab === 'error' ? 'block' : 'none' }}>
-            <div class="alert alert-error text-sm whitespace-pre-wrap break-all">{element.error}</div>
+            <div class="alert alert-error alert-soft text-sm whitespace-pre-wrap break-all">{element.error}</div>
           </div>
         )}
       </div>

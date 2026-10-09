@@ -65,11 +65,11 @@ export function DockPanel({ header, children }: DockPanelProps) {
 
   return (
     <div
-      class="fixed inset-x-0 bottom-0 z-[10050] flex flex-col overflow-hidden border-t border-base-300 bg-base-100 shadow-2xl"
+      class="fixed inset-x-0 bottom-0 z-[10050] flex flex-col overflow-hidden rounded-t-box border-t border-base-300 bg-base-100 shadow-dock"
       style={{ height: `${height}px` }}
     >
       <div
-        class="flex h-2.5 shrink-0 cursor-ns-resize items-center justify-center touch-none hover:bg-base-200"
+        class="flex h-3.5 shrink-0 cursor-ns-resize items-center justify-center touch-none hover:bg-base-200"
         title={t('resizePanel')}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}

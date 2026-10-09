@@ -222,7 +222,7 @@ export function LogThrottlePanel() {
       <header class="flex items-center gap-2 border-b border-base-300 pb-2">
         <span class="font-semibold tracking-wide">{t('logThrottleTopLoggers')}</span>
         {levelsLoading && (
-          <span class="ml-auto animate-spin text-base-content/50" title={t('logThrottleCheckingLevels')}>
+          <span class="ml-auto animate-spin text-muted" title={t('logThrottleCheckingLevels')}>
             <LoaderCircle size={12} />
           </span>
         )}
@@ -240,7 +240,7 @@ export function LogThrottlePanel() {
         </button>
       </header>
 
-      <div class="flex items-center gap-2 pb-1 text-xs text-base-content/80">
+      <div class="flex items-center gap-2 pb-1 text-xs">
         <label class="whitespace-nowrap">{t('logThrottleHighlightAbove')}</label>
         <input
           type="number"
@@ -250,7 +250,7 @@ export function LogThrottlePanel() {
           value={threshold}
           onInput={handleThresholdChange}
         />
-        <span class="text-base-content/60">{t('logThrottlePerDay')}</span>
+        <span class="text-muted">{t('logThrottlePerDay')}</span>
       </div>
 
       {rows && rows.some(r => r.count >= threshold && !isAlreadyThrottled(r.symbolicName)) && (
@@ -292,18 +292,18 @@ export function LogThrottlePanel() {
       )}
 
       {error && (
-        <div class="alert alert-error py-2 text-xs">
+        <div class="alert alert-error alert-soft py-2 text-xs">
           <TriangleAlert size={14} />
           <span>{error}</span>
         </div>
       )}
 
       {!error && rows && rows.length === 0 && (
-        <div class="py-4 text-center italic text-base-content/60">{t('logThrottleNoActivity')}</div>
+        <div class="py-4 text-center text-muted">{t('logThrottleNoActivity')}</div>
       )}
 
       {!error && rows && rows.length > 0 && (
-        <ul class="overflow-y-auto rounded-box border border-base-300/70 bg-base-100/60">
+        <ul class="overflow-y-auto rounded-box border border-base-300 bg-base-100">
           {rows.map(row => {
             const throttled = isAlreadyThrottled(row.symbolicName);
             const isHot = row.count >= threshold;
@@ -311,7 +311,7 @@ export function LogThrottlePanel() {
 
             return (
               <li
-                class={`group flex items-center gap-2 border-b border-base-300/40 px-2 py-1.5 last:border-b-0 hover:bg-base-200/70 ${isHot ? 'bg-error/10 shadow-[inset_3px_0_0_0_var(--color-error)]' : ''}`}
+                class={`group flex items-center gap-2 border-b border-base-300 px-2 py-1.5 last:border-b-0 ${isHot ? 'bg-warning/10' : 'hover:bg-base-200'}`}
                 key={row.symbolicName}
               >
                 {throttled ? (
@@ -329,11 +329,11 @@ export function LogThrottlePanel() {
                 <span class="tooltip tooltip-bottom flex-1 overflow-hidden text-left" data-tip={row.symbolicName}>
                   <span class="block truncate font-mono text-xs">{row.symbolicName}</span>
                 </span>
-                <span class={`shrink-0 font-mono text-xs font-semibold tabular-nums ${isHot ? 'text-error' : 'text-base-content/80'}`}>
+                <span class={`shrink-0 font-mono text-xs font-semibold tabular-nums ${isHot ? 'text-warning' : ''}`}>
                   {formatCount(row.count)}
                 </span>
                 {throttled ? (
-                  <span class="badge badge-success badge-outline badge-sm gap-1" title={t('logThrottleLevelIsError')}>
+                  <span class="badge badge-success badge-soft badge-sm gap-1" title={t('logThrottleLevelIsError')}>
                     <Check size={12} /> ERROR
                   </span>
                 ) : (

@@ -9,7 +9,7 @@ export function TenantLinksPanel() {
 
   if (loading) {
     return (
-      <div class="flex items-center gap-2 p-4 text-sm text-base-content/60">
+      <div class="flex items-center gap-2 p-4 text-sm text-muted">
         <span class="animate-spin"><LoaderCircle size={16} /></span>
         <span>{t('quickLinksDetecting')}</span>
       </div>
@@ -18,8 +18,8 @@ export function TenantLinksPanel() {
 
   if (!host) {
     return (
-      <div class="flex items-center gap-2 rounded-field bg-base-200 px-4 py-3 text-sm text-base-content/60">
-        <Info size={16} />
+      <div class="flex items-center gap-2.5 rounded-field bg-base-200 px-3 py-2.5 text-sm">
+        <Info size={16} class="shrink-0 text-muted" />
         <span>{t('quickLinksNoTenant')}</span>
       </div>
     );
@@ -28,7 +28,7 @@ export function TenantLinksPanel() {
   return (
     <div>
       <SortableQuickLinks host={host} />
-      <p class="mt-1.5 truncate text-[11px] text-base-content/50">{extractHostname(host) ?? host}</p>
+      <p class="mt-3 truncate font-mono text-[11px] text-muted">{extractHostname(host) ?? host}</p>
     </div>
   );
 }

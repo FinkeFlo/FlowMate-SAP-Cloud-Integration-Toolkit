@@ -54,8 +54,8 @@ export function TenantItem({ customerId, tenant, onRefresh }: TenantItemProps) {
   }
 
   return (
-    <div class={`flex items-center justify-between rounded-field border border-base-300 bg-base-100 px-4 py-3 transition-colors hover:border-primary ${tenant.enabled ? '' : 'opacity-50'}`}>
-      <div class="flex flex-1 flex-col gap-2">
+    <div class={`flex items-center justify-between gap-3 px-4 py-2.5 transition-colors hover:bg-base-200 ${tenant.enabled ? '' : 'opacity-60'}`}>
+      <div class="flex min-w-0 flex-1 flex-col gap-2">
         {editing ? (
           <div class="w-full pl-7">
             <div class="flex flex-col gap-2">
@@ -79,21 +79,19 @@ export function TenantItem({ customerId, tenant, onRefresh }: TenantItemProps) {
             </div>
           </div>
         ) : (
-          <label class="flex cursor-pointer items-center gap-2 font-semibold">
+          <label class="flex min-w-0 cursor-pointer items-center gap-3">
             <input
               type="checkbox"
               class="checkbox checkbox-sm"
               checked={tenant.enabled}
               onChange={e => handleToggle((e.target as HTMLInputElement).checked)}
             />
-            <div class="flex flex-col gap-0.5">
-              <strong>{tenant.name}</strong>
-              <span class="ml-0 text-sm text-base-content/60">{tenant.url}</span>
-            </div>
+            <span class="badge badge-ghost badge-sm shrink-0 font-mono font-bold tracking-wide">{tenant.name}</span>
+            <span class="truncate font-mono text-xs text-muted">{tenant.url}</span>
           </label>
         )}
       </div>
-      <div class="flex items-center gap-1">
+      <div class="flex shrink-0 items-center gap-0.5">
         {editing ? (
           <>
             <button

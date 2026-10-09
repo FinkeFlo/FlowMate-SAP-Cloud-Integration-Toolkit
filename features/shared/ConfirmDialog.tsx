@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useRef, useState, useId } from 'preact/hooks';
 import { createPortal } from 'preact/compat';
+import { TriangleAlert } from 'lucide-preact';
 import { t } from '@/features/shared/i18n';
 
 interface ConfirmDialogProps {
@@ -113,8 +114,17 @@ export function ConfirmDialog({
       onKeyDown={handleKeyDown}
       onPointerDown={(e) => e.stopPropagation()}
     >
-      <div class="modal-box text-base-content">
-        {title && <h2 id={titleId} class="mb-3 text-lg font-semibold">{title}</h2>}
+      <div class="modal-box border border-base-300 text-base-content shadow-modal">
+        {title && (
+          <div class="mb-3 flex items-start gap-3">
+            {destructive && (
+              <span class="flex size-8 shrink-0 items-center justify-center rounded-full bg-error/10 text-error" aria-hidden="true">
+                <TriangleAlert size={16} />
+              </span>
+            )}
+            <h2 id={titleId} class="mt-1 text-lg font-bold leading-6 tracking-tight">{title}</h2>
+          </div>
+        )}
         {message && <p id={messageId} class="mb-4 whitespace-pre-line text-sm">{message}</p>}
         {items && items.length > 0 && (
           <ul class="mb-4 max-h-48 overflow-y-auto rounded-field bg-base-200 px-3 py-2 font-mono text-xs">

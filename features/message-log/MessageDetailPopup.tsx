@@ -3,7 +3,7 @@ import { LoaderCircle, X, Copy } from 'lucide-preact';
 import { t, tSub } from '@/features/shared/i18n';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
-import { MPL_STATUS_COLORS } from '@/features/shared/constants';
+import { mplStatusTone, TONE_BADGE_CLASS, TONE_DISC_CLASS } from '@/features/shared/status-tone';
 import { DockPanel } from '@/features/shared/DockPanel';
 import { CodeViewer } from '@/features/shared/CodeViewer';
 import {
@@ -73,23 +73,20 @@ function InfoTable({ detail }: { detail: MessageProcessingLogDetail }) {
             if (row.section) {
               return (
                 <tr key={i}>
-                  <td colSpan={2} class="bg-base-200/60 px-0 py-3 text-[11px] font-bold uppercase tracking-wide text-base-content/50">
+                  <td colSpan={2} class="px-0 pt-4 pb-1.5 text-[11px] font-bold uppercase tracking-[0.07em] text-muted">
                     {row.label}
                   </td>
                 </tr>
               );
             }
-            const statusColor = row.label === 'Status' ? MPL_STATUS_COLORS[row.value] : undefined;
+            const isStatus = row.label === 'Status';
             return (
               <tr key={i} class="border-base-300/40">
-                <td class="w-44 whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{row.label}</td>
+                <td class="w-44 whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{row.label}</td>
                 <td class="break-all py-2 font-mono text-xs text-base-content">
-                  {statusColor ? (
+                  {isStatus ? (
                     <span class="inline-flex items-center gap-2">
-                      <span
-                        class="h-2 w-2 rounded-full"
-                        style={{ background: statusColor, boxShadow: `0 0 4px ${statusColor}80` }}
-                      />
+                      <span class={`size-2 rounded-full ${TONE_DISC_CLASS[mplStatusTone(row.value)]}`} />
                       {row.value}
                     </span>
                   ) : row.value}
@@ -134,12 +131,12 @@ function EntryContent({ entryId, baseUrl }: EntryContentProps) {
   }, [entryId, baseUrl]);
 
   if (error) {
-    return <div class="alert alert-error text-sm">{tSub('msgDetailFailedToLoad', error)}</div>;
+    return <div class="alert alert-error alert-soft text-sm">{tSub('msgDetailFailedToLoad', error)}</div>;
   }
 
   if (payload === null) {
     return (
-      <div class="flex items-center justify-center gap-2 py-6 text-sm text-base-content/60">
+      <div class="flex items-center justify-center gap-2 py-6 text-sm text-muted">
         <span class="animate-spin"><LoaderCircle size={16} /></span>
         {t('msgDetailLoading')}
       </div>
@@ -149,18 +146,18 @@ function EntryContent({ entryId, baseUrl }: EntryContentProps) {
   return (
     <div class="space-y-4 py-1">
       <div>
-        <div class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-base-content/50">{t('msgDetailPayload')}</div>
-        {payload ? <CodeViewer content={payload} maxHeight="400px" /> : <div class="py-2 text-sm text-base-content/50">(empty)</div>}
+        <div class="mb-2 text-[11px] font-bold uppercase tracking-[0.07em] text-muted">{t('msgDetailPayload')}</div>
+        {payload ? <CodeViewer content={payload} maxHeight="400px" /> : <div class="py-2 text-sm text-muted">(empty)</div>}
       </div>
       {properties && properties.length > 0 && (
         <div>
-          <div class="mb-2 text-[11px] font-semibold uppercase tracking-wide text-base-content/50">{t('msgDetailProperties')}</div>
+          <div class="mb-2 text-[11px] font-bold uppercase tracking-[0.07em] text-muted">{t('msgDetailProperties')}</div>
           <div class="overflow-x-auto">
             <table class="table table-sm w-full">
               <tbody>
                 {properties.map((prop, i) => (
                   <tr key={i} class="border-base-300/40">
-                    <td class="w-44 whitespace-nowrap py-2 pr-3 align-top text-xs text-base-content/60">{prop.Name}</td>
+                    <td class="w-44 whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{prop.Name}</td>
                     <td class="break-all py-2 font-mono text-xs text-base-content">{prop.Value}</td>
                   </tr>
                 ))}
@@ -199,12 +196,12 @@ function PersistTab({ guid, baseUrl }: PersistTabProps) {
   }, [guid, baseUrl]);
 
   if (error) {
-    return <div class="alert alert-error text-sm">{tSub('msgDetailFailedToLoad', error)}</div>;
+    return <div class="alert alert-error alert-soft text-sm">{tSub('msgDetailFailedToLoad', error)}</div>;
   }
 
   if (entries === null) {
     return (
-      <div class="flex items-center justify-center gap-2 py-8 text-sm text-base-content/60">
+      <div class="flex items-center justify-center gap-2 py-8 text-sm text-muted">
         <span class="animate-spin"><LoaderCircle size={16} /></span>
         {t('msgDetailLoading')}
       </div>
@@ -212,16 +209,18 @@ function PersistTab({ guid, baseUrl }: PersistTabProps) {
   }
 
   if (entries.length === 0) {
-    return <div class="py-8 text-center text-sm text-base-content/50">{t('msgDetailNoPersist')}</div>;
+    return <div class="py-8 text-center text-sm text-muted">{t('msgDetailNoPersist')}</div>;
   }
 
   return (
     <div>
-      <div class="tabs tabs-border mb-3 overflow-x-auto">
+      <div role="tablist" class="tabs tabs-box tabs-sm mb-3 w-fit max-w-full flex-nowrap overflow-x-auto">
         {entries.map((entry, i) => (
           <button
             key={entry.Id}
-            class={`tab font-mono text-xs ${i === activeEntry ? 'tab-active text-primary' : ''}`}
+            role="tab"
+            aria-selected={i === activeEntry}
+            class={`tab font-mono text-xs ${i === activeEntry ? 'tab-active' : ''}`}
             onClick={() => setActiveEntry(i)}
           >
             {entry.MessageStoreId}
@@ -290,7 +289,7 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
           </div>
         }
       >
-        <div class="flex items-center justify-center gap-2 px-6 py-10 text-sm text-base-content/60">
+        <div class="flex items-center justify-center gap-2 px-6 py-10 text-sm text-muted">
           <span class="animate-spin"><LoaderCircle size={16} /></span>
           {t('msgDetailLoading')}
         </div>
@@ -309,28 +308,25 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
         }
       >
         <div class="p-6">
-          <div class="alert alert-error text-sm">{tSub('msgDetailFailedToLoad', error)}</div>
+          <div class="alert alert-error alert-soft text-sm">{tSub('msgDetailFailedToLoad', error)}</div>
         </div>
       </DockPanel>
     );
   }
 
-  const statusColor = MPL_STATUS_COLORS[detail!.Status] ?? '#6b7280';
+  const tone = mplStatusTone(detail!.Status);
 
   return (
     <DockPanel
       header={
         <>
-          <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
+          <div class="flex items-center justify-between gap-4 px-4 pt-1 pb-2">
             <div class="flex min-w-0 items-center gap-2">
-              <span
-                class="h-2.5 w-2.5 shrink-0 rounded-full"
-                style={{ background: statusColor, boxShadow: `0 0 6px ${statusColor}80` }}
-              />
-              <span class="text-sm font-semibold text-base-content">{t('msgDetailMessageDetail')}</span>
+              <span class="text-sm font-bold text-base-content">{t('msgDetailMessageDetail')}</span>
+              <span class={`badge badge-soft badge-sm ${TONE_BADGE_CLASS[tone]}`}>{detail!.Status}</span>
             </div>
-            <div class="flex min-w-0 items-center gap-2">
-              <span class="truncate font-mono text-[11px] text-base-content/50">{detail!.MessageGuid}</span>
+            <div class="flex min-w-0 items-center gap-1">
+              <span class="truncate font-mono text-xs text-muted">{detail!.MessageGuid}</span>
               <button class="btn btn-ghost btn-sm btn-square" title={t('msgDetailCopyGuid')} onClick={copyGuid}>
                 <Copy size={16} />
               </button>
@@ -340,19 +336,25 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
             </div>
           </div>
 
-          <div class="tabs tabs-border border-b border-base-300 px-4 pt-2">
-            <button
-              class={`tab ${activeTab === 'info' ? 'tab-active text-primary' : ''}`}
-              onClick={() => setActiveTab('info')}
-            >
-              {t('msgDetailInfo')}
-            </button>
-            <button
-              class={`tab ${activeTab === 'persist' ? 'tab-active text-primary' : ''}`}
-              onClick={() => setActiveTab('persist')}
-            >
-              {t('msgDetailPersist')}
-            </button>
+          <div class="border-b border-base-300 px-4 pb-3">
+            <div role="tablist" class="tabs tabs-box tabs-sm w-fit">
+              <button
+                role="tab"
+                aria-selected={activeTab === 'info'}
+                class={`tab ${activeTab === 'info' ? 'tab-active' : ''}`}
+                onClick={() => setActiveTab('info')}
+              >
+                {t('msgDetailInfo')}
+              </button>
+              <button
+                role="tab"
+                aria-selected={activeTab === 'persist'}
+                class={`tab ${activeTab === 'persist' ? 'tab-active' : ''}`}
+                onClick={() => setActiveTab('persist')}
+              >
+                {t('msgDetailPersist')}
+              </button>
+            </div>
           </div>
         </>
       }

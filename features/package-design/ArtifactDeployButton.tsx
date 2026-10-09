@@ -144,7 +144,7 @@ export function ArtifactDeployButton({ artifactStatus }: ArtifactDeployButtonPro
       />
     )}
     <button
-      class="btn btn-success btn-soft btn-sm w-full justify-start gap-2"
+      class="btn btn-primary btn-sm w-full justify-start gap-2"
       disabled={running}
       onClick={requestDeploy}
     >

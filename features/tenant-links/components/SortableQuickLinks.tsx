@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'preact/hooks';
 import Sortable from 'sortablejs';
-import { Pencil, Check, ChevronUp, ChevronDown } from 'lucide-preact';
+import { Pencil, Check, ChevronUp, ChevronDown, X, Layers } from 'lucide-preact';
 import { ALL_LINKS } from '../tenant-link-definitions';
 import type { TenantLink } from '../tenant-link-definitions';
 import { getQuickLinksPreference, saveQuickLinksPreference } from '../quick-links-storage';
@@ -17,6 +17,15 @@ const COLOR_TO_BTN_CLASS: Record<NonNullable<TenantLink['color']>, string> = {
   red: 'btn-error',
   gray: 'btn-neutral',
   blue: 'btn-primary',
+};
+
+// The four default quick links carry an icon next to their tint, so the
+// status-like ones are not told apart by color alone.
+const LINK_ICON: Record<string, typeof Check> = {
+  'processed-messages': Check,
+  'failed-messages': X,
+  'integration-content': Layers,
+  design: Pencil,
 };export function SortableQuickLinks({ host }: SortableQuickLinksProps) {
   const [quickIds, setQuickIds] = useState<string[]>([]);
   const [restIds, setRestIds] = useState<string[]>([]);
@@ -71,7 +80,7 @@ const COLOR_TO_BTN_CLASS: Record<NonNullable<TenantLink['color']>, string> = {
       animation: 150,
       dataIdAttr: 'data-link-id',
       ghostClass: 'opacity-40',
-      chosenClass: 'shadow-lg',
+      chosenClass: 'shadow-float',
       onEnd: handleDragEnd,
     };
 
@@ -95,7 +104,7 @@ const COLOR_TO_BTN_CLASS: Record<NonNullable<TenantLink['color']>, string> = {
     <>
       <div class="mb-3">
         <div class="mb-2 flex items-center justify-between">
-          <h3 class="m-0 text-xs font-semibold uppercase tracking-wide text-base-content/50">
+          <h3 class="m-0 text-[11px] font-bold uppercase tracking-[0.07em] text-muted">
             {t('quickLinksTitle')}
           </h3>
           <button
@@ -118,25 +127,29 @@ const COLOR_TO_BTN_CLASS: Record<NonNullable<TenantLink['color']>, string> = {
           ref={quickRef}
           class={`grid grid-cols-2 gap-2 ${editMode ? editingZoneClass : ''}`}
         >
-          {quickLinks.map(link => (
-            <div key={link.id} data-link-id={link.id} class={editMode ? 'cursor-grab' : ''}>
-              <a
-                href={buildTenantUrl(host, link.path)}
-                target="_blank"
-                rel="noopener noreferrer"
-                class={`btn btn-soft w-full rounded-box font-semibold shadow-sm ${COLOR_TO_BTN_CLASS[link.color || 'gray']} ${editMode ? 'pointer-events-none' : ''}`}
-              >
-                {link.label}
-              </a>
-            </div>
-          ))}
+          {quickLinks.map(link => {
+            const Icon = LINK_ICON[link.id];
+            return (
+              <div key={link.id} data-link-id={link.id} class={editMode ? 'cursor-grab' : ''}>
+                <a
+                  href={buildTenantUrl(host, link.path)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class={`btn btn-soft h-10 w-full justify-start gap-2 px-3.5 font-semibold ${COLOR_TO_BTN_CLASS[link.color || 'gray']} ${editMode ? 'pointer-events-none' : ''}`}
+                >
+                  {Icon && <Icon size={16} class="shrink-0" />}
+                  <span class="truncate">{link.label}</span>
+                </a>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       <div>
         <button
           type="button"
-          class="btn btn-ghost btn-sm mt-3 w-full justify-between bg-base-200"
+          class="btn btn-secondary btn-sm mt-3 w-full justify-between"
           onClick={() => { if (!editMode) setRestExpanded(prev => !prev); }}
         >
           <span>{t('quickLinksMore')}</span>
@@ -154,7 +167,7 @@ const COLOR_TO_BTN_CLASS: Record<NonNullable<TenantLink['color']>, string> = {
                   href={buildTenantUrl(host, link.path)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class={`btn btn-ghost btn-xs rounded-field bg-base-200/70 font-normal ${editMode ? 'pointer-events-none' : ''}`}
+                  class={`btn btn-outline btn-xs border-base-300 font-medium ${editMode ? 'pointer-events-none' : ''}`}
                 >
                   {link.label}
                 </a>
