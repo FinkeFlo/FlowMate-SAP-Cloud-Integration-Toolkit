@@ -15,11 +15,22 @@ function loadMinimized(): boolean {
   }
 }
 
+/**
+ * The FlowMate app icon at its small optical size (public/icon.svg is the
+ * regular one): an F drawn as an integration route, the dot is the message.
+ * Colors come from the theme (primary = petrol tile, accent = spark).
+ */
 function FlowMateLogo() {
   return (
-    <svg width="16" height="16" viewBox="0 0 128 128" aria-hidden="true" class="shrink-0">
-      <rect width="128" height="128" rx="22" fill="#0070F2" />
-      <path d="M 32 24 H 100 V 40 H 48 V 56 H 88 V 72 H 48 V 104 H 32 Z" fill="white" />
+    <svg width="16" height="16" viewBox="0 0 48 48" aria-hidden="true" class="shrink-0">
+      <rect width="48" height="48" rx="11" class="fill-primary" />
+      <g transform="translate(24.6 24) scale(.92) translate(-24 -24)">
+        <g fill="none" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" class="stroke-primary-content">
+          <path d="M14 38V17a7 7 0 0 1 7-7h12" />
+          <path d="M14 24h7" />
+        </g>
+        <circle cx="31.5" cy="24" r="5.5" class="fill-accent" />
+      </g>
     </svg>
   );
 }

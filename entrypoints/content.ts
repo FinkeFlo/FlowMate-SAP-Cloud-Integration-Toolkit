@@ -39,6 +39,10 @@ async function initFlowMate(ctx: ContentScriptContext) {
       // shadow tree). Setting `data-theme` explicitly on the container makes
       // the "flowmate" theme active for everything rendered inside it.
       uiContainer.setAttribute('data-theme', 'flowmate');
+      // WXT resets the shadow host with `all: initial`, so nothing inherits a
+      // font from the page and the overlay would fall back to the browser's
+      // default serif. Apply the theme's font stack (SAP's "72" on SAP pages).
+      uiContainer.classList.add('font-sans');
       render(h(ContentApp, null), uiContainer);
     },
   });

@@ -1,119 +1,160 @@
 ---
 version: alpha
 name: FlowMate
-description: Single light daisyUI theme ("flowmate") used across the content-script overlay, Options page, and Popup. No dark theme exists — SAP Cloud Integration itself has no dark mode.
+description: Single light daisyUI theme ("flowmate") used across the content-script overlay, Options page, and Popup. Petrol for actions, ink for FlowMate's own chrome, a coral spark for things in motion; status colors only ever mean a status. No dark theme is active.
 omitted:
   - spacing
 colors:
-  primary: "#0070f2"
+  primary: "#0a5a65"
   primary-content: "#ffffff"
-  secondary: "#f5f5f5"
-  secondary-content: "#24292f"
-  accent: "#0070f2"
-  accent-content: "#ffffff"
-  neutral: "#24292f"
+  secondary: "#e9eff0"
+  secondary-content: "#0e1d20"
+  accent: "#ff7a59"
+  accent-content: "#0e1d20"
+  neutral: "#0e1d20"
   neutral-content: "#ffffff"
   base-100: "#ffffff"
-  base-200: "#f5f5f5"
-  base-300: "#e0e0e0"
-  base-content: "#24292f"
-  info: "#0a6ed1"
+  base-200: "#f3f6f6"
+  base-300: "#dfe6e7"
+  base-content: "#0e1d20"
+  info: "#1d64c8"
   info-content: "#ffffff"
-  success: "#15803d"
+  success: "#17783f"
   success-content: "#ffffff"
-  warning: "#b45309"
+  warning: "#a35a00"
   warning-content: "#ffffff"
-  error: "#d32f2f"
+  error: "#c8322b"
   error-content: "#ffffff"
 typography:
   body-md:
-    fontFamily: "'72', '72full', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+    fontFamily: "Onest, '72', '72full', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
     fontSize: 14px
+  mono:
+    fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
+    fontSize: 12px
 rounded:
-  selector: 0.5rem
-  field: 0.375rem
-  box: 0.625rem
+  selector: 0.25rem
+  field: 0.5rem
+  box: 0.875rem
+  pill: 9999px
 components:
   button-primary:
     backgroundColor: "{colors.primary}"
     textColor: "{colors.primary-content}"
+    rounded: "{rounded.pill}"
   button-error:
     backgroundColor: "{colors.error}"
     textColor: "{colors.error-content}"
+    rounded: "{rounded.pill}"
   button-success:
     backgroundColor: "{colors.success}"
     textColor: "{colors.success-content}"
+    rounded: "{rounded.pill}"
   button-warning:
     backgroundColor: "{colors.warning}"
     textColor: "{colors.warning-content}"
+    rounded: "{rounded.pill}"
   button-info:
     backgroundColor: "{colors.info}"
     textColor: "{colors.info-content}"
+    rounded: "{rounded.pill}"
   button-neutral:
     backgroundColor: "{colors.neutral}"
     textColor: "{colors.neutral-content}"
+    rounded: "{rounded.pill}"
   button-secondary:
     backgroundColor: "{colors.secondary}"
     textColor: "{colors.secondary-content}"
+    rounded: "{rounded.pill}"
   button-accent:
     backgroundColor: "{colors.accent}"
     textColor: "{colors.accent-content}"
+    rounded: "{rounded.pill}"
   card:
     backgroundColor: "{colors.base-100}"
+    rounded: "{rounded.box}"
   card-subtle:
     backgroundColor: "{colors.base-200}"
+    rounded: "{rounded.box}"
+  divider:
+    backgroundColor: "{colors.base-300}"
   body:
     backgroundColor: "{colors.base-100}"
     textColor: "{colors.base-content}"
   input:
     backgroundColor: "{colors.base-100}"
     textColor: "{colors.base-content}"
+    rounded: "{rounded.field}"
 ---
 
 ## Overview
 
-FlowMate is a browser extension overlay for SAP Cloud Integration (CPI). The
-UI must feel calm, functional, and native-adjacent to SAP's own Fiori/Horizon
-design — not flashy. We use one consistent framework, **daisyUI v5 + Tailwind
-CSS v4**, everywhere (content-script overlay, Options page, Popup), defined in
-a single shared theme file: `assets/flowmate-theme.css`.
+FlowMate is a browser extension overlay for SAP Cloud Integration (CPI). It
+sits *beside* SAP's Fiori/Horizon UI for a whole working day, so it must be
+calm and functional — and it must never be mistaken for SAP itself, which is
+why it has its own palette instead of SAP blue.
 
-There is exactly **one** theme, `flowmate` (light). We intentionally do not
-ship a dark theme, because SAP Cloud Integration itself has no dark mode —
-adding one to our overlay would look inconsistent with the host app.
+The identity comes from one picture: **a route and a message**. The logo is an
+F drawn as an integration route (a stem, a run along the top and a branch that
+forks off); a coral dot — the spark — is the message travelling on it. The UI
+follows the same idea: lines for structure, dots for messages, capsules for
+everything you press.
+
+We use one consistent framework, **daisyUI v5 + Tailwind CSS v4**, everywhere
+(content-script overlay, Options page, Popup), defined in a single shared theme
+file: `assets/flowmate-theme.css`. There is exactly **one** active theme,
+`flowmate` (light).
 
 ## Colors
 
-The palette is anchored on FlowMate's brand blue, taken directly from the
-extension's logo, plus SAP-Fiori-adjacent neutrals.
-
-- **Primary (`#0070f2`):** FlowMate brand blue. Used for primary actions,
-  links, and the "Design" quick link.
-- **Success (`#15803d`):** Deployed/processed/healthy states (e.g. "Processed
-  Messages" quick link, success toasts).
-- **Error (`#d32f2f`):** Failed/destructive states (e.g. "Failed Messages"
-  quick link, Undeploy button, error toasts).
-- **Warning (`#b45309`):** Escalated/retry/above-average-performance states.
-- **Info (`#0a6ed1`):** Informational badges, below-average-performance
-  states.
-- **Neutral (`#24292f`):** Dark slate used sparingly for the "Integration
-  Content" quick link and neutral badges — not a background color.
-- **Base-100/200/300 (`#ffffff` / `#f5f5f5` / `#e0e0e0`):** Surface, subtle
-  surface, and border colors respectively. Prefer `btn-*-soft` variants
-  (tinted background instead of solid fill) for a calmer, flatter look —
-  used for the Refresh/Undeploy buttons and quick links.
+- **Primary — petrol (`#0a5a65`):** FlowMate's action color: primary buttons,
+  links, pressed and selected states, the focus ring. Soft variants
+  (`btn-primary btn-soft`) for every action that is not the main one.
+- **Neutral — ink (`#0e1d20`):** FlowMate's own chrome — the things FlowMate
+  *says*: toolbar handle, toasts, tooltips. Also the body text color.
+- **Accent — spark (`#ff7a59`):** the message dot from the logo. Only for things
+  in motion (live/auto-refresh dot, loader). Never a status, never text on a
+  light surface (2.6:1); text on an accent fill uses `accent-content`.
+- **Secondary (`#e9eff0`):** quiet buttons such as Cancel.
+- **Status colors only mean status:** success `#17783f` (Completed, deployed),
+  error `#c8322b` (Failed, destructive), warning `#a35a00` (Retry, Escalated,
+  slower than average), info `#1d64c8` (Processing, information). Every status
+  also carries a word or an icon. A slow trace step is a warning, never an error.
+- **Base-100/200/300 (`#ffffff` / `#f3f6f6` / `#dfe6e7`):** surface, sunken
+  surface (code, tracks, hovered rows) and hairlines.
+- Text colors reach 4.5:1 on `base-100` and `base-200`, status colors also on
+  their soft tints. Don't fade text with opacity below `/70`.
 
 ## Typography
 
-Font stack matches SAP's own UI (`72`/`72full`, falling back to system
-sans-serif) so text doesn't look out of place next to native Fiori
-components.
+**Onest** for everything people read, **JetBrains Mono** for everything a
+machine wrote (GUIDs, timestamps, hosts, payloads, log levels). Both are bundled
+as variable woff2 in `public/fonts/` (SIL Open Font License, license texts next
+to the files) and registered on the popup and options pages by
+`features/shared/fonts.ts`. Inside the SAP page the overlay falls back to SAP's
+own `72` from the same stack, because `@font-face` does not apply inside a
+Shadow Root. Weights: 400 text, 600 controls, 700 headings, 800 only for the
+wordmark-sized options title.
 
 ## Shapes
 
-Rounded corners are modest, not pill-shaped: `--radius-box: 0.625rem` for
-cards/containers, `--radius-field: 0.375rem` for inputs/small controls,
-`--radius-selector: 0.5rem` for checkboxes/toggles.
+Capsules you press, rectangles that hold:
+
+- `--radius-box: 0.875rem` for cards, modals, alerts, the toolbar and popovers.
+- `--radius-field: 0.5rem` for inputs, selects and tooltips.
+- `--radius-selector: 0.25rem` for checkboxes.
+- Buttons, badges and toggles are full capsules: the theme file scopes the
+  radius variables on `.btn`, `.badge` and `.toggle` to `9999px`, so no
+  per-component class is needed.
+
+## Logo
+
+The mark is an F drawn as a route with the spark as the message. Files:
+`public/icon.svg` (app icon), `public/icon/*.png` (browser icons; 16 and 32 px
+use a heavier small optical size), `assets/logo.svg` (lockup with the
+wordmark). The toolbar draws the small optical size inline with theme colors
+(`fill-primary`, `stroke-primary-content`, `fill-accent`). Never recolor the
+spark or use the logo on SAP blue.
 
 ## Components
 
@@ -138,6 +179,9 @@ cards/containers, `--radius-field: 0.375rem` for inputs/small controls,
 - The single source of truth for actual CSS values is
   `assets/flowmate-theme.css` — if this file and that one ever disagree,
   the CSS file wins; update this file to match.
+- The inline-trace step colors are painted on SAP's SVG outside the Shadow
+  Root, so they are hex values in `features/inline-trace/step-colors.ts`; keep
+  them in sync with the theme.
 - **Shadow DOM caveat:** the content-script overlay renders inside a Shadow
   Root for style isolation from the SAP host page. daisyUI/Tailwind apply
   theme variables via `:root`/`[data-theme=...]`, and `:root` never matches
