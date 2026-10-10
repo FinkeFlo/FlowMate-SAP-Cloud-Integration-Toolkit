@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'preact/hooks';
 import { getSettings, addCustomer, type Settings } from '@/features/settings/settings';
 import { Plus } from 'lucide-preact';
 import { showToast } from '@/features/shared/toast';
-import { t } from '@/features/shared/i18n';
+import { t, tSub } from '@/features/shared/i18n';
 import { ToastContainer } from '@/features/shared/ToastContainer';
 import { CustomerCard } from './CustomerCard';
 import { AddCustomerForm } from './AddCustomerForm';
@@ -25,7 +25,7 @@ export function SettingsApp() {
   async function handleAddCustomer(name: string) {
     await addCustomer(name);
     setShowAddForm(false);
-    showToast(`${t('customerAdded')}: ${name}`, 'success');
+    showToast(tSub('customerAdded', name), 'success');
     await loadSettings();
   }
 

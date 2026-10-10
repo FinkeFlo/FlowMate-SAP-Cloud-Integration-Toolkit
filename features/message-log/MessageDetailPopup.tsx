@@ -273,7 +273,7 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
               <span class="animate-spin"><LoaderCircle size={16} /></span>
               {t('msgDetailLoading')}
             </span>
-            <button class="btn btn-ghost btn-sm btn-square" title={t('close')} aria-label={t('close')} onClick={onClose}><X size={16} /></button>
+            <button class="btn btn-ghost btn-sm btn-square" aria-label={t('close')} onClick={onClose}><X size={16} /></button>
           </div>
         }
       >
@@ -291,7 +291,7 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
         header={
           <div class="flex items-center justify-between gap-4 border-b border-base-300 px-4 py-3">
             <span class="text-sm font-semibold text-base-content">{t('msgDetailError')}</span>
-            <button class="btn btn-ghost btn-sm btn-square" title={t('close')} aria-label={t('close')} onClick={onClose}><X size={16} /></button>
+            <button class="btn btn-ghost btn-sm btn-square" aria-label={t('close')} onClick={onClose}><X size={16} /></button>
           </div>
         }
       >
@@ -318,7 +318,7 @@ export function MessageDetailPopup({ guid, baseUrl, onClose }: MessageDetailPopu
               <button class="btn btn-ghost btn-sm btn-square" title={t('msgDetailCopyGuid')} aria-label={t('msgDetailCopyGuid')} onClick={copyGuid}>
                 <Copy size={16} />
               </button>
-              <button class="btn btn-ghost btn-sm btn-square" title={t('close')} aria-label={t('close')} onClick={onClose}>
+              <button class="btn btn-ghost btn-sm btn-square" aria-label={t('close')} onClick={onClose}>
                 <X size={16} />
               </button>
             </div>

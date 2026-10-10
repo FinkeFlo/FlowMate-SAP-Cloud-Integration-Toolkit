@@ -62,14 +62,19 @@ describe('validateName', () => {
     expect(validateName('Acme Corp')).toEqual({ valid: true });
   });
 
-  it('rejects empty and too-short names with a message for that object', () => {
-    expect(validateName('', 'Tenant')).toEqual({ valid: false, error: 'validationTenantNameRequired' });
-    expect(validateName('A')).toEqual({ valid: false, error: 'validationCustomerNameTooShort' });
+  it.each([
+    ['Customer', '', 'validationCustomerNameRequired'],
+    ['Customer', 'A', 'validationCustomerNameTooShort'],
+    ['Customer', 'x'.repeat(51), 'validationCustomerNameTooLong'],
+    ['Tenant', '   ', 'validationTenantNameRequired'],
+    ['Tenant', 'A', 'validationTenantNameTooShort'],
+    ['Tenant', 'x'.repeat(51), 'validationTenantNameTooLong'],
+  ] as const)('rejects an invalid %s name %j with its own message', (type, input, key) => {
+    expect(validateName(input, type)).toEqual({ valid: false, error: key });
   });
 
-  it('rejects names longer than 50 characters', () => {
-    expect(validateName('x'.repeat(51))).toEqual({ valid: false, error: 'validationCustomerNameTooLong' });
-    expect(validateName('x'.repeat(51), 'Tenant')).toEqual({ valid: false, error: 'validationTenantNameTooLong' });
+  it('defaults to the customer messages', () => {
+    expect(validateName('A')).toEqual({ valid: false, error: 'validationCustomerNameTooShort' });
   });
 
   it('never splices the English type word into a translated message', () => {

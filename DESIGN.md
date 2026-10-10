@@ -242,8 +242,8 @@ spark or use the logo on SAP blue.
 FlowMate talks like a colleague who knows CPI: short, factual, specific. Every
 string exists in `en` and `de` (`t()`, see `.claude/rules/i18n.md`).
 
-- **German: always "du"**, lowercase ("Verwalte deine Tenants", "Wähle beide
-  Daten aus"). Buttons and labels stay infinitive ("Kunde hinzufügen").
+- **German: always "du"**, lowercase ("Verwalte deine Tenants", "Wähle Start-
+  und Enddatum aus"). Buttons and labels stay infinitive ("Kunde hinzufügen").
 - **English: sentence case** ("Refresh status", "Add tenant"). SAP's own names
   keep SAP's spelling: Integration Content, Message Usage, iFlow.
 - **CPI terms stay** in both languages: iFlow, Tenant, Trace, Payload,

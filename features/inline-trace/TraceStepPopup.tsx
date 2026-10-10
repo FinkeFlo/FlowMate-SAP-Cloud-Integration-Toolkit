@@ -339,7 +339,7 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
                   <ChevronRight size={16} />
                 </button>
               </div>
-              <button class="btn btn-ghost btn-sm btn-square" title={t('close')} aria-label={t('close')} onClick={onClose}>
+              <button class="btn btn-ghost btn-sm btn-square" aria-label={t('close')} onClick={onClose}>
                 <X size={16} />
               </button>
             </div>

@@ -4,6 +4,7 @@ import { LoaderCircle, RefreshCw, TriangleAlert, Zap, Check } from 'lucide-preac
 import { devLog } from '@/features/shared/dev-logger';
 import { showToast } from '@/features/shared/toast';
 import { t, tSub } from '@/features/shared/i18n';
+import { errorMessage } from '@/features/shared/error-message';
 import { ConfirmDialog } from '@/features/shared/ConfirmDialog';
 import { setMplLogLevel, fetchLogLevels, type MplLogLevel } from '@/features/shared/log-level-api';
 import { fetchTopLoggers, type UsageEntry } from './usage-api';
@@ -115,9 +116,9 @@ export function LogThrottlePanel() {
         devLog.info(LOG_TAG, 'Throttled iFlow', { symbolicName });
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = errorMessage(err);
       devLog.error(LOG_TAG, 'Failed to throttle iFlow', { symbolicName, error: message });
-      showToast(`${tSub('logThrottleSilenceFailed', symbolicName)}: ${message}`, 'error');
+      showToast(t('logThrottleSilenceFailed', [symbolicName, message]), 'error');
     } finally {
       if (mountedRef.current) setThrottlingNow(null);
     }
@@ -157,8 +158,7 @@ export function LogThrottlePanel() {
         newlyThrottled.add(name);
       } catch (err) {
         failures++;
-        const message = err instanceof Error ? err.message : String(err);
-        devLog.error(LOG_TAG, 'Bulk silence failed', { symbolicName: name, error: message });
+        devLog.error(LOG_TAG, 'Bulk silence failed', { symbolicName: name, error: errorMessage(err) });
       }
     }
 

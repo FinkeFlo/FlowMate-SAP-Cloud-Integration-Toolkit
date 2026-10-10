@@ -142,7 +142,7 @@
     "message": "Abbrechen"
   },
   "selectBothDates": {
-    "message": "Wähle beide Daten aus"
+    "message": "Wähle Start- und Enddatum aus"
   },
   "startBeforeEnd": {
     "message": "Startdatum muss vor dem Enddatum liegen"
@@ -447,7 +447,7 @@
     "message": "Gilt für den „Auto“-Button im Message-Log. Kürzere Intervalle bedeuten mehr API-Aufrufe auf dem Tenant."
   },
   "prefsSaved": {
-    "message": "Einstellungen gespeichert"
+    "message": "Voreinstellungen gespeichert"
   },
   "refresh": {
     "message": "Aktualisieren"
@@ -489,11 +489,13 @@
     }
   },
   "logThrottleSilenceFailed": {
-    "message": "„$NAME$“ konnte nicht stummgeschaltet werden",
+    "message": "„$NAME$“ konnte nicht stummgeschaltet werden: $ERROR$",
     "placeholders": {
       "name": {
-        "content": "$1",
-        "example": "OrderToCash"
+        "content": "$1"
+      },
+      "error": {
+        "content": "$2"
       }
     }
   },
@@ -556,7 +558,12 @@
     "message": "Keine Trace-Läufe für diese Nachricht gefunden"
   },
   "msgLogTraceLoadFailed": {
-    "message": "Trace konnte nicht geladen werden"
+    "message": "Trace konnte nicht geladen werden: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
   },
   "traceEnabledToast": {
     "message": "Trace aktiviert – Log-Level auf TRACE gesetzt"
@@ -565,7 +572,12 @@
     "message": "Trace deaktiviert – Log-Level auf INFO gesetzt"
   },
   "traceToggleFailed": {
-    "message": "Trace konnte nicht umgeschaltet werden"
+    "message": "Trace konnte nicht umgeschaltet werden: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
   },
   "traceOn": {
     "message": "Trace an"
@@ -645,7 +657,12 @@
     }
   },
   "artifactCsrfFailed": {
-    "message": "CSRF-Token konnte nicht geladen werden"
+    "message": "CSRF-Token konnte nicht geladen werden: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
   },
   "artifactFoundDeployed": {
     "message": "$COUNT$ deployte(s) Artefakt(e) gefunden",
@@ -657,7 +674,12 @@
     }
   },
   "artifactStatusFailed": {
-    "message": "Artefakt-Status konnte nicht geladen werden"
+    "message": "Artefakt-Status konnte nicht geladen werden: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
   },
   "artifactRuntimeVersion": {
     "message": "Runtime-Version"
@@ -705,13 +727,23 @@
     }
   },
   "traceInlineLoadFailed": {
-    "message": "Inline-Trace konnte nicht geladen werden"
+    "message": "Inline-Trace konnte nicht geladen werden: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
   },
   "msgLogAuto": {
     "message": "Auto"
   },
   "customerAdded": {
-    "message": "Kunde hinzugefügt"
+    "message": "Kunde „$NAME$“ hinzugefügt",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
   },
   "editTenant": {
     "message": "Tenant bearbeiten"
@@ -817,7 +849,7 @@
     "message": "Andere Status anzeigen (Processing, Retry, Escalated, …)"
   },
   "msgLogNoMessagesHint": {
-    "message": "Nachrichten erscheinen hier, sobald dieser iFlow eine verarbeitet."
+    "message": "Nachrichten erscheinen hier, sobald dieser iFlow eine verarbeitet hat. Aktualisiere oder schalte „Auto“ ein."
   },
   "msgLogNoMatchingHint": {
     "message": "Aktiviere einen weiteren Status-Filter, um mehr zu sehen."
@@ -832,7 +864,7 @@
     "message": "Status"
   },
   "msgDetailCustomHeaders": {
-    "message": "Custom Header"
+    "message": "Custom-Header"
   },
   "msgDetailStart": {
     "message": "Start"
@@ -845,5 +877,30 @@
   },
   "msgDetailEmptyPayload": {
     "message": "Payload ist leer"
+  },
+  "exportCancelProgress": {
+    "message": "Abbrechen ($CURRENT$/$TOTAL$)",
+    "placeholders": {
+      "current": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "exportCancelTenantProgress": {
+    "message": "Abbrechen – $TENANT$ ($CURRENT$/$TOTAL$)",
+    "placeholders": {
+      "tenant": {
+        "content": "$1"
+      },
+      "current": {
+        "content": "$2"
+      },
+      "total": {
+        "content": "$3"
+      }
+    }
   }
 }

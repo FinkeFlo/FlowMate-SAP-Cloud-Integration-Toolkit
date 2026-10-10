@@ -87,7 +87,7 @@ export function ExportButton() {
       endDate,
       (current, total) => {
         if (!mountedRef.current) return;
-        setProgressText(`${t('cancelExport')} (${current}/${total})`);
+        setProgressText(t('exportCancelProgress', [String(current), String(total)]));
         setProgress({ current, total });
       },
       signal,
@@ -137,7 +137,7 @@ export function ExportButton() {
       const tenant = customer.tenants[i]!;
       if (mountedRef.current) {
         setProgressText(
-          `${t('cancelExport')} – ${tenant.name} (${i + 1}/${customer.tenants.length})`,
+          t('exportCancelTenantProgress', [tenant.name, String(i + 1), String(customer.tenants.length)]),
         );
       }
 

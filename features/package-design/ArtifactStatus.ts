@@ -3,6 +3,8 @@ import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { fetchCpiText, fetchCpiJson, fetchCsrfToken as fetchCsrfTokenShared } from '@/features/shared/fetch-client';
 import { showToast } from '@/features/shared/toast';
 import { t, tSub } from '@/features/shared/i18n';
+import { errorMessage } from '@/features/shared/error-message';
+import { formatDateTime } from '@/features/shared/time-format';
 import {
   SAP_CMD_LIST_ARTIFACTS,
   SAP_RUNTIME_LOCATION_ID,
@@ -103,7 +105,7 @@ export class ArtifactStatus {
       this.waitForTable();
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to fetch deployed artifacts', { error: String(error) });
-      showToast(`${t('artifactStatusFailed')}: ${error}`, 'error');
+      showToast(tSub('artifactStatusFailed', errorMessage(error)), 'error');
       this.currentPackageId = null;
     } finally {
       this.isFetching = false;
@@ -439,11 +441,11 @@ export class ArtifactStatus {
       cursor: help;
     `;
 
-    const date = status.deployedOn ? new Date(status.deployedOn).toLocaleString() : '';
+    const deployedOn = status.deployedOn ? formatDateTime(new Date(status.deployedOn)) : '';
     const versionText = hasMismatch
       ? `v${runtimeVersion} -> v${designTimeVersion}`
       : `v${status.version}`;
-    statusBadge.textContent = `${icon} ${status.deployState} | ${versionText} | ${date}`;
+    statusBadge.textContent = `${icon} ${status.deployState} | ${versionText} | ${deployedOn}`;
 
     if (hasMismatch) {
       statusBadge.title = [
@@ -453,14 +455,14 @@ export class ArtifactStatus {
         '',
         `${t('artifactState')}: ${status.semanticState}`,
         `${t('artifactDeployedBy')}: ${status.deployedBy || t('unknown')}`,
-        `${t('artifactDeployedOn')}: ${status.deployedOn || t('unknown')}`,
+        `${t('artifactDeployedOn')}: ${deployedOn || t('unknown')}`,
       ].join('\n');
     } else {
       statusBadge.title = [
         `${t('artifactVersion')}: ${status.version}`,
         `${t('artifactState')}: ${status.semanticState}`,
         `${t('artifactDeployedBy')}: ${status.deployedBy || t('unknown')}`,
-        `${t('artifactDeployedOn')}: ${status.deployedOn || t('unknown')}`,
+        `${t('artifactDeployedOn')}: ${deployedOn || t('unknown')}`,
       ].join('\n');
     }
 

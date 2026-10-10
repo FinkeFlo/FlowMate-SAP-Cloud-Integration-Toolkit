@@ -4,6 +4,7 @@ import type { ArtifactStatus } from './ArtifactStatus';
 import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { fetchCpi } from '@/features/shared/fetch-client';
 import { t, tSub } from '@/features/shared/i18n';
+import { errorMessage } from '@/features/shared/error-message';
 import { ConfirmDialog } from '@/features/shared/ConfirmDialog';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
@@ -122,7 +123,7 @@ export function ArtifactDeployButton({ artifactStatus }: ArtifactDeployButtonPro
       );
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to fetch CSRF token', { error: String(error) });
-      showToast(`${t('artifactCsrfFailed')}: ${error}`, 'error');
+      showToast(tSub('artifactCsrfFailed', errorMessage(error)), 'error');
     } finally {
       setRunning(false);
       artifactStatus.refresh();

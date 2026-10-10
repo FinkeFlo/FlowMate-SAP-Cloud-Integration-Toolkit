@@ -489,11 +489,13 @@
     }
   },
   "logThrottleSilenceFailed": {
-    "message": "Failed to silence “$NAME$”",
+    "message": "Failed to silence “$NAME$”: $ERROR$",
     "placeholders": {
       "name": {
-        "content": "$1",
-        "example": "OrderToCash"
+        "content": "$1"
+      },
+      "error": {
+        "content": "$2"
       }
     }
   },
@@ -556,7 +558,12 @@
     "message": "No trace runs found for this message"
   },
   "msgLogTraceLoadFailed": {
-    "message": "Failed to load trace"
+    "message": "Failed to load trace: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
   },
   "traceEnabledToast": {
     "message": "Trace enabled – log level set to TRACE"
@@ -565,7 +572,12 @@
     "message": "Trace disabled – log level set to INFO"
   },
   "traceToggleFailed": {
-    "message": "Failed to toggle trace"
+    "message": "Failed to toggle trace: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
   },
   "traceOn": {
     "message": "Trace on"
@@ -645,7 +657,12 @@
     }
   },
   "artifactCsrfFailed": {
-    "message": "Failed to fetch CSRF token"
+    "message": "Failed to fetch CSRF token: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
   },
   "artifactFoundDeployed": {
     "message": "Found $COUNT$ deployed artifact(s)",
@@ -657,7 +674,12 @@
     }
   },
   "artifactStatusFailed": {
-    "message": "Failed to fetch artifact status"
+    "message": "Failed to fetch artifact status: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
   },
   "artifactRuntimeVersion": {
     "message": "Runtime version"
@@ -705,13 +727,23 @@
     }
   },
   "traceInlineLoadFailed": {
-    "message": "Failed to load inline trace"
+    "message": "Failed to load inline trace: $ERROR$",
+    "placeholders": {
+      "error": {
+        "content": "$1"
+      }
+    }
   },
   "msgLogAuto": {
     "message": "Auto"
   },
   "customerAdded": {
-    "message": "Customer added"
+    "message": "Customer “$NAME$” added",
+    "placeholders": {
+      "name": {
+        "content": "$1"
+      }
+    }
   },
   "editTenant": {
     "message": "Edit tenant"
@@ -817,7 +849,7 @@
     "message": "Show other statuses (processing, retry, escalated, …)"
   },
   "msgLogNoMessagesHint": {
-    "message": "Messages appear here as soon as this iFlow processes one."
+    "message": "Messages appear here once this iFlow has processed one. Refresh or turn on “Auto”."
   },
   "msgLogNoMatchingHint": {
     "message": "Turn on another status filter to see more."
@@ -845,5 +877,30 @@
   },
   "msgDetailEmptyPayload": {
     "message": "Empty payload"
+  },
+  "exportCancelProgress": {
+    "message": "Cancel ($CURRENT$/$TOTAL$)",
+    "placeholders": {
+      "current": {
+        "content": "$1"
+      },
+      "total": {
+        "content": "$2"
+      }
+    }
+  },
+  "exportCancelTenantProgress": {
+    "message": "Cancel – $TENANT$ ($CURRENT$/$TOTAL$)",
+    "placeholders": {
+      "tenant": {
+        "content": "$1"
+      },
+      "current": {
+        "content": "$2"
+      },
+      "total": {
+        "content": "$3"
+      }
+    }
   }
 }

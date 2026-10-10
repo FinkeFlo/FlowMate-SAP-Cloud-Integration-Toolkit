@@ -4,6 +4,7 @@ import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
 import { t, tSub } from '@/features/shared/i18n';
+import { errorMessage } from '@/features/shared/error-message';
 import { getPreferences, onPreferencesChange, DEFAULT_PREFERENCES } from '@/features/shared/preferences';
 import { isCpiUrl } from '@/features/shared/cpi-url';
 import { mplStatusTone, TONE_DISC_CLASS, type StatusTone } from '@/features/shared/status-tone';
@@ -90,7 +91,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
       devLog.info(LOG_TAG, 'Opened trace', { messageGuid: msg.MessageGuid, runId });
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to open trace', { error: String(error) });
-      showToast(`${t('msgLogTraceLoadFailed')}: ${error}`, 'error');
+      showToast(tSub('msgLogTraceLoadFailed', errorMessage(error)), 'error');
     }
   }
 
@@ -111,6 +112,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
         <button
           class="btn btn-ghost btn-xs btn-square"
           title={t('msgDetailMessageDetail')}
+          aria-label={t('msgDetailMessageDetail')}
           onClick={(e) => { e.stopPropagation(); onShowDetail(msg.MessageGuid); }}
         >
           <Info size={16} />
@@ -119,6 +121,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
           <button
             class="btn btn-ghost btn-xs btn-square"
             title={t('msgLogOpenMonitoring')}
+            aria-label={t('msgLogOpenMonitoring')}
             onClick={(e) => { e.stopPropagation(); window.open(msg.AlternateWebLink, '_blank'); }}
           >
             <ExternalLink size={16} />
@@ -130,6 +133,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
               class={`btn btn-xs btn-square ${inlineTraceShown ? 'btn-primary' : 'btn-ghost'}`}
               aria-pressed={inlineTraceShown}
               title={t('msgLogShowInlineTrace')}
+              aria-label={t('msgLogShowInlineTrace')}
               onClick={(e) => { e.stopPropagation(); onStartInlineTrace?.(msg.MessageGuid); }}
             >
               <Layers size={16} />
@@ -137,6 +141,7 @@ function MessageRow({ msg, onShowDetail, onStartInlineTrace, activeInlineTrace }
             <button
               class="btn btn-ghost btn-xs btn-square"
               title={t('msgLogOpenTrace')}
+              aria-label={t('msgLogOpenTrace')}
               onClick={(e) => { e.stopPropagation(); openTrace(); }}
             >
               <Activity size={16} />
@@ -207,8 +212,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
         devLog.info(LOG_TAG, `Refreshed: ${data.length} messages`, { iflowId });
       }
     } catch (error) {
-      const msg = error instanceof Error ? error.message : String(error);
-      devLog.warn(LOG_TAG, 'Failed to fetch messages', { error: msg });
+      devLog.warn(LOG_TAG, 'Failed to fetch messages', { error: errorMessage(error) });
     }
   }, []);
 
@@ -302,6 +306,7 @@ export function MessageLogPanel({ onShowDetail, onStartInlineTrace, activeInline
             <button
               class="btn btn-ghost btn-xs btn-square"
               title={t('refresh')}
+              aria-label={t('refresh')}
               onClick={(e) => { e.stopPropagation(); refresh(); }}
             >
               <RefreshCw size={14} />

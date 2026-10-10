@@ -1,17 +1,8 @@
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
-import { formatDate, formatDateTime, formatDuration, formatTime } from './time-format';
-
-// Run in a zone east of UTC so local and UTC calendar days differ after midnight.
-beforeAll(() => {
-  vi.stubEnv('TZ', 'Europe/Berlin');
-});
-
-afterAll(() => {
-  vi.unstubAllEnvs();
-});
+import { describe, expect, it } from 'vitest';
+import { formatDate, formatDateTime, formatDuration, formatTime, NO_VALUE } from './time-format';
 
 describe('formatDate / formatTime', () => {
-  it('runs in a non-UTC zone (guards the regression test below)', () => {
+  it('runs in Europe/Berlin (vitest.config.ts), so local and UTC days differ after midnight', () => {
     expect(new Date(2026, 9, 9, 12, 0).getTimezoneOffset()).toBe(-120);
   });
 
@@ -31,6 +22,13 @@ describe('formatDate / formatTime', () => {
     expect(formatDate(justAfterMidnight)).toBe('2026-10-09');
     expect(formatTime(justAfterMidnight)).toBe('00:30:00');
   });
+
+  it('shows a dash for a date that cannot be read', () => {
+    const invalid = new Date('not a date');
+    expect(formatDate(invalid)).toBe(NO_VALUE);
+    expect(formatTime(invalid)).toBe(NO_VALUE);
+    expect(formatDateTime(invalid)).toBe(NO_VALUE);
+  });
 });
 
 describe('formatDuration', () => {
@@ -38,14 +36,25 @@ describe('formatDuration', () => {
     expect(formatDuration(850)).toBe('850 ms');
     expect(formatDuration(1234)).toBe('1.2 s');
     expect(formatDuration(184_000)).toBe('3 min 4 s');
+    expect(formatDuration(7_500_000)).toBe('2 h 5 min');
   });
 
-  it('switches units at one second and one minute', () => {
+  it('switches units at one second, one minute and one hour', () => {
     expect(formatDuration(0)).toBe('0 ms');
     expect(formatDuration(999)).toBe('999 ms');
     expect(formatDuration(1000)).toBe('1.0 s');
     expect(formatDuration(59_940)).toBe('59.9 s');
     expect(formatDuration(59_999)).toBe('1 min 0 s');
     expect(formatDuration(60_000)).toBe('1 min 0 s');
+    expect(formatDuration(3_599_400)).toBe('59 min 59 s');
+    expect(formatDuration(3_599_600)).toBe('1 h 0 min');
+    expect(formatDuration(259_200_000)).toBe('72 h 0 min');
+  });
+
+  it('rounds fractional milliseconds and rejects values that are not numbers', () => {
+    expect(formatDuration(123.456)).toBe('123 ms');
+    expect(formatDuration(999.6)).toBe('1.0 s');
+    expect(formatDuration(Number.NaN)).toBe(NO_VALUE);
+    expect(formatDuration(Number.POSITIVE_INFINITY)).toBe(NO_VALUE);
   });
 });
