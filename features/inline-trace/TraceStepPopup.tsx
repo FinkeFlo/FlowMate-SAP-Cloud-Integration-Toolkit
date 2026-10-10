@@ -11,6 +11,7 @@ import { t, tSub } from '@/features/shared/i18n';
 import { devLog } from '@/features/shared/dev-logger';
 import { CodeViewer } from '@/features/shared/CodeViewer';
 import { DockPanel } from '@/features/shared/DockPanel';
+import { formatDateTime, formatDuration } from '@/features/shared/time-format';
 import { parseODataDate } from '@/features/message-log/mpl-types';
 import {
   fetchTraceMessages,
@@ -38,20 +39,8 @@ interface TraceStepPopupProps {
   onClose: () => void;
 }
 
-function formatDateTime(dateStr: string): string {
-  const date = parseODataDate(dateStr);
-  return date.toLocaleString(undefined, {
-    year: 'numeric', month: '2-digit', day: '2-digit',
-    hour: '2-digit', minute: '2-digit', second: '2-digit',
-  });
-}
-
-function formatDuration(ms: number): string {
-  if (ms < 1000) return `${ms}ms`;
-  if (ms < 60_000) return `${(ms / 1000).toFixed(1)}s`;
-  const mins = Math.floor(ms / 60_000);
-  const secs = Math.floor((ms % 60_000) / 1000);
-  return `${mins}m ${secs}s`;
+function formatStepTime(dateStr: string): string {
+  return formatDateTime(parseODataDate(dateStr));
 }
 
 function getDurationTier(ms: number, avgMs: number): PerformanceTier | null {
@@ -224,11 +213,11 @@ function InfoTab({ element, avgDurationMs }: { element: InlineTraceElement; avgD
           </tr>
           <tr class="border-base-300/40">
             <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{t('traceStart')}</td>
-            <td class="break-all py-2 font-mono text-xs text-base-content">{formatDateTime(element.stepStart)}</td>
+            <td class="break-all py-2 font-mono text-xs text-base-content">{formatStepTime(element.stepStart)}</td>
           </tr>
           <tr class="border-base-300/40">
             <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{t('traceStop')}</td>
-            <td class="break-all py-2 font-mono text-xs text-base-content">{formatDateTime(element.stepStop)}</td>
+            <td class="break-all py-2 font-mono text-xs text-base-content">{formatStepTime(element.stepStop)}</td>
           </tr>
           <tr class="border-base-300/40">
             <td class="w-[200px] whitespace-nowrap py-2 pr-3 align-top font-mono text-xs text-muted">{t('traceDuration')}</td>
@@ -333,6 +322,7 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
                 <button
                   class="btn btn-ghost btn-sm btn-square"
                   title={t('tracePrevStep')}
+                  aria-label={t('tracePrevStep')}
                   disabled={!hasPrev}
                   onClick={() => hasPrev && onNavigate(allElements[currentIndex - 1]!)}
                 >
@@ -342,13 +332,14 @@ export function TraceStepPopup({ element, allElements, baseUrl, onNavigate, onCl
                 <button
                   class="btn btn-ghost btn-sm btn-square"
                   title={t('traceNextStep')}
+                  aria-label={t('traceNextStep')}
                   disabled={!hasNext}
                   onClick={() => hasNext && onNavigate(allElements[currentIndex + 1]!)}
                 >
                   <ChevronRight size={16} />
                 </button>
               </div>
-              <button class="btn btn-ghost btn-sm btn-square" onClick={onClose}>
+              <button class="btn btn-ghost btn-sm btn-square" aria-label={t('close')} onClick={onClose}>
                 <X size={16} />
               </button>
             </div>

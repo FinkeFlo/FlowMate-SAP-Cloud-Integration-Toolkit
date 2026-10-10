@@ -65,7 +65,7 @@ export function TenantItem({ customerId, tenant, onRefresh }: TenantItemProps) {
                 class={`input input-bordered input-sm w-full ${nameError ? 'input-error' : ''}`}
                 value={editName}
                 onInput={e => setEditName((e.target as HTMLInputElement).value)}
-                placeholder={t('tenantName') || 'Tenant Name'}
+                placeholder={t('tenantName')}
               />
               {nameError && <span class="text-xs text-error">{nameError}</span>}
               <input
@@ -98,7 +98,7 @@ export function TenantItem({ customerId, tenant, onRefresh }: TenantItemProps) {
               type="button"
               class="btn btn-ghost btn-sm btn-square"
               onClick={handleSaveEdit}
-              title={t('save') || 'Save'}
+              title={t('save')}
             >
               <Check size={16} />
             </button>
@@ -106,7 +106,7 @@ export function TenantItem({ customerId, tenant, onRefresh }: TenantItemProps) {
               type="button"
               class="btn btn-ghost btn-sm btn-square"
               onClick={handleCancelEdit}
-              title={t('cancel') || 'Cancel'}
+              title={t('cancel')}
             >
               <X size={16} />
             </button>

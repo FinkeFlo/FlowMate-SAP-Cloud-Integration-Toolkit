@@ -14,6 +14,7 @@ import { fetchRunSteps } from './InlineTraceApiClient';
 import type { InlineTraceElement, PerformanceTier, RunStep } from './inline-trace-types';
 import { resolveStepColor, STEP_COLORS } from './step-colors';
 import { t, tSub } from '@/features/shared/i18n';
+import { errorMessage } from '@/features/shared/error-message';
 
 const LOG_TAG = 'InlineTraceOverlay';
 const TRACE_CLICKABLE_CLASS = 'cursor-pointer';
@@ -107,7 +108,7 @@ export class InlineTraceOverlay {
       return true;
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to show inline trace', { error: String(error) });
-      showToast(`${t('traceInlineLoadFailed')}: ${error}`, 'error');
+      showToast(tSub('traceInlineLoadFailed', errorMessage(error)), 'error');
       return false;
     }
   }

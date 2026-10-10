@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
-import { t } from '@/features/shared/i18n';
+import { t, tSub } from '@/features/shared/i18n';
+import { errorMessage } from '@/features/shared/error-message';
 import { showToast } from '@/features/shared/toast';
 import {
   getPreferences,
@@ -26,7 +27,7 @@ export function PreferencesCard() {
       await savePreferences({ messageLogRefreshSec: value });
       showToast(t('prefsSaved'), 'success');
     } catch (error) {
-      showToast(`${t('errorSaving')}: ${String(error)}`, 'error');
+      showToast(tSub('errorSaving', errorMessage(error)), 'error');
     }
   }
 

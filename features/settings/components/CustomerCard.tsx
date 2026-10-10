@@ -79,10 +79,10 @@ export function CustomerCard({ customer, onRefresh }: CustomerCardProps) {
           {editing ? (
             <>
               <button type="button" class="btn btn-primary btn-sm" onClick={handleSaveEdit}>
-                <Check size={16} /> {t('save') || 'Save'}
+                <Check size={16} /> {t('save')}
               </button>
               <button type="button" class="btn btn-secondary btn-sm" onClick={handleCancelEdit}>
-                <X size={16} /> {t('cancel') || 'Cancel'}
+                <X size={16} /> {t('cancel')}
               </button>
             </>
           ) : (
@@ -142,7 +142,7 @@ export function CustomerCard({ customer, onRefresh }: CustomerCardProps) {
             class="btn btn-soft btn-primary btn-xs"
             onClick={() => setShowAddTenant(true)}
           >
-            <Plus size={14} /> {t('addTenant') || 'Add Tenant'}
+            <Plus size={14} /> {t('addTenant')}
           </button>
         </div>
       )}

@@ -3,7 +3,8 @@ import { LoaderCircle, ToggleRight } from 'lucide-preact';
 import { showToast } from '@/features/shared/toast';
 import { devLog } from '@/features/shared/dev-logger';
 import { extractIFlowId, fetchTraceState, setTraceLevel } from './trace-api';
-import { t } from '@/features/shared/i18n';
+import { t, tSub } from '@/features/shared/i18n';
+import { errorMessage } from '@/features/shared/error-message';
 
 const LOG_TAG = 'TraceToggle';
 const INITIAL_FETCH_DELAY_MS = 1500;
@@ -69,7 +70,7 @@ export function TraceToggleButton() {
       }
     } catch (error) {
       devLog.error(LOG_TAG, 'Failed to toggle trace', { error: String(error), iflowId });
-      showToast(`${t('traceToggleFailed')}: ${error}`, 'error');
+      showToast(tSub('traceToggleFailed', errorMessage(error)), 'error');
     } finally {
       if (mountedRef.current) setToggling(false);
     }

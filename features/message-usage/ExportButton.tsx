@@ -54,16 +54,16 @@ export function ExportButton() {
       }
 
       if (controller.signal.aborted) {
-        showToast(t('exportCancelled') || 'Export cancelled', 'warning');
+        showToast(t('exportCancelled'), 'warning');
       }
     } catch (error) {
       if (!controller.signal.aborted) {
         showToast(
-          `${t('exportFailed') || 'Export failed'}: ${error instanceof Error ? error.message : t('unknownError')}`,
+          tSub('exportFailed', error instanceof Error ? error.message : t('unknownError')),
           'error',
         );
       } else {
-        showToast(t('exportCancelled') || 'Export cancelled', 'warning');
+        showToast(t('exportCancelled'), 'warning');
       }
     } finally {
       if (mountedRef.current) {
@@ -87,7 +87,7 @@ export function ExportButton() {
       endDate,
       (current, total) => {
         if (!mountedRef.current) return;
-        setProgressText(`${t('cancelExport') || 'Cancel'} (${current}/${total})`);
+        setProgressText(t('exportCancelProgress', [String(current), String(total)]));
         setProgress({ current, total });
       },
       signal,
@@ -99,7 +99,7 @@ export function ExportButton() {
 
     if (failedDates.length > 0) {
       showToast(
-        `${t('exportIncompleteDates') || 'Could not fetch some dates'}: ${failedDates.join(', ')}`,
+        tSub('exportIncompleteDates', failedDates.join(', ')),
         'warning',
       );
     }
@@ -119,7 +119,7 @@ export function ExportButton() {
     const customer = settings.customers.find(c => c.id === customerId);
 
     if (!customer || customer.tenants.length === 0) {
-      showToast(t('noTenantsForCustomer') || 'No tenants found for this customer', 'warning');
+      showToast(t('noTenantsForCustomer'), 'warning');
       return;
     }
 
@@ -127,7 +127,7 @@ export function ExportButton() {
     let totalSuccess = 0;
     const failedTenants: string[] = [];
 
-    if (mountedRef.current) setProgressText(t('cancelExport') || 'Cancel');
+    if (mountedRef.current) setProgressText(t('cancelExport'));
     const tenantUrls = customer.tenants.map(tenant => `${toCpiOrigin(tenant.url) ?? tenant.url}/shell/home`);
     await ensureMultipleTenantSessions(tenantUrls);
 
@@ -137,7 +137,7 @@ export function ExportButton() {
       const tenant = customer.tenants[i]!;
       if (mountedRef.current) {
         setProgressText(
-          `${t('cancelExport') || 'Cancel'} - ${tenant.name} (${i + 1}/${customer.tenants.length})`,
+          t('exportCancelTenantProgress', [tenant.name, String(i + 1), String(customer.tenants.length)]),
         );
       }
 
@@ -177,7 +177,7 @@ export function ExportButton() {
 
     if (!signal.aborted) {
       if (failedTenants.length > 0) {
-        showToast(`${t('exportFailed') || 'Export failed'}: ${failedTenants.join(', ')}`, 'error');
+        showToast(tSub('exportFailed', failedTenants.join(', ')), 'error');
       }
       if (totalSuccess > 0) {
         showToast(tSub('exportTenantsDone', String(totalSuccess)), 'success');
@@ -196,7 +196,7 @@ export function ExportButton() {
               onClick={cancelExport}
             >
               <X size={16} />
-              <span>{progressText || t('cancelExport') || 'Cancel'}</span>
+              <span>{progressText || t('cancelExport')}</span>
             </button>
             <ProgressBar current={progress.current} total={progress.total} />
           </>
@@ -207,7 +207,7 @@ export function ExportButton() {
             onClick={() => setShowDialog(true)}
           >
             <Download size={16} />
-            <span>{t('exportData') || 'Export Data'}</span>
+            <span>{t('exportData')}</span>
           </button>
         )}
       </div>
