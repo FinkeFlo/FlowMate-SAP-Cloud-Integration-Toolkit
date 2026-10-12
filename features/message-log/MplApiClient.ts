@@ -4,6 +4,7 @@
  */
 
 import { devLog } from '@/features/shared/dev-logger';
+import { escapeODataString, odataLiteral } from '@/features/shared/odata';
 import { fetchCpiJson, fetchCpiText } from '@/features/shared/fetch-client';
 import { SAP_ODATA_MPL, SAP_ODATA_STORE_ENTRIES } from '@/features/shared/constants';
 import type {
@@ -30,7 +31,7 @@ export async function fetchMessages(
   // percent-encode all parameter values automatically. Calling
   // encodeURIComponent() first would cause double-encoding.
   const params = new URLSearchParams({
-    $filter: `IntegrationFlowName eq '${iflowId}' and Status ne 'DISCARDED'`,
+    $filter: `IntegrationFlowName eq '${escapeODataString(iflowId)}' and Status ne 'DISCARDED'`,
     $top: String(top),
     $format: 'json',
     $orderby: 'LogEnd desc',
@@ -49,7 +50,7 @@ export async function fetchRuns(
   baseUrl: string,
   messageGuid: string,
 ): Promise<MplRun[]> {
-  const url = `${baseUrl}${SAP_ODATA_MPL}('${encodeURIComponent(messageGuid)}')/Runs?$format=json`;
+  const url = `${baseUrl}${SAP_ODATA_MPL}(${odataLiteral(messageGuid)})/Runs?$format=json`;
   devLog.debug(LOG_TAG, 'Fetching runs', { messageGuid });
 
   const json = await fetchCpiJson<MplRunsODataResponse>(url);
@@ -61,7 +62,7 @@ export async function fetchMessageDetail(
   baseUrl: string,
   guid: string,
 ): Promise<MessageProcessingLogDetail> {
-  const url = `${baseUrl}${SAP_ODATA_MPL}('${encodeURIComponent(guid)}')?$expand=CustomHeaderProperties&$format=json`;
+  const url = `${baseUrl}${SAP_ODATA_MPL}(${odataLiteral(guid)})?$expand=CustomHeaderProperties&$format=json`;
   devLog.debug(LOG_TAG, 'Fetching message detail', { guid });
 
   const json = await fetchCpiJson<MplDetailODataResponse>(url);
@@ -73,7 +74,7 @@ export async function fetchMessageStoreEntries(
   baseUrl: string,
   guid: string,
 ): Promise<MessageStoreEntry[]> {
-  const url = `${baseUrl}${SAP_ODATA_MPL}('${encodeURIComponent(guid)}')/MessageStoreEntries?$format=json`;
+  const url = `${baseUrl}${SAP_ODATA_MPL}(${odataLiteral(guid)})/MessageStoreEntries?$format=json`;
   devLog.debug(LOG_TAG, 'Fetching message store entries', { guid });
 
   const json = await fetchCpiJson<MessageStoreEntriesODataResponse>(url);
@@ -85,7 +86,7 @@ export async function fetchMessageStoreEntryValue(
   baseUrl: string,
   entryId: string,
 ): Promise<string> {
-  const url = `${baseUrl}${SAP_ODATA_STORE_ENTRIES}('${encodeURIComponent(entryId)}')/$value`;
+  const url = `${baseUrl}${SAP_ODATA_STORE_ENTRIES}(${odataLiteral(entryId)})/$value`;
   devLog.debug(LOG_TAG, 'Fetching store entry value', { entryId });
 
   const text = await fetchCpiText(url);
@@ -97,7 +98,7 @@ export async function fetchMessageStoreEntryProperties(
   baseUrl: string,
   entryId: string,
 ): Promise<MessageStoreProperty[]> {
-  const url = `${baseUrl}${SAP_ODATA_STORE_ENTRIES}('${encodeURIComponent(entryId)}')/Properties?$format=json`;
+  const url = `${baseUrl}${SAP_ODATA_STORE_ENTRIES}(${odataLiteral(entryId)})/Properties?$format=json`;
   devLog.debug(LOG_TAG, 'Fetching store entry properties', { entryId });
 
   const json = await fetchCpiJson<MessageStorePropertiesODataResponse>(url);

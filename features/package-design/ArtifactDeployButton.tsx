@@ -2,6 +2,7 @@ import { useState } from 'preact/hooks';
 import { LoaderCircle, CloudUpload } from 'lucide-preact';
 import type { ArtifactStatus } from './ArtifactStatus';
 import { getCpiBaseUrl } from '@/features/shared/navigation';
+import { odataLiteral } from '@/features/shared/odata';
 import { fetchCpi } from '@/features/shared/fetch-client';
 import { t, tSub } from '@/features/shared/i18n';
 import { errorMessage } from '@/features/shared/error-message';
@@ -99,7 +100,7 @@ export function ArtifactDeployButton({ artifactStatus }: ArtifactDeployButtonPro
           devLog.info(LOG_TAG, `Deploying ${displayName}`, { artifactId });
 
           await fetchCpi(
-            `${baseUrl}${SAP_ODATA_DEPLOY_ARTIFACT}?Id='${encodeURIComponent(artifactId)}'&Version='active'`,
+            `${baseUrl}${SAP_ODATA_DEPLOY_ARTIFACT}?Id=${odataLiteral(artifactId)}&Version='active'`,
             {
               method: 'POST',
               headers: {
