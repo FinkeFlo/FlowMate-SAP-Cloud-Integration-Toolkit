@@ -4,6 +4,7 @@
  */
 
 import { devLog } from '@/features/shared/dev-logger';
+import { odataLiteral } from '@/features/shared/odata';
 import { fetchCpiJson, fetchCpiText } from '@/features/shared/fetch-client';
 import {
   SAP_ODATA_RUN_STEPS,
@@ -31,7 +32,7 @@ export async function fetchRunSteps(
   runId: string,
   top: number = 500,
 ): Promise<RunStep[]> {
-  const url = `${baseUrl}${SAP_ODATA_RUN_STEPS}('${encodeURIComponent(runId)}')/RunSteps?$format=json&$top=${top}`;
+  const url = `${baseUrl}${SAP_ODATA_RUN_STEPS}(${odataLiteral(runId)})/RunSteps?$format=json&$top=${top}`;
   devLog.debug(LOG_TAG, 'Fetching run steps', { runId, url });
 
   const json = await fetchCpiJson<RunStepsODataResponse>(url);
@@ -48,7 +49,7 @@ export async function fetchTraceMessages(
   runId: string,
   childCount: number,
 ): Promise<TraceMessage[]> {
-  const url = `${baseUrl}${SAP_ODATA_RUN_STEP_DETAIL}(RunId='${encodeURIComponent(runId)}',ChildCount=${childCount})/TraceMessages?$format=json`;
+  const url = `${baseUrl}${SAP_ODATA_RUN_STEP_DETAIL}(RunId=${odataLiteral(runId)},ChildCount=${childCount})/TraceMessages?$format=json`;
   devLog.debug(LOG_TAG, 'Fetching trace messages', { runId, childCount });
 
   const json = await fetchCpiJson<TraceMessagesODataResponse>(url);
@@ -109,7 +110,7 @@ export async function fetchRunStepDetail(
   runId: string,
   childCount: number,
 ): Promise<RunStepDetail> {
-  const url = `${baseUrl}${SAP_ODATA_RUN_STEP_DETAIL}(RunId='${encodeURIComponent(runId)}',ChildCount=${childCount})?$expand=RunStepProperties&$format=json`;
+  const url = `${baseUrl}${SAP_ODATA_RUN_STEP_DETAIL}(RunId=${odataLiteral(runId)},ChildCount=${childCount})?$expand=RunStepProperties&$format=json`;
   devLog.debug(LOG_TAG, 'Fetching run step detail', { runId, childCount });
 
   const json = await fetchCpiJson<RunStepDetailODataResponse>(url);

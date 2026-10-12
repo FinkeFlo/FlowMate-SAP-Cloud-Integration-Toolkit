@@ -1,4 +1,5 @@
 import { devLog } from '@/features/shared/dev-logger';
+import { odataLiteral } from '@/features/shared/odata';
 import { getCpiBaseUrl } from '@/features/shared/navigation';
 import { fetchCpiText, fetchCpiJson, fetchCsrfToken as fetchCsrfTokenShared } from '@/features/shared/fetch-client';
 import { showToast } from '@/features/shared/toast';
@@ -191,7 +192,7 @@ export class ArtifactStatus {
     if (!packageId) return;
 
     const baseUrl = getCpiBaseUrl();
-    const url = `${baseUrl}${SAP_ODATA_PACKAGE_ARTIFACTS}('${encodeURIComponent(packageId)}')/IntegrationDesigntimeArtifacts?$format=json`;
+    const url = `${baseUrl}${SAP_ODATA_PACKAGE_ARTIFACTS}(${odataLiteral(packageId)})/IntegrationDesigntimeArtifacts?$format=json`;
 
     devLog.info(LOG_TAG, 'Fetching design-time artifacts', { url });
 
